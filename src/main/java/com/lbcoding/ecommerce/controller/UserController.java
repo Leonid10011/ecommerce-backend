@@ -1,16 +1,23 @@
 package com.lbcoding.ecommerce.controller;
 
 import com.lbcoding.ecommerce.dto.UserDTO;
+import com.lbcoding.ecommerce.service.AuthenticationService;
 import com.lbcoding.ecommerce.service.UserService;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
+
+import java.util.Optional;
 
 @Path("/user")
 public class UserController {
 
     @Inject
     UserService userService;
+
+    @Inject
+    AuthenticationService authenticationService;
 
     @GET
     @Path("/get")
@@ -34,5 +41,11 @@ public class UserController {
     @Path("/delete")
     public Response delete(Long id){
         return userService.deleteUser(id);
+    }
+
+    @POST
+    @Path("/login")
+    public Response login(UserDTO userDTO) {
+        return authenticationService.login(userDTO);
     }
 }

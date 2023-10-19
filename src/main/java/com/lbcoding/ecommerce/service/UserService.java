@@ -12,6 +12,8 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
+import io.quarkus.elytron.security.common.BcryptUtil;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -43,7 +45,7 @@ public class UserService {
         user.setAddress(userDTO.getAddress());
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
-        user.setPassword(userDTO.getPassword());
+        user.setPassword(BcryptUtil.bcryptHash(userDTO.getPassword()));
         if(userRole != null)
             user.setRoleId(userRole.getId());
         else
