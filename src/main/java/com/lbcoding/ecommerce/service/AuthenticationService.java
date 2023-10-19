@@ -1,4 +1,5 @@
 package com.lbcoding.ecommerce.service;
+import com.lbcoding.ecommerce.dto.CredentialDTO;
 import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.model.User;
 import com.lbcoding.ecommerce.repository.UserRepository;
@@ -18,10 +19,10 @@ public class AuthenticationService {
     @Inject
     UserRepository userRepository;
 
-    public Response login(UserDTO userDTO) {
+    public Response login(CredentialDTO credentialDTO) {
         // Validieren Sie die Anmeldeinformationen und den Benutzer
-        if (isValidUser(userDTO.getUsername(), userDTO.getPassword())) {
-            String token = generateJwtToken(userDTO.getUsername());
+        if (isValidUser(credentialDTO.getUsername(), credentialDTO.getPassword())) {
+            String token = generateJwtToken(credentialDTO.getUsername());
             return Response.status(Response.Status.OK).entity(token).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Wrong credentials").build();

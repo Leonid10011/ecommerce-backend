@@ -1,11 +1,13 @@
 package com.lbcoding.ecommerce.controller;
 
+import com.lbcoding.ecommerce.dto.CredentialDTO;
 import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.service.AuthenticationService;
 import com.lbcoding.ecommerce.service.UserService;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Optional;
@@ -45,7 +47,9 @@ public class UserController {
 
     @POST
     @Path("/login")
-    public Response login(UserDTO userDTO) {
-        return authenticationService.login(userDTO);
+    @Produces(MediaType.TEXT_PLAIN)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response login(CredentialDTO credentialDTO) {
+        return authenticationService.login(credentialDTO);
     }
 }
