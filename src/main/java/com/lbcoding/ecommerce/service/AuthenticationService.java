@@ -25,7 +25,7 @@ public class AuthenticationService {
             String token = generateJwtToken(credentialDTO.getUsername());
             return Response.status(Response.Status.OK).entity(token).build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Wrong credentials").build();
+            return Response.status(Response.Status.BAD_REQUEST).entity("").build();
         }
     }
 

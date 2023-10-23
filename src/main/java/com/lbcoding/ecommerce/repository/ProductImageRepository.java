@@ -40,6 +40,20 @@ public class ProductImageRepository {
     }
 
     @Transactional
+    public ProductImage getProductImagebyProduct(Long productId){
+        TypedQuery<ProductImage> query = entityManager.createQuery(
+                "SELECT pi FROM ProductImage pi WHERE pi.productID = :productId", ProductImage.class
+        ).setParameter("productId", productId);
+
+        List<ProductImage> productImage = query.getResultList();
+        if(!productImage.isEmpty()){
+            return productImage.get(0);
+        } else {
+            return null;
+        }
+    }
+
+    @Transactional
     public ProductImage getProductImageByURL(String imageURL){
         TypedQuery<ProductImage> query = entityManager.createQuery(
                 "SELECT pi FROM ProductImage pi WHERE pi.imageURL = :imageURL", ProductImage.class

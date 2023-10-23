@@ -1,12 +1,15 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.UserDTO;
+import com.lbcoding.ecommerce.model.Address;
 import com.lbcoding.ecommerce.model.Role;
 import com.lbcoding.ecommerce.model.User;
+import com.lbcoding.ecommerce.repository.AddressRespository;
 import com.lbcoding.ecommerce.repository.RoleRepository;
 import com.lbcoding.ecommerce.repository.UserRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
@@ -26,9 +29,12 @@ public class UserService {
     @Inject
     RoleRepository  roleRepository;
 
+    @Inject
+    AddressRespository addressRespository;
+
     @Context
     UriInfo uriInfo;
-
+    @Transactional
     public Response createUser(UserDTO userDTO){
         User existingUser = userRepository.findUserByUsername(userDTO.getUsername());
 
@@ -36,13 +42,22 @@ public class UserService {
             return Response.status(Response.Status.CONFLICT).entity("Username already exists.").build();
         }
 
+        Address userAddress = new Address();
+
+        userAddress.setCity(userDTO.getCity());
+        userAddress.setCountry(userDTO.getCountry());
+        userAddress.setStreet(userDTO.getStreet());
+        userAddress.setZipCode(userDTO.getZipCode());
+
+        addressRespository.create(userAddress);
+
         Role userRole = roleRepository.get("User");
 
         User user = new User();
         user.setUsername(userDTO.getUsername());
         user.setForename(userDTO.getForename());
         user.setSurname(userDTO.getSurname());
-        user.setAddress(userDTO.getAddress());
+        user.setAddress(userAddress.getId());
         user.setPhone(userDTO.getPhone());
         user.setEmail(userDTO.getEmail());
         user.setPassword(BcryptUtil.bcryptHash(userDTO.getPassword()));
@@ -74,7 +89,10 @@ public class UserService {
 
         if (userList!=null){
             List<UserDTO> userDTOList = userList.stream()
-                    .map(user -> user.toDTO())
+                    .map(user -> {
+                        Address address = addressRespository.get(user.getAddress());
+                        return user.toDTO(address.toDTO());
+                    })
                     .collect(Collectors.toList());
 
             return Response.status(Response.Status.OK).entity(userDTOList).build();
@@ -87,7 +105,8 @@ public class UserService {
         User user = userRepository.findUserByUsername(username);
 
         if(user != null){
-            UserDTO userDTO = user.toDTO();
+            Address address = addressRespository.get(user.getId());
+            UserDTO userDTO = user.toDTO(address.toDTO());
 
             return Response.status(Response.Status.OK).entity(userDTO).build();
         } else {

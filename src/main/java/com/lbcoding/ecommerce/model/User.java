@@ -1,5 +1,6 @@
 package com.lbcoding.ecommerce.model;
 
+import com.lbcoding.ecommerce.dto.AddressDTO;
 import com.lbcoding.ecommerce.dto.UserDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ public class User {
     private String username;
     private String forename;
     private String surname;
-    private String address;
+    private Long address;
     private String phone;
     private String email;
     private Long roleId;
@@ -31,7 +32,7 @@ public class User {
 
     }
 
-    public User(Long id, String username, String forename, String surname, String address, String phone, String email, Long roleId, String password) {
+    public User(Long id, String username, String forename, String surname, Long address, String phone, String email, Long roleId, String password) {
         this.id = id;
         this.username = username;
         this.forename = forename;
@@ -67,11 +68,11 @@ public class User {
         this.surname = surname;
     }
 
-    public String getAddress() {
+    public Long getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(Long address) {
         this.address = address;
     }
 
@@ -108,12 +109,15 @@ public class User {
     }
 
     //To DTO Konversion
-    public UserDTO toDTO(){
+    public UserDTO toDTO(AddressDTO address){
         UserDTO userDTO = new UserDTO(
                 this.username,
                 this.forename,
                 this.surname,
-                this.address,
+                address.getCity(),
+                address.getCountry(),
+                address.getStreet(),
+                address.getZipCode(),
                 this.phone,
                 this.email,
                 this.roleId,

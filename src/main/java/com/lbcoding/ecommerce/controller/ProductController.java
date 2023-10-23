@@ -20,6 +20,9 @@ public class ProductController {
         return productService.getProducts();
     }
 
+    @GET
+    @Path("/get/{name}")
+    public Response getName(@PathParam("name") String name) { return productService.getSearchName(name);}
     @POST
     @Path("/create")
     public Response create(ProductDTO productDTO){

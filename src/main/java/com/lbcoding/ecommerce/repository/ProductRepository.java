@@ -65,4 +65,17 @@ public class ProductRepository {
             entityManager.remove(existingProduct);
         }
     }
+
+    public List<Product> getSearchName(String searchTerm){
+        TypedQuery<Product> query = entityManager.createQuery(
+                "SELECT p from Product p WHERE p.name LIKE :searchTerm", Product.class
+        ).setParameter("searchTerm", "%" + searchTerm + "%");
+        System.out.println("TEST"+ query.getResultList());
+        List<Product> products = query.getResultList();
+
+        if(!products.isEmpty()){
+            return products;
+        }
+        else return null;
+    }
 }

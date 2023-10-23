@@ -4,7 +4,10 @@ public class UserDTO {
     private String username;
     private String forename;
     private String surname;
-    private String address;
+    private String city;
+    private String country;
+    private String street;
+    private String zipCode;
     private String phone;
     private String email;
     private Long roleId;
@@ -14,11 +17,14 @@ public class UserDTO {
 
     }
 
-    public UserDTO(String username, String forename, String surname, String address, String phone, String email, Long roleId, String password) {
+    public UserDTO(String username, String forename, String surname, String city, String country, String street, String zipCode, String phone, String email, Long roleId, String password) {
         this.username = username;
         this.forename = forename;
         this.surname = surname;
-        this.address = address;
+        this.city = city;
+        this.country = country;
+        this.street = street;
+        this.zipCode = zipCode;
         this.phone = phone;
         this.email = email;
         this.roleId = roleId;
@@ -49,12 +55,36 @@ public class UserDTO {
         this.surname = surname;
     }
 
-    public String getAddress() {
-        return address;
+    public String getCity() {
+        return city;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getZipCode() {
+        return zipCode;
+    }
+
+    public void setZipCode(String zipCode) {
+        this.zipCode = zipCode;
     }
 
     public String getPhone() {

@@ -1,7 +1,9 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.*;
+import com.lbcoding.ecommerce.model.Inventory;
 import com.lbcoding.ecommerce.model.Product;
+import com.lbcoding.ecommerce.model.ProductImage;
 import com.lbcoding.ecommerce.model.ProductWithQuantity;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import com.lbcoding.ecommerce.repository.ProductImageRepository;
@@ -190,5 +192,22 @@ public class ProductService {
         }
 
         return Response.status(Response.Status.CONFLICT).entity("Product with this quantity already exists").build();
+    }
+
+    public Response getSearchName(String searchTerm){
+        List<Product> products = productRepository.getSearchName(searchTerm);
+        if(products != null){
+            List<ProductWithQuantityDTO> productDTOList = products.stream()
+                    .map(product -> {
+                        Inventory inventory = inventoryRepository.get(product.getId());
+                        ProductImage productImage = productImageRepository.getProductImagebyProduct(product.getId());
+
+                        return product.toImageDTO(inventory != null ? inventory.getQuantity() : 0, productImage != null ? productImage.getImageURL() : "test");
+                    })
+                    .collect(Collectors.toList());
+            return Response.status(Response.Status.OK).entity(productDTOList).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
     }
 }
