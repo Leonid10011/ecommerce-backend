@@ -2,6 +2,10 @@ package com.lbcoding.ecommerce.dto;
 
 import io.smallrye.common.constraint.NotNull;
 
+/**
+ * @params int quantity
+ * @params Long productID
+ */
 public class InventoryDTO {
 
     @NotNull

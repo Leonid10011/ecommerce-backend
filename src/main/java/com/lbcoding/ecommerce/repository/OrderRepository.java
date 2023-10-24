@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.model.BuyOrder;
+import com.lbcoding.ecommerce.model.Order;
+import com.lbcoding.ecommerce.model.OrderItem;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -15,28 +16,28 @@ public class OrderRepository {
     EntityManager entityManager;
 
     @Transactional
-    public void create(BuyOrder order){
+    public void create(Order order){
         entityManager.persist(order);
     }
 
     @Transactional
-    public List<BuyOrder> get(){
-        TypedQuery<BuyOrder> query = entityManager.createQuery(
-                "SELECT o FROM Order o", BuyOrder.class
+    public List<Order> get(){
+        TypedQuery<Order> query = entityManager.createQuery(
+                "SELECT o FROM Order o", Order.class
         );
 
-        List<BuyOrder> orderList = query.getResultList();
+        List<Order> orderList = query.getResultList();
 
         return orderList;
     }
 
     @Transactional
-    public BuyOrder get(Long id){
-        TypedQuery<BuyOrder> query = entityManager.createQuery(
-                "SELECT o FROM Order o WHERE o.id = :id", BuyOrder.class
+    public Order get(Long id){
+        TypedQuery<Order> query = entityManager.createQuery(
+                "SELECT o FROM Order o WHERE o.id = :id", Order.class
         ).setParameter("id", id);
 
-        List<BuyOrder> orderList = query.getResultList();
+        List<Order> orderList = query.getResultList();
 
         if(!orderList.isEmpty()){
             return orderList.get(0);
@@ -46,12 +47,12 @@ public class OrderRepository {
     }
 
     @Transactional
-    public BuyOrder getByUser(Long id){
-        TypedQuery<BuyOrder> query = entityManager.createQuery(
-                "SELECT o FROM Order o WHERE o.userId = :id", BuyOrder.class
+    public Order getByUser(Long id){
+        TypedQuery<Order> query = entityManager.createQuery(
+                "SELECT o FROM Order o WHERE o.userId = :id", Order.class
         ).setParameter("id", id);
 
-        List<BuyOrder> orderList = query.getResultList();
+        List<Order> orderList = query.getResultList();
 
         if(!orderList.isEmpty()){
             return orderList.get(0);
@@ -62,7 +63,7 @@ public class OrderRepository {
 
     @Transactional
     public void delete(Long id){
-        BuyOrder order = entityManager.find(BuyOrder.class, id);
+        Order order = entityManager.find(Order.class, id);
 
         if(order != null){
             entityManager.remove(order);

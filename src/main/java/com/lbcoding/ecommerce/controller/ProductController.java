@@ -21,6 +21,12 @@ public class ProductController {
     }
 
     @GET
+    @Path("/get/{id}")
+    public Response get(@PathParam("id") Long id){
+        return productService.get(id);
+    }
+
+    @GET
     @Path("/get/{name}")
     public Response getName(@PathParam("name") String name) { return productService.getSearchName(name);}
     @POST

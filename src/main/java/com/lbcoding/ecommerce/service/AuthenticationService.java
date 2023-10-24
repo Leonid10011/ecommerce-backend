@@ -22,7 +22,8 @@ public class AuthenticationService {
     public Response login(CredentialDTO credentialDTO) {
         // Validieren Sie die Anmeldeinformationen und den Benutzer
         if (isValidUser(credentialDTO.getUsername(), credentialDTO.getPassword())) {
-            String token = generateJwtToken(credentialDTO.getUsername());
+            Long UserId = userRepository.findUserByUsername(credentialDTO.getUsername()).getId();
+            String token = generateJwtToken(credentialDTO.getUsername(),  UserId);
             return Response.status(Response.Status.OK).entity(token).build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("").build();
@@ -48,11 +49,11 @@ public class AuthenticationService {
         return false;
     }
 
-    private String generateJwtToken(String username) {
+    private String generateJwtToken(String username, Long id) {
         Set<String> roles = new HashSet<String>();
         roles.add("user");
         roles.add("admin");
 
-        return JwtUtils.generateToken(username, roles);
+        return JwtUtils.generateToken(username, roles, id);
     }
 }

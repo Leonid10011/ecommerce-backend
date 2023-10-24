@@ -1,5 +1,13 @@
 package com.lbcoding.ecommerce.dto;
 
+/**
+ * @params String name
+ * @Params String description
+ * @params Double price
+ * @params Long categoryID
+ * @params int quantity
+ * @params String imageURL
+ */
 public class ProductWithURLDTO extends ProductWithQuantityDTO{
     private String imageURL;
 

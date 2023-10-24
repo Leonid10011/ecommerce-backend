@@ -31,12 +31,23 @@ public class InventoryRepository {
 
     @Transactional
     public void update(int quantity, Long productID) {
-        String jpql = "UPDATE Invetory i SET i.quantity = :quantity WHERE i.productID = :productID";
 
-        entityManager.createQuery(jpql)
-                .setParameter("quantity", quantity)
-                .setParameter("productID", productID)
-                .executeUpdate();
+        TypedQuery<Inventory> query = entityManager.createQuery("" +
+                "SELECT i FROM Inventory i WHERE i.productId = :productId", Inventory.class
+        ).setParameter("productId", productID);
+
+        Inventory existingInventory = query.getSingleResult();
+
+        if (existingInventory != null) {
+            Integer oldQuantity = existingInventory.getQuantity();
+
+            String jpql = "UPDATE Invetory i SET i.quantity = :quantity WHERE i.productID = :productID";
+            // if not enough in invetory, get the rest
+            entityManager.createQuery(jpql)
+                    .setParameter("quantity", (oldQuantity - quantity) >= 0 ? oldQuantity-quantity : 0)
+                    .setParameter("productID", productID)
+                    .executeUpdate();
+        }
     }
 
     @Transactional

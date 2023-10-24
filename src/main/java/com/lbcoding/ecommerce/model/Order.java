@@ -1,5 +1,6 @@
 package com.lbcoding.ecommerce.model;
 
+import com.lbcoding.ecommerce.dto.OrderDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -8,24 +9,24 @@ import jakarta.persistence.Table;
 import java.util.Date;
 
 @Entity
-@Table(name = "BuyOrder")
-public class BuyOrder {
+@Table(name = "Orders")
+public class Order {
     @Id
     @GeneratedValue
     private Long id;
     private Long userId;
     private Date date;
-    private String Status;
+    private String status;
 
-    public BuyOrder(){
+    public Order(){
 
     }
 
-    public BuyOrder(Long id, Long userId, Date date, String status) {
+    public Order(Long id, Long userId, Date date, String status) {
         this.id = id;
         this.userId = userId;
         this.date = date;
-        Status = status;
+        this.status = status;
     }
 
     public Long getId() {
@@ -53,10 +54,19 @@ public class BuyOrder {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
+    }
+
+    public OrderDTO toDTO(){
+        OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setUserId(getUserId());
+        orderDTO.setOrderDate(getOrderDate());
+        orderDTO.setStatus(getStatus());
+
+        return orderDTO;
     }
 }

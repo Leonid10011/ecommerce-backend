@@ -60,11 +60,25 @@ public class ProductService {
         }
         return Response.status(Response.Status.NOT_FOUND).build();
     }
-    /**
-     * Validate our input corresponding to the rules defined in DTO
-     * @param dto
-     * @return List<String> : Error messages
-     */
+    public Response get(Long productId) {
+        Product product = productRepository.getById(productId);
+
+        if(product == null)
+            return Response.status(Response.Status.BAD_REQUEST).entity("Not Found.").build();
+
+        Inventory inventory = inventoryRepository.get(product.getId());
+
+        ProductWithURLDTO productWithURLDTO = new ProductWithURLDTO(
+                product.getName(),
+                product.getDescription(),
+                product.getPrice(),
+                product.getCategoryID(),
+                inventory.getQuantity(),
+                "Not yet"
+        );
+
+        return Response.status(Response.Status.OK).entity(productWithURLDTO).build();
+    }
 
     /**
      * Create a Product
@@ -140,7 +154,7 @@ public class ProductService {
         Response productCreationResponse = createProduct(newProductDTO);
 
         if(productCreationResponse.getStatus() == 201){
-            // If object can be created set quntity in Inventory
+            // If object can be created set quantity in Inventory
             InventoryDTO newInventoryDTO = new InventoryDTO();
             newInventoryDTO.setQuantity(productWithQuantityDTO.getQuantity());
 

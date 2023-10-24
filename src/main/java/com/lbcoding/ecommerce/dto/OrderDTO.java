@@ -2,10 +2,15 @@ package com.lbcoding.ecommerce.dto;
 
 import java.util.Date;
 
+/**
+ * @params Long userId;
+ * @params Date date;
+ * @params String Status;
+ */
 public class OrderDTO {
     private Long userId;
     private Date date;
-    private String Status;
+    private String status;
 
     public OrderDTO(){
 
@@ -14,7 +19,7 @@ public class OrderDTO {
     public OrderDTO(Long userId, Date orderDate, String status) {
         this.userId = userId;
         this.date = orderDate;
-        Status = status;
+        this.status = status;
     }
 
     public Long getUserId() {
@@ -34,10 +39,10 @@ public class OrderDTO {
     }
 
     public String getStatus() {
-        return Status;
+        return status;
     }
 
     public void setStatus(String status) {
-        Status = status;
+        this.status = status;
     }
 }
