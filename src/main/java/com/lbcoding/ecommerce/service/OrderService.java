@@ -2,21 +2,28 @@ package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.OrderDTO;
 import com.lbcoding.ecommerce.dto.OrderItemDTO;
+import com.lbcoding.ecommerce.dto.ProductWithURLDTO;
 import com.lbcoding.ecommerce.model.Order;
 import com.lbcoding.ecommerce.model.OrderItem;
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import com.lbcoding.ecommerce.repository.OrderItemRepository;
 import com.lbcoding.ecommerce.repository.OrderRepository;
+import com.lbcoding.ecommerce.repository.ProductRepository;
 import com.lbcoding.ecommerce.service.validation.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 @ApplicationScoped
 public class OrderService {
@@ -31,8 +38,15 @@ public class OrderService {
     InventoryRepository inventoryRepository;
 
     @Inject
-    UriInfo uriInfo;
+    ProductRepository productRepository;
 
+    @Inject
+    ProductService productService;
+
+    @Inject
+    UriInfo uriInfo;
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response createOrder(OrderDTO orderDTO){
         Set<String> errorMessages = DTOValidator.validateDTO(orderDTO);
 
@@ -123,7 +137,7 @@ public class OrderService {
 
     /**
      * @todo Maybe remove list from reposity into single item.
-     * @param orderItemDTO
+     * @param orderItemId
      * @return
      */
     @Transactional
@@ -138,5 +152,22 @@ public class OrderService {
         } else {
             return Response.status(Response.Status.BAD_REQUEST).entity("Not found").build();
         }
+    }
+
+    @Transactional
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response getItems(Long orderId){
+        List<OrderItem> orderItemList = orderItemRepository.get(orderId);
+
+        List<ProductWithURLDTO> resItemList = new ArrayList<ProductWithURLDTO>();
+
+        if(!orderItemList.isEmpty()){
+            orderItemList.stream().forEach(item -> {
+                resItemList.add(productService.get(item.getProductId()).readEntity(ProductWithURLDTO.class));
+            });
+            return Response.status(Response.Status.OK).entity(resItemList).build();
+        }
+
+        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 }

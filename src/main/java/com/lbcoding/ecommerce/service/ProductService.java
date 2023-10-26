@@ -69,6 +69,7 @@ public class ProductService {
         Inventory inventory = inventoryRepository.get(product.getId());
 
         ProductWithURLDTO productWithURLDTO = new ProductWithURLDTO(
+                product.getId(),
                 product.getName(),
                 product.getDescription(),
                 product.getPrice(),
@@ -190,7 +191,7 @@ public class ProductService {
 
         Response productWithQuantityCreation = createProduct(productWithQuantityDTO);
 
-        if(productWithQuantityCreation.getStatus() == 200){
+        if(productWithQuantityCreation.getStatus() == 201){
             ProductImageDTO productImageDTO = new ProductImageDTO();
             productImageDTO.setImageURL(productWithURLDTO.getImageURL());
             if(productWithQuantityCreation.getEntity() instanceof Product){

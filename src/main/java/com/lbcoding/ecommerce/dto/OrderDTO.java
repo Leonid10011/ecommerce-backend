@@ -8,6 +8,7 @@ import java.util.Date;
  * @params String Status;
  */
 public class OrderDTO {
+    private Long id;
     private Long userId;
     private Date date;
     private String status;
@@ -16,10 +17,33 @@ public class OrderDTO {
 
     }
 
-    public OrderDTO(Long userId, Date orderDate, String status) {
+    public OrderDTO(Long userId, Date date, String status) {
+        this.userId = userId;
+        this.date = date;
+        this.status = status;
+    }
+
+    public OrderDTO(Long id, Long userId, Date orderDate, String status) {
+        this.id = id;
         this.userId = userId;
         this.date = orderDate;
         this.status = status;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public Long getUserId() {

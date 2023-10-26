@@ -82,10 +82,11 @@ public class Product {
 
     public ProductDTO toDTO(){
         ProductDTO productDTO = new ProductDTO(
-        name,
-        description,
-        price,
-        categoryID
+            this.id,
+            this.name,
+            this.description,
+            this.price,
+            this.categoryID
         );
 
         return productDTO;
@@ -93,6 +94,7 @@ public class Product {
 
     public ProductWithURLDTO toImageDTO(int quantity, String imageURL ){
         ProductWithURLDTO productWithURLDTO = new ProductWithURLDTO(
+                this.id,
                 this.name,
                 this.description,
                 this.price,

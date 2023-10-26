@@ -63,6 +63,7 @@ public class Order {
 
     public OrderDTO toDTO(){
         OrderDTO orderDTO = new OrderDTO();
+        orderDTO.setId(getId());
         orderDTO.setUserId(getUserId());
         orderDTO.setOrderDate(getOrderDate());
         orderDTO.setStatus(getStatus());

@@ -10,8 +10,8 @@ public class ProductWithQuantityDTO extends ProductDTO{
 
     }
 
-    public ProductWithQuantityDTO(String name, String description, Double price, Long categoryID, int quantity) {
-        super(name, description, price, categoryID);
+    public ProductWithQuantityDTO(Long id, String name, String description, Double price, Long categoryID, int quantity) {
+        super(id, name, description, price, categoryID);
         this.quantity = quantity;
     }
 

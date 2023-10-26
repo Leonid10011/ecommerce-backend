@@ -15,8 +15,8 @@ public class ProductWithURLDTO extends ProductWithQuantityDTO{
 
     }
 
-    public ProductWithURLDTO(String name, String description, Double price, Long categoryID, int quantity, String imageURL) {
-        super(name, description, price, categoryID, quantity);
+    public ProductWithURLDTO(Long id, String name, String description, Double price, Long categoryID, int quantity, String imageURL) {
+        super(id, name, description, price, categoryID, quantity);
         this.imageURL = imageURL;
     }
 
