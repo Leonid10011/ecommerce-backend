@@ -2,10 +2,9 @@ package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.OrderDTO;
 import com.lbcoding.ecommerce.dto.OrderItemDTO;
-import com.lbcoding.ecommerce.dto.ProductWithURLDTO;
+import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.model.Order;
 import com.lbcoding.ecommerce.model.OrderItem;
-import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import com.lbcoding.ecommerce.repository.OrderItemRepository;
 import com.lbcoding.ecommerce.repository.OrderRepository;
@@ -22,7 +21,6 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 @ApplicationScoped
@@ -111,7 +109,7 @@ public class OrderService {
 
 
         if(existingOrderItem != null){
-            inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId());
+            inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId(), false);
 
             return Response.status(Response.Status.OK).entity("Updated quantity").build();
         } else {
@@ -159,11 +157,11 @@ public class OrderService {
     public Response getItems(Long orderId){
         List<OrderItem> orderItemList = orderItemRepository.get(orderId);
 
-        List<ProductWithURLDTO> resItemList = new ArrayList<ProductWithURLDTO>();
+        List<ProductDTO> resItemList = new ArrayList<ProductDTO>();
 
         if(!orderItemList.isEmpty()){
             orderItemList.stream().forEach(item -> {
-                resItemList.add(productService.get(item.getProductId()).readEntity(ProductWithURLDTO.class));
+                resItemList.add(productService.get(item.getProductId()).readEntity(ProductDTO.class));
             });
             return Response.status(Response.Status.OK).entity(resItemList).build();
         }

@@ -58,13 +58,12 @@ public class InventoryService {
      * @param id
      * @return
      */
-    public Response updateQuantity(int quantity, Long id){
+    public Response updateQuantity(int quantity, Long id, Boolean operation){
 
         Inventory existingInventory = inventoryRepository.get(id);
 
         if(existingInventory != null){
-            inventoryRepository.update(quantity, id);
-
+            inventoryRepository.update(quantity, id, operation);
             return Response.status(Response.Status.OK).entity("Updated").build();
         }
         return Response.status(Response.Status.CONFLICT).entity("Does not exists").build();

@@ -30,7 +30,7 @@ public class InventoryRepository {
     }
 
     @Transactional
-    public void update(int quantity, Long productId) {
+    public void update(int quantity, Long productId, Boolean operation) {
 
         TypedQuery<Inventory> query = entityManager.createQuery("" +
                 "SELECT i FROM Inventory i WHERE i.productID = :productId", Inventory.class
@@ -44,7 +44,9 @@ public class InventoryRepository {
             String jpql = "UPDATE Inventory i SET i.quantity = :quantity WHERE i.productID = :productID";
             // if not enough in invetory, get the rest
             entityManager.createQuery(jpql)
-                    .setParameter("quantity", (oldQuantity - quantity) >= 0 ? oldQuantity-quantity : 0)
+                    .setParameter("quantity",
+                            operation ? (oldQuantity + quantity)
+                                    : (oldQuantity - quantity) >= 0 ? oldQuantity-quantity : 0)
                     .setParameter("productID", productId)
                     .executeUpdate();
         }

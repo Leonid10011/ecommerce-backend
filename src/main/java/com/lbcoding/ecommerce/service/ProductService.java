@@ -50,7 +50,7 @@ public class ProductService {
 
         if(!products.isEmpty()){
             List<ProductDTO> productDTOList = products.stream()
-                    .map(product -> product.toImageDTO(
+                    .map(product -> product.toDTO(
                             inventoryRepository.get(product.getId()) == null ? 0 : inventoryRepository.get(product.getId()).getQuantity(),
                             productImageRepository.get(product.getId()) == null ? "" : productImageRepository.get(product.getId()).getImageURL())
                     )
@@ -68,7 +68,7 @@ public class ProductService {
 
         Inventory inventory = inventoryRepository.get(product.getId());
 
-        ProductWithURLDTO productWithURLDTO = new ProductWithURLDTO(
+        ProductDTO productDTO = new ProductDTO(
                 product.getId(),
                 product.getName(),
                 product.getDescription(),
@@ -78,43 +78,7 @@ public class ProductService {
                 "Not yet"
         );
 
-        return Response.status(Response.Status.OK).entity(productWithURLDTO).build();
-    }
-
-    /**
-     * Create a Product
-     * @param productDTO
-     * @return Product Entity
-     */
-    public Response createProduct(ProductDTO productDTO){
-
-        Set<String> validationErrors = DTOValidator.validateDTO(productDTO);
-
-        if(!validationErrors.isEmpty()) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(validationErrors)
-                    .build();
-        }
-
-        Product existingProduct = productRepository.getProductByName(productDTO.getName());
-
-        if(existingProduct != null){
-            return Response.status(Response.Status.CONFLICT).entity("Product already exists").build();
-        }
-
-        Product product = new Product();
-
-        product.setName(productDTO.getName());
-        product.setDescription(productDTO.getDescription());
-        product.setCategoryID(productDTO.getCategoryID());
-        product.setPrice(productDTO.getPrice());
-
-        productRepository.createProduct(product);
-
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-        builder.path(Long.toString(product.getId()));
-
-        return Response.created(builder.build()).entity(product).build();
+        return Response.status(Response.Status.OK).entity(productDTO).build();
     }
 
     /**
@@ -139,85 +103,81 @@ public class ProductService {
 
     /**
      * create a product together with a quantity
-     * @param productWithQuantityDTO
      * @return Product Entity
      */
     @Transactional
-    public Response createProduct(ProductWithQuantityDTO productWithQuantityDTO){
-        // We create a newProduct to extract Product related Properties
-        ProductDTO newProductDTO = new ProductDTO();
-        // Set the attribute vor previous overload
-        newProductDTO.setName(productWithQuantityDTO.getName());
-        newProductDTO.setDescription(productWithQuantityDTO.getDescription());
-        newProductDTO.setPrice(productWithQuantityDTO.getPrice());
-        newProductDTO.setCategoryID(productWithQuantityDTO.getCategoryID());
+    public Response createProduct(ProductDTO productDTO){
+        Set<String> validationErrors = DTOValidator.validateDTO(productDTO);
 
-        Response productCreationResponse = createProduct(newProductDTO);
-
-        if(productCreationResponse.getStatus() == 201){
-            // If object can be created set quantity in Inventory
-            InventoryDTO newInventoryDTO = new InventoryDTO();
-            newInventoryDTO.setQuantity(productWithQuantityDTO.getQuantity());
-
-            if(productCreationResponse.getEntity() instanceof Product){
-                // Create the inventory entry with retrieved corresponding product id
-                Product createdProduct = (Product) productCreationResponse.getEntity();
-                newInventoryDTO.setProductID(createdProduct.getId());
-                // Create a response object with quantity so the next overload can use it
-                inventoryService.setQuantity(newInventoryDTO);
-
-                UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-                builder.path(Long.toString(((Product) productCreationResponse.getEntity()).getId()));
-
-                return Response.created(builder.build()).entity(productCreationResponse.getEntity()).build();
-            }
+        if(!validationErrors.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(validationErrors)
+                    .build();
         }
-        return Response.status(Response.Status.CONFLICT).entity("Product with this quantity already exists").build();
-    }
 
-    /**
-     * We extend the product with quantity and imageURL
-     * @param productWithURLDTO
-     * @return Product Entity
-     */
-    public Response createProduct(ProductWithURLDTO productWithURLDTO){
-        ProductWithQuantityDTO productWithQuantityDTO = new ProductWithQuantityDTO();
-        // Set the attributes for previous overload
-        productWithQuantityDTO.setName(productWithURLDTO.getName());
-        productWithQuantityDTO.setDescription(productWithURLDTO.getDescription());
-        productWithQuantityDTO.setPrice(productWithURLDTO.getPrice());
-        productWithQuantityDTO.setQuantity(productWithURLDTO.getQuantity());
-        productWithQuantityDTO.setCategoryID(productWithURLDTO.getCategoryID());
+        Product existingProduct = productRepository.getProductByName(productDTO.getName());
 
-        Response productWithQuantityCreation = createProduct(productWithQuantityDTO);
+        if(existingProduct != null){
+            return Response.status(Response.Status.CONFLICT).entity("Product with this name already exists.").build();
+        }
 
-        if(productWithQuantityCreation.getStatus() == 201){
+        Product product = new Product();
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setCategoryID(productDTO.getCategoryID());
+
+        productRepository.createProduct(product);
+
+        Inventory existingInventory = inventoryRepository.get(product.getId());
+
+        Response quantityResponse;
+        Response imageResponse;
+        if(existingInventory != null){
+            // An inventory already exists for this product, so we need to update the quantity
+            quantityResponse = inventoryService.updateQuantity(productDTO.getQuantity(), existingInventory.getId(), true);
+        } else {
+            InventoryDTO inventoryDTO = new InventoryDTO();
+            inventoryDTO.setProductID(productDTO.getId());
+            inventoryDTO.setQuantity(productDTO.getQuantity());
+
+            quantityResponse = inventoryService.setQuantity(inventoryDTO);
+        }
+
+        ProductImage existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
+
+        if(existingImage != null) {
+            imageResponse = Response.status(Response.Status.OK).build();
+        } else {
             ProductImageDTO productImageDTO = new ProductImageDTO();
-            productImageDTO.setImageURL(productWithURLDTO.getImageURL());
-            if(productWithQuantityCreation.getEntity() instanceof Product){
-                Product createdProduct = (Product) productWithQuantityCreation.getEntity();
-                productImageDTO.setProductID(createdProduct.getId());
-                productImageService.addProductImageURL(productImageDTO);
-
-                UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-                builder.path(Long.toString(((Product) productWithQuantityCreation.getEntity()).getId()));
-
-                return Response.created(builder.build()).entity(productWithQuantityCreation.getEntity()).build();
-            }
+            productImageDTO.setProductID(productDTO.getId());
+            productImageDTO.setImageURL(productDTO.getImgURL());
+            System.out.println("IMAGE, "+ productDTO.getImgURL());
+            imageResponse = productImageService.addProductImageURL(productImageDTO);
         }
 
-        return Response.status(Response.Status.CONFLICT).entity("Product with this quantity already exists").build();
+        if(quantityResponse.getStatus() == (400) || quantityResponse.getStatus() == 409 || imageResponse.getStatus() == 409){
+            return Response.status(Response.Status.BAD_REQUEST).entity("There was a Problem with quantity or imageURL").build();
+        }
+
+        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+        builder.build(Long.toString(product.getId()));
+
+        ProductDTO productDTOResponse = productDTO;
+        productDTOResponse.setId(product.getId());
+
+        return Response.created(builder.build()).entity(productDTOResponse).build();
     }
 
     public Response getSearchName(String searchTerm){
         List<Product> products = productRepository.getSearchName(searchTerm);
         if(products != null){
-            List<ProductWithQuantityDTO> productDTOList = products.stream()
+            List<ProductDTO> productDTOList = products.stream()
                     .map(product -> {
                         Inventory inventory = inventoryRepository.get(product.getId());
                         ProductImage productImage = productImageRepository.getProductImagebyProduct(product.getId());
 
-                        return product.toImageDTO(inventory != null ? inventory.getQuantity() : 0, productImage != null ? productImage.getImageURL() : "test");
+                        return product.toDTO(inventory != null ? inventory.getQuantity() : 0, productImage != null ? productImage.getImageURL() : "test");
                     })
                     .collect(Collectors.toList());
             return Response.status(Response.Status.OK).entity(productDTOList).build();

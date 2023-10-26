@@ -1,8 +1,6 @@
 package com.lbcoding.ecommerce.controller;
 
 import com.lbcoding.ecommerce.dto.ProductDTO;
-import com.lbcoding.ecommerce.dto.ProductWithQuantityDTO;
-import com.lbcoding.ecommerce.dto.ProductWithURLDTO;
 import com.lbcoding.ecommerce.service.ProductService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -33,18 +31,6 @@ public class ProductController {
     @Path("/create")
     public Response create(ProductDTO productDTO){
         return productService.createProduct(productDTO);
-    }
-
-    @POST
-    @Path("/createWithQuantity")
-    public Response create(ProductWithQuantityDTO productWithQuantityDTO){
-        return productService.createProduct(productWithQuantityDTO);
-    }
-
-    @POST
-    @Path("/createWithURL")
-    public Response create(ProductWithURLDTO productWithURLDTO){
-        return productService.createProduct(productWithURLDTO);
     }
 
     @DELETE

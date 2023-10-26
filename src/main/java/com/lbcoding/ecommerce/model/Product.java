@@ -7,13 +7,17 @@
 package com.lbcoding.ecommerce.model;
 
 import com.lbcoding.ecommerce.dto.ProductDTO;
-import com.lbcoding.ecommerce.dto.ProductImageDTO;
-import com.lbcoding.ecommerce.dto.ProductWithURLDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
-import jakarta.ws.rs.core.Response;
 
+/**
+ * @params Long id
+ * @params String name
+ * @params String description
+ * @params Double price
+ * @params Long categoryID
+ */
 @Entity
 public class Product {
     @Id
@@ -80,7 +84,7 @@ public class Product {
         this.categoryID = categoryID;
     }
 
-    public ProductDTO toDTO(){
+    public ProductDTO toDTO(int quantity, String imageURL){
         ProductDTO productDTO = new ProductDTO(
             this.id,
             this.name,
@@ -90,19 +94,5 @@ public class Product {
         );
 
         return productDTO;
-    }
-
-    public ProductWithURLDTO toImageDTO(int quantity, String imageURL ){
-        ProductWithURLDTO productWithURLDTO = new ProductWithURLDTO(
-                this.id,
-                this.name,
-                this.description,
-                this.price,
-                this.categoryID,
-                quantity,
-                imageURL
-        );
-
-        return productWithURLDTO;
     }
 }

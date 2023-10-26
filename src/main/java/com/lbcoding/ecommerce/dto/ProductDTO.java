@@ -20,16 +20,22 @@ public class ProductDTO {
 
     private Long categoryID;
 
+    private int quantity;
+
+    private String imgURL;
+
     public ProductDTO(){
 
     }
 
-    public ProductDTO(Long id, String name, String description, Double price, Long categoryID) {
+    public ProductDTO(Long id, String name, String description, Double price, Long categoryID, int quantity, String imgURL) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
         this.categoryID = categoryID;
+        this.quantity = quantity;
+        this.imgURL = imgURL;
     }
 
     public Long getId() {
@@ -70,5 +76,21 @@ public class ProductDTO {
 
     public void setCategoryID(Long categoryID) {
         this.categoryID = categoryID;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
     }
 }
