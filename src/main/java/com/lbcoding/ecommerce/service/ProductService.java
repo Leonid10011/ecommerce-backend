@@ -4,7 +4,6 @@ import com.lbcoding.ecommerce.dto.*;
 import com.lbcoding.ecommerce.model.Inventory;
 import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.model.ProductImage;
-import com.lbcoding.ecommerce.model.ProductWithQuantity;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import com.lbcoding.ecommerce.repository.ProductImageRepository;
 import com.lbcoding.ecommerce.repository.ProductRepository;
