@@ -11,4 +11,5 @@
 
 #### Todo
 -Validate all DTOs. But for this I wait till the frontend is ready and corresponding to it needs I will validate data in backend.  
+-comment all models and funtions with its parameters to make it more easier to work with them in IDE  
 -Not yet sure what will be needed in future, as this is my first approach to a backend.  
