@@ -1,80 +1,59 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.dto.ProductDTO;
-import com.lbcoding.ecommerce.dto.ProductImageDTO;
 import com.lbcoding.ecommerce.model.ProductImage;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.core.Response;
 
-import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class ProductImageRepository {
+
     @PersistenceContext
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Transactional
-    public void createProductImage(ProductImage productImage){
+    public void createProductImage(ProductImage productImage) {
         entityManager.persist(productImage);
     }
 
     @Transactional
-    public ProductImage get(Long id){
-        ProductImage productImage = entityManager.find(ProductImage.class, id);
-
-        return productImage;
+    public Optional<ProductImage> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(ProductImage.class, id));
     }
 
     @Transactional
-    public List<ProductImage> getProductImages(){
-        TypedQuery<ProductImage> query = entityManager.createQuery(
-                "SELECT pi FROM ProductImage pi", ProductImage.class);
-        List<ProductImage> productImageList = query.getResultList();
-
-        return productImageList;
+    public List<ProductImage> getProductImages() {
+        TypedQuery<ProductImage> query = entityManager.createQuery("SELECT pi FROM ProductImage pi", ProductImage.class);
+        return query.getResultList();
     }
 
     @Transactional
-    public ProductImage getProductImagebyProduct(Long productId){
-        TypedQuery<ProductImage> query = entityManager.createQuery(
-                "SELECT pi FROM ProductImage pi WHERE pi.productID = :productId", ProductImage.class
-        ).setParameter("productId", productId);
+    public Optional<ProductImage> getProductImageByProduct(Long productId) {
+        TypedQuery<ProductImage> query = entityManager.createQuery("SELECT pi FROM ProductImage pi WHERE pi.productID = :productId", ProductImage.class);
+        query.setParameter("productId", productId);
+        Optional<ProductImage> productImage = Optional.ofNullable(query.getSingleResult());
 
-        List<ProductImage> productImage = query.getResultList();
-        if(!productImage.isEmpty()){
-            return productImage.get(0);
-        } else {
-            return null;
-        }
+        return !productImage.isPresent() ? null : productImage;
     }
 
     @Transactional
-    public ProductImage getProductImageByURL(String imageURL){
-        TypedQuery<ProductImage> query = entityManager.createQuery(
-                "SELECT pi FROM ProductImage pi WHERE pi.imageURL = :imageURL", ProductImage.class
-        )
-                .setParameter("imageURL", imageURL);
-        List<ProductImage> productImageList = query.getResultList();
+    public Optional<ProductImage> getProductImageByURL(String imageURL) {
+        TypedQuery<ProductImage> query = entityManager.createQuery("SELECT pi FROM ProductImage pi WHERE pi.imageURL = :imageURL", ProductImage.class);
+        query.setParameter("imageURL", imageURL);
+        Optional<ProductImage> productImage = Optional.ofNullable(query.getSingleResult());
 
-        if(!productImageList.isEmpty()){
-            return productImageList.get(0);
-        }
-        else {
-            return null;
-        }
+        return !productImage.isPresent() ? null : productImage;
     }
 
     @Transactional
-    public void deleteProductImage(Long id){
-        ProductImage productImage = entityManager.find(ProductImage.class, id);
+    public void deleteProductImage(Long id) {
+        Optional<ProductImage> productImage = findById(id);
 
-        if(productImage != null){
-            entityManager.remove(productImage);
-        }
+        productImage.ifPresent(entityManager::remove);
     }
 }

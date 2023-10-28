@@ -283,10 +283,10 @@ public class ProductService {
     // Map a Product to ProductDTO
     private ProductDTO mapProductToProductDTO(Product product) {
         Inventory inventory = inventoryRepository.findByProductId(product.getId());
-        ProductImage productImage = productImageRepository.getProductImagebyProduct(product.getId());
+        Optional<ProductImage> productImage = productImageRepository.getProductImageByProduct(product.getId());
 
         int quantity = (inventory != null) ? inventory.getQuantity() : 0;
-        String imageURL = (productImage != null) ? productImage.getImageURL() : "Not yet";
+        String imageURL = (productImage != null) ? productImage.get().getImageURL() : "Not yet";
 
         return new ProductDTO(
                 product.getId(),
@@ -348,7 +348,7 @@ public class ProductService {
             quantityResponse = inventoryService.setQuantity(inventoryDTO);
         }
 
-        ProductImage existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
+        Optional<ProductImage> existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
 
         if (existingImage != null) {
             imageResponse = Response.status(Response.Status.OK).build();
