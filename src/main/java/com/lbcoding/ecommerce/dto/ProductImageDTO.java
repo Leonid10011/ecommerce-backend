@@ -3,6 +3,10 @@ package com.lbcoding.ecommerce.dto;
 import com.lbcoding.ecommerce.model.ProductImage;
 import io.smallrye.common.constraint.NotNull;
 
+/**
+ * @params Long productID
+ * @params String imageURL
+ */
 public class ProductImageDTO {
     @NotNull
     private Long productID;

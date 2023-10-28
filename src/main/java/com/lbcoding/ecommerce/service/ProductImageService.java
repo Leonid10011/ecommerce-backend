@@ -1,5 +1,6 @@
 package com.lbcoding.ecommerce.service;
 
+import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.dto.ProductImageDTO;
 import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.model.ProductImage;
@@ -71,5 +72,12 @@ public class ProductImageService {
         }
 
         return Response.status(Response.Status.NOT_FOUND).entity("ImageURL not found").build();
+    }
+
+    public ProductImageDTO createProductImageDTO(ProductDTO productDTO){
+        return new ProductImageDTO(
+                productDTO.getId(),
+                productDTO.getImgURL()
+        );
     }
 }

@@ -161,7 +161,7 @@ public class OrderService {
 
         if(!orderItemList.isEmpty()){
             orderItemList.stream().forEach(item -> {
-                resItemList.add(productService.get(item.getProductId()).readEntity(ProductDTO.class));
+                resItemList.add(productService.getByProductId(item.getProductId()).readEntity(ProductDTO.class));
             });
             return Response.status(Response.Status.OK).entity(resItemList).build();
         }

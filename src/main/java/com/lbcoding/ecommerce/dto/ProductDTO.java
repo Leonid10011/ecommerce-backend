@@ -2,30 +2,53 @@ package com.lbcoding.ecommerce.dto;
 
 import com.lbcoding.ecommerce.model.Product;
 
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.URL;
 
+/**
+ * @params Long id
+ * @params String name
+ * @params String description
+ * @params Double price
+ * @params Long categoryID
+ * @params int quantity
+ * @params String imgURL
+ */
 public class ProductDTO {
     private Long id;
-    @NotBlank(message = "Name darf nicht leer sein")
-    @Size(max = 30, message = "Name darf maximal 30 Zeichen haben")
+
+    @NotBlank(message = "Name cannot be empty")
+    @Size(max = 30, message = "Name can have a maximum of 30 characters")
     private String name;
 
-    @Size(max = 100, message = "Beschreibung darf maximal 100 Zeichen lang sein")
+    @Size(max = 100, message = "Description can have a maximum of 100 characters")
     private String description;
 
-    @Digits(integer = 10, fraction = 2)
+    @Digits(integer = 10, fraction = 2, message = "Invalid price")
+    @NotNull(message = "Price cannot be null")
+    @Positive(message = "Price must be positive")
     private Double price;
 
     private Long categoryID;
 
+    @NotNull(message = "Quantity cannot be null")
+    @Positive(message = "Quantity must be positive")
     private int quantity;
-
+    // Need to adjust when project is finished with image urls
+    //@URL(message = "Invalid URL")
     private String imgURL;
 
-    public ProductDTO(){
+    public ProductDTO() {
 
+    }
+
+    public ProductDTO(String name, String description, Double price, Long categoryID, int quantity,  String imgURL) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.categoryID = categoryID;
+        this.quantity = quantity;
+        this.imgURL = imgURL;
     }
 
     public ProductDTO(Long id, String name, String description, Double price, Long categoryID, int quantity, String imgURL) {

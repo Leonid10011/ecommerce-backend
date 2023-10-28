@@ -2,6 +2,7 @@ package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.CategoryDTO;
 import com.lbcoding.ecommerce.dto.InventoryDTO;
+import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.model.Inventory;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -55,31 +56,31 @@ public class InventoryService {
     /**
      * Update the quantity for a product in the inventory
      * @param quantity
-     * @param id
+     * @param productId
      * @return
      */
-    public Response updateQuantity(int quantity, Long id, Boolean operation){
+    public Response updateQuantity(int quantity, Long productId, Boolean operation){
 
-        Inventory existingInventory = inventoryRepository.get(id);
+        Inventory existingInventory = inventoryRepository.findByProductId(productId);
 
         if(existingInventory != null){
-            inventoryRepository.update(quantity, id, operation);
+            inventoryRepository.update(quantity, productId, operation);
             return Response.status(Response.Status.OK).entity("Updated").build();
         }
         return Response.status(Response.Status.CONFLICT).entity("Does not exists").build();
     }
 
-    public Response delete(Long id){
-        if(inventoryRepository.get(id) != null){
-            inventoryRepository.delete(id);
+    public Response delete(Long productId){
+        if(inventoryRepository.findByProductId(productId) != null){
+            inventoryRepository.delete(productId);
 
             return Response.noContent().build();
         }
         return Response.status(Response.Status.NOT_FOUND).entity("Inventory not found").build();
     }
 
-    public Response get(Long id){
-        Inventory inventory = inventoryRepository.get(id);
+    public Response get(Long productId){
+        Inventory inventory = inventoryRepository.findByProductId(productId);
 
         if(inventory != null){
             InventoryDTO inventoryDTO = new InventoryDTO(inventory.getQuantity(), inventory.getProductID());
@@ -89,5 +90,19 @@ public class InventoryService {
 
             return Response.status(Response.Status.NOT_FOUND).entity(null).build();
         }
+    }
+
+    public InventoryDTO createInventoryDTO(ProductDTO productDTO){
+        return new InventoryDTO(
+                productDTO.getQuantity(),
+                productDTO.getId()
+        );
+    }
+
+    public Inventory createInventoryModel(ProductDTO productDTO){
+        return new Inventory(
+                productDTO.getQuantity(),
+                productDTO.getId()
+        );
     }
 }

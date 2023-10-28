@@ -21,6 +21,11 @@ public class Inventory {
 
     }
 
+    public Inventory(int quantity, Long productID) {
+        this.quantity = quantity;
+        this.productID = productID;
+    }
+
     public Inventory(Long id, int quantity, Long productID) {
         this.id = id;
         this.quantity = quantity;

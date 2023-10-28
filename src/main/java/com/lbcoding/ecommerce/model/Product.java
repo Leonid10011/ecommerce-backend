@@ -90,7 +90,9 @@ public class Product {
             this.name,
             this.description,
             this.price,
-            this.categoryID
+            this.categoryID,
+                quantity,
+                imageURL
         );
 
         return productDTO;

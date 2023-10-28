@@ -1,4 +1,6 @@
+/*
 package com.lbcoding.ecommerce.repository;
+
 
 import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.model.Product;
@@ -77,5 +79,70 @@ public class ProductRepository {
             return products;
         }
         else return null;
+    }
+}
+*/
+
+package com.lbcoding.ecommerce.repository;
+
+import com.lbcoding.ecommerce.model.Product;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Optional;
+
+@ApplicationScoped
+public class ProductRepository {
+    private static final Logger logger = LoggerFactory.getLogger(ProductRepository.class);
+
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    public Optional<Product> findById(Long id) {
+        return Optional.ofNullable(entityManager.find(Product.class, id));
+    }
+
+    public Optional<Product> findProductByName(String name) {
+        TypedQuery<Product> query = entityManager.createQuery(
+                "SELECT p FROM Product p WHERE p.name = :name", Product.class);
+        query.setParameter("name", name);
+
+        List<Product> resultList = query.getResultList();
+        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
+    }
+
+    public List<Product> getProducts() {
+        TypedQuery<Product> query = entityManager.createQuery(
+                "SELECT p FROM Product p", Product.class);
+
+        return query.getResultList();
+    }
+
+    @Transactional
+    public void createProduct(Product product) {
+        entityManager.persist(product);
+    }
+
+    @Transactional
+    public void deleteProduct(Long id) {
+        Optional<Product> existingProduct = findById(id);
+        existingProduct.ifPresent(product -> {
+            entityManager.remove(product);
+            logger.info("Product with id {} deleted.", id);
+        });
+    }
+
+    public List<Product> searchProductsByName(String searchTerm) {
+        TypedQuery<Product> query = entityManager.createQuery(
+                "SELECT p FROM Product p WHERE p.name LIKE :searchTerm", Product.class
+        ).setParameter("searchTerm", "%" + searchTerm + "%");
+        List<Product> products = query.getResultList();
+        return products;
     }
 }
