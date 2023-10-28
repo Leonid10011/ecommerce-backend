@@ -28,7 +28,7 @@ public class ProductController {
 
     // Search for products by name
     @GET
-    @Path("/get/{name}")
+    @Path("/getByName/{name}")
     public Response getByName(@PathParam("name") String name) {
         return productService.getSearchName(name);
     }

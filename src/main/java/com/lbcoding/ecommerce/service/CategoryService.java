@@ -15,7 +15,9 @@ import jakarta.validation.*;
 import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 @ApplicationScoped
@@ -31,11 +33,11 @@ public class CategoryService {
      * @param id
      * @return Category Entity
      */
-    public Response getCategory(@PathParam("id") Long id) {
-        Category category = categoryRepository.findById(id);
+    public Response getCategoryById(Long id) {
+        Optional<Category> category = categoryRepository.findById(id);
 
-        if (category != null) {
-            CategoryDTO categoryDTO = category.toDTO();
+        if (category.isPresent()) {
+            CategoryDTO categoryDTO = category.get().toDTO();
             return Response.status(Response.Status.OK).entity(categoryDTO).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -46,11 +48,11 @@ public class CategoryService {
      * @param name
      * @return Category Entity
      */
-    public Response getCategory(@PathParam("name") String name) {
-        Category category = categoryRepository.findByName(name);
+    public Response getCategoryByName(String name) {
+        Optional<Category> category = categoryRepository.findByName(name);
 
-        if (category != null) {
-            CategoryDTO categoryDTO = category.toDTO();
+        if (category.isPresent()) {
+            CategoryDTO categoryDTO = category.get().toDTO();
             return Response.status(Response.Status.OK).entity(categoryDTO).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
@@ -74,9 +76,9 @@ public class CategoryService {
         }
 
 
-        Category existingCategory = categoryRepository.findByName(categoryDTO.getName());
+        Optional<Category> existingCategory = categoryRepository.findByName(categoryDTO.getName());
 
-        if (existingCategory != null) {
+        if (existingCategory.isPresent()) {
             return Response.status(Response.Status.CONFLICT).entity("Category already exists").build();
         }
 
@@ -101,7 +103,7 @@ public class CategoryService {
 
         if (!categories.isEmpty()) {
             List<CategoryDTO> categoryDTOList = categories.stream()
-                    .map(category -> category.toDTO())
+                    .map(Category::toDTO)
                     .collect(Collectors.toList());
 
             return Response.status(Response.Status.OK).entity(categoryDTOList).build();
@@ -117,9 +119,9 @@ public class CategoryService {
      * @return A success message
      */
     public Response deleteCategory(Long id) {
-        if (categoryRepository.findById(id) != null) {
+        Optional<Category> category = categoryRepository.findById(id);
+        if (category.isPresent()){
             categoryRepository.delete(id);
-
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("Category not found").build();

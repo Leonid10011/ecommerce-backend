@@ -7,9 +7,11 @@ import jakarta.persistence.EntityTransaction;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import org.jboss.resteasy.reactive.server.multipart.MultipartFormDataInput;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class CategoryRepository {
@@ -22,8 +24,18 @@ public class CategoryRepository {
      * @param id
      * @return
      */
-    public Category findById(Long id){
-        return entityManager.find(Category.class, id);
+    public Optional<Category> findById(Long id){
+
+        Optional<Category> category;
+
+        try {
+            Category result = entityManager.find(Category.class, id);
+            category = Optional.of(result);
+        } catch(Exception e){
+            category = Optional.empty();
+        }
+
+        return category.isEmpty() ? Optional.empty() : category;
     }
 
     /**
@@ -38,7 +50,8 @@ public class CategoryRepository {
 
         List<Category> categories = query.getResultList();
 
-        return categories;
+        return categories.isEmpty() ? null : categories;
+
     }
 
     /**
@@ -56,12 +69,9 @@ public class CategoryRepository {
      */
     @Transactional
     public void delete(Long id){
+        Optional<Category> category = findById(id);
 
-        Category category = entityManager.find(Category.class, id);
-
-        if(category != null){
-            entityManager.remove(category);
-        }
+        category.ifPresent(entityManager::remove);
     }
 
     /**
@@ -70,17 +80,20 @@ public class CategoryRepository {
      * @return
      */
     @Transactional
-    public Category findByName(String name) {
+    public Optional<Category> findByName(String name) {
         TypedQuery<Category> query = entityManager.createQuery(
                 "SELECT c FROM Category c WHERE c.name = :name", Category.class);
         query.setParameter("name", name);
 
-        List<Category> resultList = query.getResultList();
+        Optional<Category> category;
 
-        if (!resultList.isEmpty()) {
-            return resultList.get(0);
-        } else {
-            return null;
+        try {
+            Category result = query.getSingleResult();
+            category = Optional.of(result);
+        } catch( Exception e){
+            category = Optional.empty();
         }
+
+        return category.isEmpty() ? Optional.empty() : category;
     }
 }

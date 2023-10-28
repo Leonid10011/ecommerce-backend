@@ -47,7 +47,7 @@ public class ProductImageRepository {
             productImage = Optional.empty();
         }
 
-        return !productImage.isPresent() ? null : productImage;
+        return productImage.isEmpty() ? Optional.empty() : productImage;
     }
 
     @Transactional
@@ -64,7 +64,7 @@ public class ProductImageRepository {
             productImage = Optional.empty();
         }
 
-        return !productImage.isPresent() ? null : productImage;
+        return productImage.isEmpty() ? Optional.empty() : productImage;
     }
 
     @Transactional

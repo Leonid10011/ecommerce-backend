@@ -15,14 +15,15 @@ public class CategoryController {
 
     @GET
     @Path("/get/{id}")
-    public Response get(Long id){
-        return categoryService.getCategory(id);
+    public Response getById(@PathParam("id") Long id){
+        return categoryService.getCategoryById(id);
     }
 
     @GET
-    @Path("/get/{name}")
-    public Response get(String name){
-        return categoryService.getCategory(name);
+    @Path("/getByName/{name}")
+    public Response get(@PathParam("name") String name){
+
+        return categoryService.getCategoryByName(name);
     }
 
     @GET
@@ -36,12 +37,14 @@ public class CategoryController {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response create(CategoryDTO categoryDTO) {
+
         return categoryService.createCategory(categoryDTO);
     }
 
     @DELETE
-    @Path("/delete")
-    public Response delete(Long id){
+    @Path("/delete/{id}")
+    public Response delete(@PathParam("id") Long id){
+
         return categoryService.deleteCategory(id);
     }
 }
