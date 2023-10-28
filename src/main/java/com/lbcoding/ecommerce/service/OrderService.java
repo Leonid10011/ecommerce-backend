@@ -22,7 +22,9 @@ import jakarta.ws.rs.core.UriInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+
 @ApplicationScoped
 public class OrderService {
 
@@ -43,29 +45,24 @@ public class OrderService {
 
     @Inject
     UriInfo uriInfo;
+
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createOrder(OrderDTO orderDTO){
+    public Response createOrder(OrderDTO orderDTO) {
         Set<String> errorMessages = DTOValidator.validateDTO(orderDTO);
 
-        if(!errorMessages.isEmpty()){
+        if (!errorMessages.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
         }
 
-        Order existingOrder = orderRepository.getByUser(orderDTO.getUserId());
+        Optional<Order> existingOrder = orderRepository.getOrderByUser(orderDTO.getUserId());
 
-        if(existingOrder != null){
-            return Response.status(Response.Status.BAD_REQUEST).entity("Already exists.").build();
+        if (existingOrder.isPresent()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("Order already exists for this user.").build();
         }
 
-        Order order = new Order();
-
-        order.setUserId(orderDTO.getUserId());
-        order.setOrderDate(orderDTO.getOrderDate());
-        order.setStatus(orderDTO.getStatus());
-
+        Order order = createOrderFromDTO(orderDTO);
         orderRepository.create(order);
-
 
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         builder.path(Long.toString(order.getId()));
@@ -73,99 +70,92 @@ public class OrderService {
         return Response.created(builder.build()).entity(order).build();
     }
 
-    public Response getOrder(Long userId){
-        Order order = orderRepository.getByUser(userId);
+    private Order createOrderFromDTO(OrderDTO orderDTO) {
+        Order order = new Order();
+        order.setUserId(orderDTO.getUserId());
+        order.setOrderDate(orderDTO.getOrderDate());
+        order.setStatus(orderDTO.getStatus());
+        return order;
+    }
 
-        if(order != null){
-            return Response.status(Response.Status.OK).entity(order).build();
+    public Response getOrder(Long userId) {
+        Optional<Order> order = orderRepository.getOrderByUser(userId);
+
+        if (order.isPresent()) {
+            return Response.status(Response.Status.OK).entity(order.get()).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Order not found").build();
         }
-        else return Response.status(Response.Status.BAD_REQUEST).entity("Not Found").build();
     }
 
-    public Response deleteOrder(Long orderId){
-        Order order = orderRepository.get(orderId);
+    public Response deleteOrder(Long orderId) {
+        Optional<Order> order = orderRepository.getOrderById(orderId);
 
-        if(order != null){
-            orderRepository.delete(order.getId());
+        if (order.isPresent()) {
+            orderRepository.deleteOrder(order.get().getId());
             return Response.noContent().build();
-        } else return Response.status(Response.Status.BAD_REQUEST).entity("Cannot find orderId").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Order not found").build();
+        }
     }
 
-    /**
-     * @workflow Get OrderId in front end, then use Order id and product id to fetch addItem
-     * @param orderItemDTO
-     * @return
-     */
     @Transactional
-    public Response addItem(OrderItemDTO orderItemDTO){
-
+    public Response addItem(OrderItemDTO orderItemDTO) {
         Set<String> errorMessages = DTOValidator.validateDTO(orderItemDTO);
 
-        if(!errorMessages.isEmpty()){
+        if (!errorMessages.isEmpty()) {
             return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
         }
 
-        OrderItem existingOrderItem = orderItemRepository.getByProduct(orderItemDTO.getProductId());
+        Optional<OrderItem> existingOrderItem = orderItemRepository.getOrderItemByProductId(orderItemDTO.getProductId());
 
-
-        if(existingOrderItem != null){
+        if (existingOrderItem.isPresent()) {
             inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId(), false);
-
             return Response.status(Response.Status.OK).entity("Updated quantity").build();
         } else {
-            OrderItem orderItem = new OrderItem();
-
-            orderItem.setOrderId(orderItemDTO.getOrderId());
-            orderItem.setProductId(orderItemDTO.getProductId());
-            orderItem.setQuantity(orderItemDTO.getQuantity());
-            orderItem.setPrice(orderItemDTO.getPrice());
-
+            OrderItem orderItem = createOrderItemFromDTO(orderItemDTO);
             orderItemRepository.create(orderItem);
 
             UriBuilder builder = uriInfo.getAbsolutePathBuilder();
             builder.build(Long.toString(orderItem.getId()));
 
             return Response.created(builder.build()).entity(orderItem).build();
-
         }
-
-
-
     }
 
-    /**
-     * @todo Maybe remove list from reposity into single item.
-     * @param orderItemId
-     * @return
-     */
+    private OrderItem createOrderItemFromDTO(OrderItemDTO orderItemDTO) {
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrderId(orderItemDTO.getOrderId());
+        orderItem.setProductId(orderItemDTO.getProductId());
+        orderItem.setQuantity(orderItemDTO.getQuantity());
+        orderItem.setPrice(orderItemDTO.getPrice());
+        return orderItem;
+    }
+
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response removeItem(Long orderItemId){
-        OrderItem orderItem = orderItemRepository.getbById(orderItemId);
+    public Response removeItem(Long orderItemId) {
+        Optional<OrderItem> orderItem = orderItemRepository.getOrderItemById(orderItemId);
 
-        if(orderItem != null){
-            orderItemRepository.delete(orderItem.getId());
-
+        if (orderItem.isPresent()) {
+            orderItemRepository.delete(orderItem.get().getId());
             return Response.noContent().build();
         } else {
-            return Response.status(Response.Status.BAD_REQUEST).entity("Not found").build();
+            return Response.status(Response.Status.NOT_FOUND).entity("Order item not found").build();
         }
     }
 
     @Transactional
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response getItems(Long orderId){
-        List<OrderItem> orderItemList = orderItemRepository.get(orderId);
+    public Response getItems(Long orderId) {
+        List<OrderItem> orderItemList = orderItemRepository.getOrderItemsByOrderId(orderId);
 
-        List<ProductDTO> resItemList = new ArrayList<ProductDTO>();
-
-        if(!orderItemList.isEmpty()){
-            orderItemList.stream().forEach(item -> {
+        if (!orderItemList.isEmpty()) {
+            List<ProductDTO> resItemList = new ArrayList<>();
+            orderItemList.forEach(item -> {
                 resItemList.add(productService.getByProductId(item.getProductId()).readEntity(ProductDTO.class));
             });
             return Response.status(Response.Status.OK).entity(resItemList).build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("No order items found").build();
         }
-
-        return Response.status(Response.Status.BAD_REQUEST).build();
     }
 }

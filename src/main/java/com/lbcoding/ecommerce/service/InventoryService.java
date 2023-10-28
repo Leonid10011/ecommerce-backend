@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.service;
 
-import com.lbcoding.ecommerce.dto.CategoryDTO;
 import com.lbcoding.ecommerce.dto.InventoryDTO;
 import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.model.Inventory;

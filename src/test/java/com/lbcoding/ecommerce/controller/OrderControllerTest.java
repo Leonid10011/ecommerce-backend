@@ -38,7 +38,6 @@ public class OrderControllerTest {
 
         // Create a Test Product for test Purposes
         ProductDTO productWithURLDTO = new ProductDTO(
-                1801L,
                 "Test",
                 "For Testing",
                 99.99,
@@ -93,7 +92,9 @@ public class OrderControllerTest {
                 .delete("/order/deleteItem/" + orderItemId);
 
         assertEquals(204, response4.getStatusCode());
-
+        // delete the product
+        Response response5 = RestAssured.given()
+                .delete("/product/delete/" + productId);
         // Remove order
         Long id = response.jsonPath().getLong("id");
 

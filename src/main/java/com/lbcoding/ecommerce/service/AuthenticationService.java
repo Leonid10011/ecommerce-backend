@@ -1,15 +1,12 @@
 package com.lbcoding.ecommerce.service;
 import com.lbcoding.ecommerce.dto.CredentialDTO;
-import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.model.User;
 import com.lbcoding.ecommerce.repository.UserRepository;
 import com.lbcoding.ecommerce.security.JwtUtils;
 import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.core.Response;
-import org.eclipse.microprofile.jwt.JsonWebToken;
 
 import java.util.HashSet;
 import java.util.Optional;

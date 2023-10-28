@@ -8,77 +8,57 @@ import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class OrderItemRepository {
     @Inject
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Transactional
-    public void create(OrderItem orderItem){
+    public void create(OrderItem orderItem) {
         entityManager.persist(orderItem);
     }
 
     @Transactional
-    public void delete(Long id){
+    public void delete(Long id) {
         OrderItem orderItem = entityManager.find(OrderItem.class, id);
-        if(orderItem != null){
+        if (orderItem != null) {
             entityManager.remove(orderItem);
         }
     }
 
     @Transactional
-    public List<OrderItem> get(){
+    public List<OrderItem> getAllOrderItems() {
         TypedQuery<OrderItem> query = entityManager.createQuery(
-                "SELECT oi FROM OrderItem io", OrderItem.class
+                "SELECT oi FROM OrderItem oi", OrderItem.class
         );
 
-        List<OrderItem> orderItemList = query.getResultList();
-
-        if(!orderItemList.isEmpty()){
-            return orderItemList;
-        }
-        else return null;
+        return query.getResultList();
     }
 
     @Transactional
-    public List<OrderItem> get(Long orderId){
+    public List<OrderItem> getOrderItemsByOrderId(Long orderId) {
         TypedQuery<OrderItem> query = entityManager.createQuery(
-                "SELECT oi FROM OrderItem oi WHERE oi.orderId = : orderId", OrderItem.class
+                "SELECT oi FROM OrderItem oi WHERE oi.orderId = :orderId", OrderItem.class
         ).setParameter("orderId", orderId);
 
-        List<OrderItem> orderItemList = query.getResultList();
-
-        if(!orderItemList.isEmpty()){
-            return orderItemList;
-        } else {
-            return null;
-        }
+        return query.getResultList();
     }
 
     @Transactional
-    public OrderItem getbById(Long id){
+    public Optional<OrderItem> getOrderItemById(Long id) {
         OrderItem orderItem = entityManager.find(OrderItem.class, id);
-
-        if(orderItem != null){
-            return orderItem;
-        }else {
-            return null;
-        }
+        return Optional.ofNullable(orderItem);
     }
 
     @Transactional
-    public OrderItem getByProduct(Long productId){
+    public Optional<OrderItem> getOrderItemByProductId(Long productId) {
         TypedQuery<OrderItem> query = entityManager.createQuery(
-                "SELECT oi FROM OrderItem oi WHERE oi.productId = : productId", OrderItem.class
+                "SELECT oi FROM OrderItem oi WHERE oi.productId = :productId", OrderItem.class
         ).setParameter("productId", productId);
 
         List<OrderItem> orderItemList = query.getResultList();
-
-        if(!orderItemList.isEmpty()){
-            return orderItemList.get(0);
-        } else {
-            return null;
-        }
+        return orderItemList.isEmpty() ? Optional.empty() : Optional.of(orderItemList.get(0));
     }
 }

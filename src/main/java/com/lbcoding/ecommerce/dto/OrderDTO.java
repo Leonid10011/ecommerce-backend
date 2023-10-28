@@ -1,5 +1,10 @@
 package com.lbcoding.ecommerce.dto;
 
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
+
 import java.util.Date;
 
 /**
@@ -8,11 +13,18 @@ import java.util.Date;
  * @params String Status;
  */
 public class OrderDTO {
+    @Positive
     private Long id;
-    private Long userId;
-    private Date date;
-    private String status;
 
+    @Positive
+    private Long userId;
+
+    @NotNull
+    @Past
+    private Date date;
+
+    @Size(min = 1, max = 255)
+    private String status;
     public OrderDTO(){
 
     }
