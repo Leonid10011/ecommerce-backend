@@ -1,9 +1,6 @@
 package com.lbcoding.ecommerce.dto;
 
-import com.lbcoding.ecommerce.model.Product;
-
 import jakarta.validation.constraints.*;
-import org.hibernate.validator.constraints.URL;
 
 /**
  * @params Long id

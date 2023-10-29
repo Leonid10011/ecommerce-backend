@@ -80,7 +80,7 @@ public class ProductService {
         Optional<ProductImage> productImage = productImageRepository.getProductImageByProduct(product.getId());
 
         int quantity = (inventory != null) ? inventory.getQuantity() : 0;
-        String imageURL = (productImage != null) ? productImage.get().getImageURL() : "Not yet";
+        String imageURL = (productImage.isPresent()) ? productImage.get().getImageURL() : "Not yet";
 
         return new ProductDTO(
                 product.getId(),
@@ -133,7 +133,6 @@ public class ProductService {
 
         Response quantityResponse;
         Response imageResponse;
-        System.out.println("Here ");
 
         if (existingInventory != null) {
             quantityResponse = inventoryService.updateQuantity(productDTO.getQuantity(), existingInventory.getId(), true);
@@ -144,7 +143,7 @@ public class ProductService {
 
         Optional<ProductImage> existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
 
-        if (existingImage != null) {
+        if (existingImage.isPresent()) {
             imageResponse = Response.status(Response.Status.OK).build();
         } else {
             ProductImageDTO productImageDTO = productImageService.createProductImageDTO(productDTO);
@@ -159,10 +158,9 @@ public class ProductService {
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         builder.build(Long.toString(product.getId()));
 
-        ProductDTO productDTOResponse = productDTO;
-        productDTOResponse.setId(product.getId());
+        productDTO.setId(product.getId());
 
-        return Response.created(builder.build()).entity(productDTOResponse).build();
+        return Response.created(builder.build()).entity(productDTO).build();
     }
 
     // Search for products by name

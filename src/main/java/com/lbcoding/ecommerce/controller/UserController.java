@@ -35,7 +35,7 @@ public class UserController {
     }
 
     @POST
-    @Path("/create")
+    @Path("/")
     public Response create(UserDTO userDTO){
         return userService.createUser(userDTO);
     }

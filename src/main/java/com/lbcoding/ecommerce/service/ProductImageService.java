@@ -31,7 +31,7 @@ public class ProductImageService {
 
         Optional<ProductImage> existingProductImage = productImageRepository.getProductImageByURL(productImageDTO.getImageURL());
 
-        if (existingProductImage != null) {
+        if (existingProductImage.isPresent()) {
             return Response.status(Response.Status.CONFLICT).entity("ProductImageUrl already exists.").build();
         }
 

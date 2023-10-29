@@ -3,11 +3,13 @@ package com.lbcoding.ecommerce.repository;
 import com.lbcoding.ecommerce.model.CartItem;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class CartItemRepository {
@@ -25,57 +27,57 @@ public class CartItemRepository {
                 "SELECT c FROM CartItem c", CartItem.class
         );
 
-        List<CartItem> cartItemList = query.getResultList();
+        return query.getResultList();
+    }
+    @Transactional
+    public void update(Long cartItemId, int quantity){
+        Optional<CartItem> cartItem = findById(cartItemId);
 
-        if(!cartItemList.isEmpty())
-            return cartItemList;
-        else
-            return null;
+        if(cartItem.isPresent()){
+            cartItem.get().setQuantity(cartItem.get().getQuantity() + quantity);
+            entityManager.merge(cartItem);
+            entityManager.getTransaction().commit();
+        }
+    }
+    @Transactional
+    public Optional<CartItem> findById(Long id){
+        return Optional.ofNullable(entityManager.find(CartItem.class, id));
     }
 
     @Transactional
-    public CartItem get(Long id){
-        CartItem cartItem = entityManager.find(CartItem.class, id);
-
-        return cartItem;
-    }
-
-    @Transactional
-    public CartItem getByProduct(Long id){
+    public List<CartItem> getByProduct(Long id){
         TypedQuery<CartItem> query = entityManager.createQuery(
                 "SELECT c FROM CartItem c WHERE c.productId = :id", CartItem.class
         ). setParameter("id", id);
 
-        List<CartItem> cartItemList = query.getResultList();
-
-        if(!cartItemList.isEmpty()){
-            return cartItemList.get(0);
-        } else {
-            return null;
-        }
+        return query.getResultList();
     }
 
     @Transactional
-    public CartItem getByUser(Long id){
+    public List<CartItem> getByUser(Long id){
         TypedQuery<CartItem> query = entityManager.createQuery(
                 "SELECT c FROM CartItem c WHERE c.userId = :id", CartItem.class
         ). setParameter("id", id);
 
-        List<CartItem> cartItemList = query.getResultList();
-
-        if(!cartItemList.isEmpty()){
-            return cartItemList.get(0);
-        } else {
-            return null;
-        }
+        return query.getResultList();
     }
+    public Optional<CartItem> findByUserAndProduct(Long userId, Long productId){
+        TypedQuery<CartItem> query = entityManager.createQuery(
+                "SELECT ci FROM CartItem ci WHERE ci.userId = :userId AND ci.productId = :productId", CartItem.class
+        ).setParameter("userId", userId)
+                .setParameter("productId", productId);
 
+        try{
+
+            return Optional.ofNullable(query.getSingleResult());
+        } catch( NoResultException e){
+            return Optional.empty();
+        }
+
+    }
     @Transactional
     public void delete(Long id){
-        CartItem cartItem = entityManager.find(CartItem.class, id);
-
-        if(cartItem != null){
-            entityManager.remove(cartItem);
-        }
+        Optional<CartItem> cartItem = findById(id);
+        cartItem.ifPresent(entityManager::remove);
     }
 }

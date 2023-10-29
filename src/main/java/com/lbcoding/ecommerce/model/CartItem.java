@@ -13,8 +13,16 @@ public class CartItem {
     private Long userId;
     private Long productId;
 
+    private int quantity;
+
     public CartItem(){
 
+    }
+
+    public CartItem(Long userId, Long productId, int quantity) {
+        this.userId = userId;
+        this.productId = productId;
+        this.quantity = quantity;
     }
 
     /**
@@ -22,11 +30,13 @@ public class CartItem {
      * @param id
      * @param userId
      * @param productId
+     * @param quantity
      */
-    public CartItem(Long id, Long userId, Long productId) {
+    public CartItem(Long id, Long userId, Long productId, int quantity) {
         this.id = id;
         this.userId = userId;
         this.productId = productId;
+        this.quantity = quantity;
     }
 
     public Long getId() {
@@ -53,10 +63,20 @@ public class CartItem {
         this.productId = productId;
     }
 
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+
     public CartItemDTO toDTO(){
         CartItemDTO cartItemDTO = new CartItemDTO(
                 this.userId,
-                this.productId
+                this.productId,
+                this.quantity
         );
         return cartItemDTO;
     }

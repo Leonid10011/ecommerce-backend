@@ -28,7 +28,7 @@ public class UserControllerTest {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(user)
-                .post("/user/create");
+                .post("/user/");
 
         assertEquals(201, response.getStatusCode());
 
@@ -55,7 +55,7 @@ public class UserControllerTest {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(user)
-                .post("/user/create");
+                .post("/user/");
 
         assertEquals(201, response.getStatusCode());
 

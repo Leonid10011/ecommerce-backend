@@ -1,5 +1,8 @@
 package com.lbcoding.ecommerce.dto;
 
+/**
+ *
+ */
 public class UserDTO {
     private String username;
     private String email;
