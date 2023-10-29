@@ -96,7 +96,7 @@ The API provides endpoints for interacting with different aspects of the E-comme
 - `/transaction`: Transaction creation.
 - `/usercoupon`: UserCoupon creation.
 
-For detailed information on each endpoint and its functionality, please refer to the project's API documentation.
+For detailed information on each endpoint and its functionality, please refer to the project's API documentation in the comments (todo).
 
 ## Frontend Repository
 
