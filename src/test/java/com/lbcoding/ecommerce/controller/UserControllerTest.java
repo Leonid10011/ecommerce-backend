@@ -40,6 +40,9 @@ public class UserControllerTest {
         assertEquals(204, response1.getStatusCode());
     }
 
+    /**
+     * Create full profile and delete it.
+     */
     @Test
     public void testUserProfile(){
         UserDTO user= new UserDTO(

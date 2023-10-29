@@ -43,3 +43,5 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 
 src/jwt/
+
+src/main/resources/application.properties
