@@ -30,7 +30,7 @@ The project is built using the following technologies and tools:
 
 - **Other libraries and dependencies:** Various Java libraries and packages to facilitate routing, validation, and more.
 ## TODO:  
-### Cleaning Code for all Components
+### Cleaning Code for all Components and writing tests
 **TODO clean code:**
 
 - [x] Address
@@ -57,6 +57,25 @@ To run this project locally or deploy it to a server, follow these steps:
 
 2. Configure your MySQL database and update the database connection settings in the project.
 
+**application.properties that I use:  **
+
+| Property                                | Value                                       |
+|-----------------------------------------|---------------------------------------------|
+| quarkus.http.port                       | `<port>`                                    |
+| quarkus.datasource.jdbc.url             | `jdbc:mysql://localhost:3306/<databasename>` |
+| quarkus.datasource.username              | `<username>`                                |
+| quarkus.datasource.password              | `<password>`                                |
+| quarkus.hibernate-orm.dialect           | `org.hibernate.dialect.MySQLDialect`      |
+| quarkus.hibernate-orm.database.generation| `update`                                    |
+| smallrye.jwt.enabled                    | `true`                                      |
+| mp.jwt.verify.publickey.location         | `src/jwt/publicKey.pem`                     |
+| mp.jwt.verify.issuer                    | `my-issuer`                                 |
+| smallrye.jwt.sign.key.location           | `src/jwt/privateKey.pem`                    |
+| smallrye.jwt.issuer                     | `my-app`                                   |
+| smallrye.jwt.audience                   | `my-app`                                   |
+| smallrye.jwt.duration                   | `3600`                                      |
+
+
 3. Configure environment variables for sensitive information, such as authentication secrets.
 
 4. Build and run the Quarkus application.
@@ -70,8 +89,14 @@ The API provides endpoints for interacting with different aspects of the E-comme
 - `/users`: User profiles and addresses.
 - `/product`: Product details and management.
 - `/order`: Order creation, order history, and transactions.
+- `/category`: Category creation for products. Will be used to add new categories
+- `/discount`: Discount creation.
+- `/orderhistory`: OrderHistory creation.
+- `/rating`: Rating creation.
+- `/transaction`: Transaction creation.
+- `/usercoupon`: UserCoupon creation.
 
-For detailed information on each endpoint and its functionality, please refer to the project's API documentation.
+For detailed information on each endpoint and its functionality, please refer to the project's API documentation in the comments (todo).
 
 ## Frontend Repository
 
