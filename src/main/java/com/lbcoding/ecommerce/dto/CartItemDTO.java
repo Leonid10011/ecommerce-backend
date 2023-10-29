@@ -8,6 +8,11 @@ public class CartItemDTO {
 
     }
 
+    /**
+     *
+     * @param userId
+     * @param productId
+     */
     public CartItemDTO(Long userId, Long productId) {
         this.userId = userId;
         this.productId = productId;

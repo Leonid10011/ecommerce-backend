@@ -25,6 +25,13 @@ public class AddressDTO {
 
     }
 
+    /**
+     *
+     * @param street
+     * @param city
+     * @param zipCode
+     * @param country
+     */
     public AddressDTO(String street, String city, String zipCode, String country) {
         this.street = street;
         this.city = city;

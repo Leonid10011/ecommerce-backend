@@ -14,6 +14,10 @@ public class CategoryDTO {
 
     }
 
+    /**
+     *
+     * @param name
+     */
     public CategoryDTO(String name) {
         this.name = name;
     }

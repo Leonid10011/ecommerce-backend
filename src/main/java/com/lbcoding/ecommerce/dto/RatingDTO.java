@@ -17,6 +17,14 @@ public class RatingDTO {
 
     }
 
+    /**
+     *
+     * @param rating
+     * @param text
+     * @param date
+     * @param userId
+     * @param productId
+     */
     public RatingDTO(int rating, String text, Date date, Long userId, Long productId) {
         this.rating = rating;
         this.text = text;

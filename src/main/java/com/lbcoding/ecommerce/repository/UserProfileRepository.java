@@ -3,6 +3,7 @@ package com.lbcoding.ecommerce.repository;
 import com.lbcoding.ecommerce.model.UserProfile;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -31,7 +32,11 @@ public class UserProfileRepository {
                 "SELECT up FROM UserProfile up WHERE up.userId = :userId", UserProfile.class
         ).setParameter("userId", userId);
 
-        return Optional.ofNullable(query.getSingleResult());
+        try{
+            return Optional.ofNullable(query.getSingleResult());
+        } catch (NoResultException e){
+            return Optional.empty();
+        }
     }
 
     @Transactional

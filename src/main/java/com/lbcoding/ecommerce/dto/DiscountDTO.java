@@ -14,6 +14,15 @@ public class DiscountDTO {
 
     }
 
+    /**
+     *
+     * @param code
+     * @param description
+     * @param discountType
+     * @param value
+     * @param startDate
+     * @param endDate
+     */
     public DiscountDTO(String code, String description, String discountType, double value, Date startDate, Date endDate) {
         this.code = code;
         this.description = description;

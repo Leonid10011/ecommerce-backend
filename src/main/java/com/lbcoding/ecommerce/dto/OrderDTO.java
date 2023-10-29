@@ -29,12 +29,25 @@ public class OrderDTO {
 
     }
 
+    /**
+     *
+     * @param userId
+     * @param date
+     * @param status
+     */
     public OrderDTO(Long userId, Date date, String status) {
         this.userId = userId;
         this.date = date;
         this.status = status;
     }
 
+    /**
+     *
+     * @param id
+     * @param userId
+     * @param orderDate
+     * @param status
+     */
     public OrderDTO(Long id, Long userId, Date orderDate, String status) {
         this.id = id;
         this.userId = userId;

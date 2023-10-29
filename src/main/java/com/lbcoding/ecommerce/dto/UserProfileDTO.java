@@ -2,7 +2,7 @@ package com.lbcoding.ecommerce.dto;
 
 
 
-import java.util.Date;
+import java.time.LocalDate;
 
 public class UserProfileDTO {
 
@@ -11,13 +11,21 @@ public class UserProfileDTO {
     private Long addressId;
     private String forename;
     private String surname;
-    private Date birthday;
+    private LocalDate birthday;
 
     public UserProfileDTO(){
 
     }
 
-    public UserProfileDTO(Long userId, Long addressId, String forename, String surname, Date birthday) {
+    /**
+     *
+     * @param userId
+     * @param addressId
+     * @param forename
+     * @param surname
+     * @param birthday
+     */
+    public UserProfileDTO(Long userId, Long addressId, String forename, String surname, LocalDate birthday) {
         this.userId = userId;
         this.addressId = addressId;
         this.forename = forename;
@@ -65,11 +73,11 @@ public class UserProfileDTO {
         this.surname = surname;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 }

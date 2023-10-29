@@ -133,6 +133,8 @@ public class UserService {
 
         UserProfile userProfile = createUserProfile(userProfileDTO, address.get());
 
+        userProfileRepository.create(userProfile);
+
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
         builder.build(Long.toString(userProfile.getId()));
 
@@ -148,6 +150,15 @@ public class UserService {
             return Response.status(Response.Status.NOT_FOUND).build();
     }
 
+    public Response deleteUserProfile(Long profileId){
+        Optional<UserProfile> userProfile = userProfileRepository.findById(profileId);
+        if(userProfile.isPresent()){
+            userProfileRepository.delete(profileId);
+            return Response.noContent().build();
+        }
+
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
     public UserProfile createUserProfile(UserProfileDTO userProfileDTO, Address address){
         return new UserProfile(
                 userProfileDTO.getUserId(),

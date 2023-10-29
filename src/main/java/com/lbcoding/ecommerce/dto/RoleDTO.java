@@ -7,6 +7,10 @@ public class RoleDTO {
 
     }
 
+    /**
+     *
+     * @param name
+     */
     public RoleDTO(String name) {
         this.name = name;
     }

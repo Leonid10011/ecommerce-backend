@@ -4,18 +4,19 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Entity
 public class UserProfile {
 
     @Id
     @GeneratedValue
-    private Long Id;
+    private Long id;
     private Long userId;
     private Long addressId;
     private String forename;
     private String surname;
-    private Date birthday;
+    private LocalDate birthday;
 
     public UserProfile(){
 
@@ -29,7 +30,7 @@ public class UserProfile {
      * @param surname
      * @param birthday
      */
-    public UserProfile(Long userId, Long addressId, String forename, String surname, Date birthday) {
+    public UserProfile(Long userId, Long addressId, String forename, String surname, LocalDate birthday) {
         this.userId = userId;
         this.addressId = addressId;
         this.forename = forename;
@@ -46,8 +47,8 @@ public class UserProfile {
      * @param surname
      * @param birthday
      */
-    public UserProfile(Long id, Long userId, Long addressId, String forename, String surname, Date birthday) {
-        Id = id;
+    public UserProfile(Long id, Long userId, Long addressId, String forename, String surname, LocalDate birthday) {
+        this.id = id;
         this.userId = userId;
         this.addressId = addressId;
         this.forename = forename;
@@ -56,11 +57,11 @@ public class UserProfile {
     }
 
     public Long getId() {
-        return Id;
+        return id;
     }
 
     public void setId(Long id) {
-        Id = id;
+        this.id = id;
     }
 
     public Long getUserId() {
@@ -95,11 +96,11 @@ public class UserProfile {
         this.surname = surname;
     }
 
-    public Date getBirthday() {
+    public LocalDate getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(LocalDate birthday) {
         this.birthday = birthday;
     }
 }

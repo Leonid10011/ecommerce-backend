@@ -19,6 +19,13 @@ public class OrderItemDTO {
 
     }
 
+    /**
+     *
+     * @param orderId
+     * @param productId
+     * @param quantity
+     * @param price
+     */
     public OrderItemDTO(Long orderId, Long productId, Integer quantity, Double price) {
         this.orderId = orderId;
         this.productId = productId;

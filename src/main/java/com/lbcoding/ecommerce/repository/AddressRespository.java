@@ -38,8 +38,7 @@ public class AddressRespository {
                 .setParameter("zipCode", address.getZipCode());
 
         try {
-            Optional<Address> address1 = Optional.ofNullable(query.getSingleResult());
-            return address1;
+            return Optional.ofNullable(query.getSingleResult());
         } catch ( NoResultException e){
             return Optional.empty();
         }

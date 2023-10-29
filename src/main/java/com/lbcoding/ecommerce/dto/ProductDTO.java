@@ -42,6 +42,15 @@ public class ProductDTO {
 
     }
 
+    /**
+     *
+     * @param name
+     * @param description
+     * @param price
+     * @param categoryID
+     * @param quantity
+     * @param imgURL
+     */
     public ProductDTO(String name, String description, Double price, Long categoryID, int quantity,  String imgURL) {
         this.name = name;
         this.description = description;
@@ -51,6 +60,16 @@ public class ProductDTO {
         this.imgURL = imgURL;
     }
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param price
+     * @param categoryID
+     * @param quantity
+     * @param imgURL
+     */
     public ProductDTO(Long id, String name, String description, Double price, Long categoryID, int quantity, String imgURL) {
         this.id = id;
         this.name = name;

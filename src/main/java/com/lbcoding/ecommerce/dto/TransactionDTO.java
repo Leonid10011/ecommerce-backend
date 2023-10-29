@@ -12,6 +12,13 @@ public class TransactionDTO {
 
     }
 
+    /**
+     *
+     * @param orderId
+     * @param transactionDate
+     * @param paymentMethod
+     * @param amount
+     */
     public TransactionDTO(Long orderId, Date transactionDate, String paymentMethod, double amount) {
         this.orderId = orderId;
         this.transactionDate = transactionDate;

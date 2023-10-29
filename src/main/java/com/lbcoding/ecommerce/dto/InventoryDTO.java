@@ -18,6 +18,11 @@ public class InventoryDTO {
 
     }
 
+    /**
+     *
+     * @param quantity
+     * @param productID
+     */
     public InventoryDTO(int quantity, Long productID) {
         this.quantity = quantity;
         this.productID = productID;

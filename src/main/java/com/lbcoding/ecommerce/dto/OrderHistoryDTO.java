@@ -8,6 +8,11 @@ public class OrderHistoryDTO {
 
     }
 
+    /**
+     *
+     * @param userId
+     * @param orderId
+     */
     public OrderHistoryDTO(Long userId, Long orderId) {
         this.userId = userId;
         this.orderId = orderId;

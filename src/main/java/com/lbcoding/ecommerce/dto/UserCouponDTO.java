@@ -1,6 +1,6 @@
 package com.lbcoding.ecommerce.dto;
 
-public class UserCouponDTO {
+public class    UserCouponDTO {
     private Long userId;
     private Long discountId;
 
@@ -8,6 +8,11 @@ public class UserCouponDTO {
 
     }
 
+    /**
+     *
+     * @param userId
+     * @param discountId
+     */
     public UserCouponDTO(Long userId, Long discountId) {
         this.userId = userId;
         this.discountId = discountId;

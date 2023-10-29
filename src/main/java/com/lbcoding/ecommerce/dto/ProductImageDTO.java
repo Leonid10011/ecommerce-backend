@@ -7,7 +7,7 @@ import io.smallrye.common.constraint.NotNull;
  * @params Long productID
  * @params String imageURL
  */
-public class ProductImageDTO {
+public class    ProductImageDTO {
     @NotNull
     private Long productID;
     @NotNull
@@ -17,6 +17,11 @@ public class ProductImageDTO {
 
     }
 
+    /**
+     *
+     * @param productID
+     * @param imageURL
+     */
     public ProductImageDTO(Long productID, String imageURL) {
         this.productID = productID;
         this.imageURL = imageURL;

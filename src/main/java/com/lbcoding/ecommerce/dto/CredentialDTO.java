@@ -8,6 +8,11 @@ public class CredentialDTO {
 
     }
 
+    /**
+     *
+     * @param username
+     * @param password
+     */
     public CredentialDTO(String username, String password) {
         this.username = username;
         this.password = password;

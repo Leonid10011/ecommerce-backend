@@ -33,7 +33,11 @@ public class UserRepository {
                 "SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username);
 
-        return Optional.ofNullable(query.getSingleResult());
+        try{
+            return Optional.ofNullable(query.getSingleResult());
+        } catch( NoResultException e){
+            return Optional.empty();
+        }
     }
 
     /**

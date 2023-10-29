@@ -10,6 +10,13 @@ public class UserDTO {
 
     }
 
+    /**
+     *
+     * @param username
+     * @param email
+     * @param roleId
+     * @param password
+     */
     public UserDTO(String username, String email, Long roleId, String password) {
         this.username = username;
         this.email = email;
