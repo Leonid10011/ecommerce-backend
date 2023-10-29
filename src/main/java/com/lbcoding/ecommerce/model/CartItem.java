@@ -17,6 +17,12 @@ public class CartItem {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param userId
+     * @param productId
+     */
     public CartItem(Long id, Long userId, Long productId) {
         this.id = id;
         this.userId = userId;

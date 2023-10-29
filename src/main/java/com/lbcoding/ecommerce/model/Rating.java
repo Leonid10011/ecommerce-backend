@@ -22,6 +22,15 @@ public class Rating {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param rating
+     * @param text
+     * @param date
+     * @param userId
+     * @param productId
+     */
     public Rating(Long id, int rating, String text, Date date, Long userId, Long productId) {
         this.id = id;
         this.rating = rating;

@@ -4,10 +4,12 @@ import com.lbcoding.ecommerce.model.Address;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
 import java.lang.reflect.Type;
+import java.util.Optional;
 
 @ApplicationScoped
 public class AddressRespository {
@@ -20,14 +22,28 @@ public class AddressRespository {
     }
 
     @Transactional
-    public Address get(Long id){
+    public Optional<Address> findById(Long id){
         Address address = entityManager.find(Address.class, id);
-        if(address != null)
-            return address;
-        else
-            return null;
+        return Optional.ofNullable(address);
     }
 
+    @Transactional
+    public Optional<Address> findByAddress(Address address){
+        TypedQuery<Address> query = entityManager.createQuery(
+                "SELECT a from Address a WHERE a.city = :city AND a.country = :country AND a.street = :street AND a.zipCode = :zipCode", Address.class
+        )
+                .setParameter("city", address.getCity())
+                .setParameter("country", address.getCountry())
+                .setParameter("street", address.getStreet())
+                .setParameter("zipCode", address.getZipCode());
+
+        try {
+            Optional<Address> address1 = Optional.ofNullable(query.getSingleResult());
+            return address1;
+        } catch ( NoResultException e){
+            return Optional.empty();
+        }
+    }
     @Transactional
     public void delete(Long id){
         Address address = entityManager.find(Address.class, id);

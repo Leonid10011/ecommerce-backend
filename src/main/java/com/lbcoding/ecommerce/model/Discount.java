@@ -23,6 +23,16 @@ public class Discount {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param code
+     * @param description
+     * @param discountType
+     * @param value
+     * @param startDate
+     * @param endDate
+     */
     public Discount(Long id, String code, String description, String discountType, double value, Date startDate, Date endDate) {
         this.id = id;
         this.code = code;

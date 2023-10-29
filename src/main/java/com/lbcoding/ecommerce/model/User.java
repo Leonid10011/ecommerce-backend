@@ -20,10 +20,6 @@ public class User {
     }
 
     private String username;
-    private String forename;
-    private String surname;
-    private Long address;
-    private String phone;
     private String email;
     private Long roleId;
     private String password;
@@ -32,13 +28,31 @@ public class User {
 
     }
 
-    public User(Long id, String username, String forename, String surname, Long address, String phone, String email, Long roleId, String password) {
+    /**
+     *
+     * @param username
+     * @param email
+     * @param roleId
+     * @param password
+     */
+    public User(String username, String email, Long roleId, String password) {
+        this.username = username;
+        this.email = email;
+        this.roleId = roleId;
+        this.password = password;
+    }
+
+    /**
+     *
+     * @param id
+     * @param username
+     * @param email
+     * @param roleId
+     * @param password
+     */
+    public User(Long id, String username, String email, Long roleId, String password) {
         this.id = id;
         this.username = username;
-        this.forename = forename;
-        this.surname = surname;
-        this.address = address;
-        this.phone = phone;
         this.email = email;
         this.roleId = roleId;
         this.password = password;
@@ -50,38 +64,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getForename() {
-        return forename;
-    }
-
-    public void setForename(String forename) {
-        this.forename = forename;
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public Long getAddress() {
-        return address;
-    }
-
-    public void setAddress(Long address) {
-        this.address = address;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 
     public String getEmail() {
@@ -109,21 +91,12 @@ public class User {
     }
 
     //To DTO Konversion
-    public UserDTO toDTO(AddressDTO address){
-        UserDTO userDTO = new UserDTO(
-                this.username,
-                this.forename,
-                this.surname,
-                address.getCity(),
-                address.getCountry(),
-                address.getStreet(),
-                address.getZipCode(),
-                this.phone,
-                this.email,
-                this.roleId,
-                this.password
+    public UserDTO toDTO(){
+        return new UserDTO(
+            getUsername(),
+            getEmail(),
+            getRoleId(),
+            getPassword()
         );
-
-        return userDTO;
     }
 }

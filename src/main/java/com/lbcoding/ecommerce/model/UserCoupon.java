@@ -18,6 +18,12 @@ public class UserCoupon {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param userId
+     * @param discountId
+     */
     public UserCoupon(Long id, Long userId, Long discountId) {
         this.id = id;
         this.userId = userId;

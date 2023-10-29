@@ -40,8 +40,8 @@ public class UserController {
     }
 
     @DELETE
-    @Path("/delete")
-    public Response delete(Long id){
+    @Path("/delete/{id}")
+    public Response delete(@PathParam("id") Long id){
         return userService.deleteUser(id);
     }
 

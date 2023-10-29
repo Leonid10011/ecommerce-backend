@@ -37,8 +37,8 @@ public class UserCouponController {
     }
 
     @DELETE
-    @Path("/delete")
-    public Response delete(Long id) {
+    @Path("/delete/{id}")
+    public Response delete(@PathParam("id") Long id) {
         return userCouponService.delete(id);
     }
 }

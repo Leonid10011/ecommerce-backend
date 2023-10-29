@@ -6,7 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 
 @Entity
-public class OrderHistory {
+public class    OrderHistory {
     @Id
     @GeneratedValue
     private Long id;
@@ -17,6 +17,12 @@ public class OrderHistory {
 
     }
 
+    /**
+     * 
+     * @param id
+     * @param userId
+     * @param orderId
+     */
     public OrderHistory(Long id, Long userId, Long orderId) {
         this.id = id;
         this.userId = userId;

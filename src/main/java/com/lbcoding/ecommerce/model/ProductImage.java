@@ -20,6 +20,13 @@ public class ProductImage {
     public ProductImage(){
 
     }
+
+    /**
+     *
+     * @param id
+     * @param imageURL
+     * @param productID
+     */
     public ProductImage(Long id, String imageURL, Long productID) {
         this.id = id;
         this.imageURL = imageURL;

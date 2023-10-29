@@ -1,12 +1,16 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.UserDTO;
+import com.lbcoding.ecommerce.dto.UserProfileDTO;
 import com.lbcoding.ecommerce.model.Address;
 import com.lbcoding.ecommerce.model.Role;
 import com.lbcoding.ecommerce.model.User;
+import com.lbcoding.ecommerce.model.UserProfile;
 import com.lbcoding.ecommerce.repository.AddressRespository;
 import com.lbcoding.ecommerce.repository.RoleRepository;
+import com.lbcoding.ecommerce.repository.UserProfileRepository;
 import com.lbcoding.ecommerce.repository.UserRepository;
+import com.lbcoding.ecommerce.service.validation.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -17,7 +21,10 @@ import jakarta.ws.rs.core.UriInfo;
 
 import io.quarkus.elytron.security.common.BcryptUtil;
 
+import javax.swing.text.html.Option;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -32,39 +39,22 @@ public class UserService {
     @Inject
     AddressRespository addressRespository;
 
+    @Inject
+    UserProfileRepository userProfileRepository;
+
     @Context
     UriInfo uriInfo;
     @Transactional
     public Response createUser(UserDTO userDTO){
-        User existingUser = userRepository.findUserByUsername(userDTO.getUsername());
+        Optional<User> existingUser = userRepository.findUserByUsername(userDTO.getUsername());
 
-        if(existingUser != null){
+        if(existingUser.isPresent()){
             return Response.status(Response.Status.CONFLICT).entity("Username already exists.").build();
         }
 
-        Address userAddress = new Address();
-
-        userAddress.setCity(userDTO.getCity());
-        userAddress.setCountry(userDTO.getCountry());
-        userAddress.setStreet(userDTO.getStreet());
-        userAddress.setZipCode(userDTO.getZipCode());
-
-        addressRespository.create(userAddress);
-
         Role userRole = roleRepository.get("User");
 
-        User user = new User();
-        user.setUsername(userDTO.getUsername());
-        user.setForename(userDTO.getForename());
-        user.setSurname(userDTO.getSurname());
-        user.setAddress(userAddress.getId());
-        user.setPhone(userDTO.getPhone());
-        user.setEmail(userDTO.getEmail());
-        user.setPassword(BcryptUtil.bcryptHash(userDTO.getPassword()));
-        if(userRole != null)
-            user.setRoleId(userRole.getId());
-        else
-            user.setRoleId(0L);
+        User user = createUserFromUserDTO(userDTO, userRole);
 
         userRepository.createUser(user);
 
@@ -75,8 +65,19 @@ public class UserService {
         return Response.created(builder.build()).entity(user).build();
     }
 
+    public User createUserFromUserDTO(UserDTO userDTO, Role role){
+        return new User(
+            userDTO.getUsername(),
+            userDTO.getEmail(),
+            (role != null) ? role.getId() : 0L,
+            BcryptUtil.bcryptHash(userDTO.getPassword())
+        );
+    }
+
     public Response deleteUser(Long id) {
-        if(userRepository.findUserById(id) != null){
+        Optional<User> user = userRepository.findUserById(id);
+        if(user.isPresent()){
+            System.out.println("Is Present");
             userRepository.deleteUser(id);
             return Response.noContent().build();
         } else {
@@ -89,10 +90,7 @@ public class UserService {
 
         if (userList!=null){
             List<UserDTO> userDTOList = userList.stream()
-                    .map(user -> {
-                        Address address = addressRespository.get(user.getAddress());
-                        return user.toDTO(address.toDTO());
-                    })
+                    .map(User::toDTO)
                     .collect(Collectors.toList());
 
             return Response.status(Response.Status.OK).entity(userDTOList).build();
@@ -102,16 +100,61 @@ public class UserService {
     }
 
     public Response getUser(String username){
-        User user = userRepository.findUserByUsername(username);
+        Optional<User> user = userRepository.findUserByUsername(username);
 
-        if(user != null){
-            Address address = addressRespository.get(user.getId());
-            UserDTO userDTO = user.toDTO(address.toDTO());
-
+        if(user.isPresent()){
+            UserDTO userDTO = user.get().toDTO();
             return Response.status(Response.Status.OK).entity(userDTO).build();
         } else {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
 
+    }
+
+    public Response createProfile(UserProfileDTO userProfileDTO) {
+
+        Set<String> errorMessages = DTOValidator.validateDTO(userProfileDTO);
+
+        if(!errorMessages.isEmpty()){
+            return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
+        }
+
+        Optional<Address> address = addressRespository.findById(userProfileDTO.getAddressId());
+
+        if(address.isEmpty()){
+            return Response.status(Response.Status.BAD_REQUEST).entity("No Address was provided").build();
+        }
+
+        Optional<UserProfile> existingUserProfile = userProfileRepository.findById(userProfileDTO.getUserId());
+
+        if(existingUserProfile.isPresent()){
+            return Response.status(Response.Status.CONFLICT).build();
+        }
+
+        UserProfile userProfile = createUserProfile(userProfileDTO, address.get());
+
+        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+        builder.build(Long.toString(userProfile.getId()));
+
+        return Response.created(builder.build()).entity(userProfile).build();
+    }
+
+    public Response getUserProfile(Long userId){
+        Optional<UserProfile> userProfile = userProfileRepository.findByUserId(userId);
+
+        if(userProfile.isPresent())
+            return Response.status(Response.Status.OK).entity(userProfile).build();
+        else
+            return Response.status(Response.Status.NOT_FOUND).build();
+    }
+
+    public UserProfile createUserProfile(UserProfileDTO userProfileDTO, Address address){
+        return new UserProfile(
+                userProfileDTO.getUserId(),
+                address.getId(),
+                userProfileDTO.getForename(),
+                userProfileDTO.getSurname(),
+                userProfileDTO.getBirthday()
+        );
     }
 }

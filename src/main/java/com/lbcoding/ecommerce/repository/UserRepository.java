@@ -6,12 +6,15 @@ package com.lbcoding.ecommerce.repository;
 import com.lbcoding.ecommerce.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 
+import javax.swing.text.html.Option;
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class UserRepository {
@@ -25,17 +28,12 @@ public class UserRepository {
      * @return User or null
      */
     @Transactional
-    public User findUserByUsername(String username){
+    public Optional<User> findUserByUsername(String username){
         TypedQuery<User> query = entityManager.createQuery(
                 "SELECT u FROM User u WHERE u.username = :username", User.class)
                 .setParameter("username", username);
-        List<User> user = query.getResultList();
 
-        if(!user.isEmpty()){
-            return user.get(0);
-        } else {
-            return null;
-        }
+        return Optional.ofNullable(query.getSingleResult());
     }
 
     /**
@@ -44,10 +42,10 @@ public class UserRepository {
      * @return User
      */
     @Transactional
-    public User findUserById(Long id) {
-        User user = entityManager.find(User.class, id);
+    public Optional<User> findUserById(Long id) {
+        Optional<User> user = Optional.ofNullable(entityManager.find(User.class, id));
 
-        return user;
+        return user.isEmpty() ? Optional.empty() : user;
     }
 
     /**
@@ -65,18 +63,16 @@ public class UserRepository {
      */
     @Transactional
     public void deleteUser(Long id){
-        User existingUser = entityManager.find(User.class, id);
+        Optional<User> existingUser = findUserById(id);
 
-        if(existingUser != null)
-            entityManager.remove(existingUser);
+        existingUser.ifPresent(entityManager::remove);
     }
+
     public List<User> getUsers(){
         TypedQuery<User> query = entityManager.createQuery(
                 "SELECT u FROM User u", User.class
         );
 
-        List<User>  userList =  query.getResultList();
-
-        return userList;
+        return query.getResultList();
     }
 }

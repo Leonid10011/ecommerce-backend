@@ -19,7 +19,7 @@ public class AuthenticationService {
     public Response login(CredentialDTO credentialDTO) {
         // Validieren Sie die Anmeldeinformationen und den Benutzer
         if (isValidUser(credentialDTO.getUsername(), credentialDTO.getPassword())) {
-            Long UserId = userRepository.findUserByUsername(credentialDTO.getUsername()).getId();
+            Long UserId = userRepository.findUserByUsername(credentialDTO.getUsername()).get().getId();
             String token = generateJwtToken(credentialDTO.getUsername(),  UserId);
             return Response.status(Response.Status.OK).entity(token).build();
         } else {
@@ -30,10 +30,10 @@ public class AuthenticationService {
     private boolean isValidUser(String username, String password) {
         // Implementieren Sie die Logik zur Überprüfung der Anmeldeinformationen
         // Gibt true zurück, wenn der Benutzer gültig ist, andernfalls false
-        User existingUser = userRepository.findUserByUsername(username);
+        Optional<User> existingUser = userRepository.findUserByUsername(username);
 
-        if(existingUser != null){
-            if(BcryptUtil.matches(password, existingUser.getPassword())){
+        if(existingUser.isPresent()){
+            if(BcryptUtil.matches(password, existingUser.get().getPassword())){
                 return true;
             }
         }
@@ -47,9 +47,16 @@ public class AuthenticationService {
     }
 
     private String generateJwtToken(String username, Long id) {
+        return  generateJwtToken(username, id, false);
+    }
+    private String generateJwtToken(String username, Long id, boolean admin) {
         Set<String> roles = new HashSet<String>();
+
+        if(admin){
+            roles.add("admin");
+        }
+
         roles.add("user");
-        roles.add("admin");
 
         return JwtUtils.generateToken(username, roles, id);
     }

@@ -19,6 +19,28 @@ public class Address {
 
     }
 
+    /**
+     *
+     * @param street
+     * @param city
+     * @param zipCode
+     * @param country
+     */
+    public Address(String street, String city, String zipCode, String country) {
+        this.street = street;
+        this.city = city;
+        this.zipCode = zipCode;
+        this.country = country;
+    }
+
+    /**
+     *
+     * @param id
+     * @param street
+     * @param city
+     * @param zipCode
+     * @param country
+     */
     public Address(Long id, String street, String city, String zipCode, String country) {
         this.id = id;
         this.street = street;

@@ -22,6 +22,14 @@ public class OrderItem {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param orderId
+     * @param productId
+     * @param quantity
+     * @param price
+     */
     public OrderItem(Long id, Long orderId, Long productId, Integer quantity, Double price) {
         this.id = id;
         this.orderId = orderId;

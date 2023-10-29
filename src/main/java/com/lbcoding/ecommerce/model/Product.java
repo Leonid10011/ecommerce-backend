@@ -36,6 +36,14 @@ public class Product {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param name
+     * @param description
+     * @param price
+     * @param categoryID
+     */
     public Product(Long id, String name, String description, Double price, Long categoryID) {
         this.id = id;
         this.name = name;

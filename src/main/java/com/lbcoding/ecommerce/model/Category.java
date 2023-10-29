@@ -20,10 +20,19 @@ public class Category {
 
     }
 
+    /**
+     *
+     * @param name
+     */
     public Category(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @param id
+     * @param name
+     */
     public Category(Long id, String name) {
         this.id = id;
         this.name = name;

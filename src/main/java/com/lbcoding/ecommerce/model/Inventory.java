@@ -21,11 +21,22 @@ public class Inventory {
 
     }
 
+    /**
+     *
+     * @param quantity
+     * @param productID
+     */
     public Inventory(int quantity, Long productID) {
         this.quantity = quantity;
         this.productID = productID;
     }
 
+    /**
+     *
+     * @param id
+     * @param quantity
+     * @param productID
+     */
     public Inventory(Long id, int quantity, Long productID) {
         this.id = id;
         this.quantity = quantity;

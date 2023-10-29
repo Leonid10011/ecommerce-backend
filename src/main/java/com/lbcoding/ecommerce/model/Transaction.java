@@ -21,6 +21,14 @@ public class Transaction {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param orderId
+     * @param transactionDate
+     * @param paymentMethod
+     * @param amount
+     */
     public Transaction(Long id, Long orderId, Date transactionDate, String paymentMethod, double amount) {
         this.id = id;
         this.orderId = orderId;

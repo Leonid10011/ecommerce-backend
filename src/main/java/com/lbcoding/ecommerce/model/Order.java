@@ -22,6 +22,13 @@ public class Order {
 
     }
 
+    /**
+     *
+     * @param id
+     * @param userId
+     * @param date
+     * @param status
+     */
     public Order(Long id, Long userId, Date date, String status) {
         this.id = id;
         this.userId = userId;
