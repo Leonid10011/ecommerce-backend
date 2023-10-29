@@ -34,7 +34,7 @@ The project is built using the following technologies and tools:
 **TODO clean code:**
 
 - [x] Address
-- [ ] CartItem
+- [x] CartItem
 - [x] Category
 - [ ] Discount
 - [x] Inventory
