@@ -89,6 +89,12 @@ The API provides endpoints for interacting with different aspects of the E-comme
 - `/users`: User profiles and addresses.
 - `/product`: Product details and management.
 - `/order`: Order creation, order history, and transactions.
+- `/category`: Category creation for products. Will be used to add new categories
+- `/discount`: Discount creation.
+- `/orderhistory`: OrderHistory creation.
+- `/rating`: Rating creation.
+- `/transaction`: Transaction creation.
+- `/usercoupon`: UserCoupon creation.
 
 For detailed information on each endpoint and its functionality, please refer to the project's API documentation.
 
