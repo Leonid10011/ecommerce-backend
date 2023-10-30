@@ -2,6 +2,14 @@
 
 Welcome to the backend component of my Fullstack E-commerce portfolio project, designed for job applications. The corresponding frontend is available in a separate repository on my GitHub profile. This backend is responsible for providing a RESTful API that handles various aspects of the E-commerce platform.
 
+## Table of Contents
+- [Overview](#project-description)
+- [Technologies Used](#features)
+- [TODO](#project-status)
+- [Getting Started](#getting-started)
+- [API Endpoints](#api-endpoints)
+- [API Documentation](#api-documentation)
+
 ## Overview
 
 This backend component is built using Java and leverages the Quarkus framework along with JPA (Java Persistence API) to interact with a MySQL database. It offers the following functionalities through RESTful endpoints:
@@ -97,6 +105,8 @@ The API provides endpoints for interacting with different aspects of the E-comme
 - `/usercoupon`: UserCoupon creation.
 
 For detailed information on each endpoint and its functionality, please refer to the project's API documentation in the comments (todo).
+
+## API Documentation
 
 ## Frontend Repository
 

@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,9 +33,9 @@ public class RoleService {
                     .build();
         }
 
-        Role existingRole = roleRepository.get(roleDTO.getName());
+        Optional<Role> existingRole = roleRepository.findByName(roleDTO.getName());
 
-        if(existingRole != null){
+        if(existingRole.isPresent()){
             return Response.status(Response.Status.CONFLICT).entity("Role already exists").build();
         }
 
@@ -64,9 +65,9 @@ public class RoleService {
     }
 
     public Response get(Long id){
-        Role role = roleRepository.get(id);
-        if(role != null){
-            RoleDTO roleDTO = role.toDTO();
+        Optional<Role> role = roleRepository.findById(id);
+        if(role.isPresent()){
+            RoleDTO roleDTO = role.get().toDTO();
 
             return Response.status(Response.Status.OK).entity(roleDTO).build();
         } else {
