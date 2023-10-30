@@ -52,9 +52,9 @@ public class UserService {
             return Response.status(Response.Status.CONFLICT).entity("Username already exists.").build();
         }
 
-        Role userRole = roleRepository.get("User");
+        Optional<Role> userRole = roleRepository.findByName("User");
 
-        User user = createUserFromUserDTO(userDTO, userRole);
+        User user = createUserFromUserDTO(userDTO, userRole.get());
 
         userRepository.createUser(user);
 

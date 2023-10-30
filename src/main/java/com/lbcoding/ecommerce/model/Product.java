@@ -10,6 +10,9 @@ import com.lbcoding.ecommerce.dto.ProductDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 /**
  * @params Long id
@@ -24,6 +27,8 @@ public class Product {
     @GeneratedValue
     private Long id;
 
+    @OneToMany(mappedBy = "product")
+    private List<FavoriteProduct> favoriteProductList;
     private String name;
 
     private String description;
