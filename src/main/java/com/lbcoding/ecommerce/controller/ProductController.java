@@ -2,6 +2,7 @@ package com.lbcoding.ecommerce.controller;
 
 import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.service.ProductService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;

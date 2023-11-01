@@ -1,6 +1,9 @@
 package com.lbcoding.ecommerce.repository;
 
+import com.lbcoding.ecommerce.dto.OrderItemDTO;
+import com.lbcoding.ecommerce.model.Inventory;
 import com.lbcoding.ecommerce.model.OrderItem;
+import com.lbcoding.ecommerce.model.Product;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;

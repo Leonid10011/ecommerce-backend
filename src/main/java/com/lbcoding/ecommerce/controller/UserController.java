@@ -6,6 +6,8 @@ import com.lbcoding.ecommerce.dto.UserProfileDTO;
 import com.lbcoding.ecommerce.service.AuthenticationService;
 import com.lbcoding.ecommerce.service.UserService;
 import io.quarkus.elytron.security.common.BcryptUtil;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -59,6 +61,7 @@ public class UserController {
     }
     @POST
     @Path("/login")
+    @PermitAll
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
     public Response login(CredentialDTO credentialDTO) {

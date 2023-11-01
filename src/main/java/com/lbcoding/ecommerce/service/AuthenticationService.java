@@ -56,7 +56,7 @@ public class AuthenticationService {
             roles.add("admin");
         }
 
-        roles.add("user");
+        roles.add("User");
 
         return JwtUtils.generateToken(username, roles, id);
     }

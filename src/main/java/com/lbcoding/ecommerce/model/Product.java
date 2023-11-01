@@ -29,6 +29,9 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<FavoriteProduct> favoriteProductList;
+
+    @OneToMany(mappedBy = "product")
+    private List<OrderItem> orderItemList;
     private String name;
 
     private String description;

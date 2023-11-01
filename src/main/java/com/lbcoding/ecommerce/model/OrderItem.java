@@ -1,14 +1,17 @@
 package com.lbcoding.ecommerce.model;
 
 import com.lbcoding.ecommerce.dto.OrderItemDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
 @Entity
 public class OrderItem {
     @Id
     @GeneratedValue
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "productId", insertable = false, updatable = false)
+    private Product product;
 
     private Long orderId;
 

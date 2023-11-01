@@ -3,6 +3,8 @@ package com.lbcoding.ecommerce.controller;
 import com.lbcoding.ecommerce.dto.OrderDTO;
 import com.lbcoding.ecommerce.dto.OrderItemDTO;
 import com.lbcoding.ecommerce.service.OrderService;
+
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -15,6 +17,7 @@ public class OrderController {
 
     @GET
     @Path("/get/{id}")
+    @RolesAllowed("User")
     public Response get(@PathParam("id") Long id){
         return orderService.getOrder(id);
     }
@@ -28,9 +31,14 @@ public class OrderController {
     @GET
     @Path("/getItems/{orderId}")
     public Response getItems(@PathParam("orderId") Long orderId){
-        return orderService.getItems(orderId);
+        return orderService.getOrderItemByOrderId(orderId);
     }
 
+    @GET
+    @Path("/getOrderProduct/{orderId}")
+    public Response getOrderProducts(@PathParam("orderId") Long orderId){
+        return orderService.getOrderItemProductByOrderId(orderId);
+    }
     @DELETE
     @Path("/delete/{id}")
     public Response delete(@PathParam("id") Long id){

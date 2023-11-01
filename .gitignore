@@ -45,3 +45,7 @@ nb-configuration.xml
 src/jwt/
 
 src/main/resources/application.properties
+
+src/main/java/com/lbcoding/ecommerce/security/RoleCheckFilter.java
+
+dontUpload

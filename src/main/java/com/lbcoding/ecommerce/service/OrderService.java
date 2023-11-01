@@ -5,6 +5,7 @@ import com.lbcoding.ecommerce.dto.OrderItemDTO;
 import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.model.Order;
 import com.lbcoding.ecommerce.model.OrderItem;
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.InventoryRepository;
 import com.lbcoding.ecommerce.repository.OrderItemRepository;
 import com.lbcoding.ecommerce.repository.OrderRepository;
@@ -110,9 +111,13 @@ public class OrderService {
         Optional<OrderItem> existingOrderItem = orderItemRepository.getOrderItemByProductId(orderItemDTO.getProductId());
 
         if (existingOrderItem.isPresent()) {
-            inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId(), false);
+            System.out.println("Present !");
+            orderItemRepository.delete(existingOrderItem.get().getId());
+            orderItemRepository.create(createOrderItemFromDTO(orderItemDTO));
+            //inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId(), false);
             return Response.status(Response.Status.OK).entity("Updated quantity").build();
         } else {
+            System.out.println("NOT Present !");
             OrderItem orderItem = createOrderItemFromDTO(orderItemDTO);
             orderItemRepository.create(orderItem);
 
@@ -145,7 +150,7 @@ public class OrderService {
     }
 
     @Transactional
-    public Response getItems(Long orderId) {
+    public Response getOrderItemProductByOrderId(Long orderId) {
         List<OrderItem> orderItemList = orderItemRepository.getOrderItemsByOrderId(orderId);
 
         if (!orderItemList.isEmpty()) {
@@ -157,5 +162,15 @@ public class OrderService {
         } else {
             return Response.status(Response.Status.NOT_FOUND).entity("No order items found").build();
         }
+    }
+
+    @Transactional
+    public Response getOrderItemByOrderId(Long orderId){
+        List<OrderItem> orderItemList = orderItemRepository.getOrderItemsByOrderId(orderId);
+
+        if(orderItemList.isEmpty())
+            return Response.status(Response.Status.NOT_FOUND).build();
+
+        return Response.status(Response.Status.OK).entity(orderItemList).build();
     }
 }

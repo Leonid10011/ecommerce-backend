@@ -1,17 +1,24 @@
 package com.lbcoding.ecommerce.security;
 
 import io.smallrye.jwt.build.Jwt;
-import io.smallrye.jwt.build.JwtClaimsBuilder;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
 
 public class JwtUtils {
-    public static String generateToken(String username, Set<String> roles, Long id){
-        JwtClaimsBuilder claims = Jwt.claims();
-        claims.subject(username);
-        claims.groups(roles);
-        claims.upn(Long.toString(id));
+    public static String generateToken(String username, Set<String> roles2, Long id){
+        Set<String> roles = new HashSet<>(
+                Arrays.asList("User", "Admin")
+        );
 
-        return claims.jws().keyId("quarkus").sign();
+        return Jwt.issuer("my-app")
+                .subject(username)
+                .groups(roles)
+                .upn(Long.toString(id))
+                .expiresAt(
+                        System.currentTimeMillis() + 3600
+                )
+                .sign();
     }
 }

@@ -74,4 +74,16 @@ public class FavoriteProductService {
                 favoriteProductDTO.getProductId()
         );
     }
+
+    @Transactional
+    public Response deleteByUserAndProduct(Long userId, Long productId){
+        Optional<FavoriteProduct> optionalFavoriteProduct = favoriteProductRepository.findByUserAndProduct(userId, productId);
+
+        if(optionalFavoriteProduct.isPresent()){
+            favoriteProductRepository.deleteByUserAndProduct(userId, productId);
+            return Response.noContent().build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+    }
 }

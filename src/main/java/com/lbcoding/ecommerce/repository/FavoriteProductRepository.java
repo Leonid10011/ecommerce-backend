@@ -59,4 +59,14 @@ public class FavoriteProductRepository {
         optionalFavoriteProduct.ifPresent(entityManager::remove);
     }
 
+    @Transactional
+    public void deleteByUserAndProduct(Long userId, Long productId){
+        TypedQuery<FavoriteProduct> query = entityManager.createQuery(
+                "SELECT fp FROM FavoriteProduct fp WHERE fp.userId = :userId AND fp.productId = :productId", FavoriteProduct.class
+        ).setParameter("userId", userId).setParameter("productId", productId);
+
+        Optional<FavoriteProduct> optionalFavoriteProduct = Optional.ofNullable(query.getSingleResult());
+        optionalFavoriteProduct.ifPresent(entityManager::remove);
+    }
+
 }

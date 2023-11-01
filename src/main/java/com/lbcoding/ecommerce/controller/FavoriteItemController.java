@@ -19,7 +19,7 @@ public class FavoriteItemController {
     }
 
     @GET
-    @Path("/get/{userId}")
+    @Path("/getByUser/{userId}")
     public  Response get(@PathParam("userId") Long userId){
         return favoriteProductService.getByUserId(userId);
     }
@@ -28,5 +28,11 @@ public class FavoriteItemController {
     @Path("/delete/{id}")
     public Response delete(@PathParam("id") Long id){
         return favoriteProductService.delete(id);
+    }
+
+    @DELETE
+    @Path("/delete")
+    public Response deleteUP(FavoriteProductDTO favoriteProductDTO){
+        return favoriteProductService.deleteByUserAndProduct(favoriteProductDTO.getUserId(), favoriteProductDTO.getProductId());
     }
 }
