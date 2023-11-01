@@ -56,6 +56,7 @@ The project is built using the following technologies and tools:
 - [ ] Transaction
 - [ ] UserCoupon
 - [x] User
+- [x] FavoriteItems
 
 ## Getting Started
 
