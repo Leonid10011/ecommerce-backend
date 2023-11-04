@@ -112,6 +112,10 @@
       <artifactId>java-jwt</artifactId>
       <version>4.3.0</version> <!-- Verwenden Sie die aktuellste Version -->
     </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-jib</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

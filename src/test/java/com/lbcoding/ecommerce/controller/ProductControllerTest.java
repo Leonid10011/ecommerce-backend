@@ -93,7 +93,7 @@ public class ProductControllerTest {
     @Test
     public void testFavoritProduct(){
         ProductDTO newProductDTO = new ProductDTO(
-                "TESTP1312312313",
+                "TESTP1312312311313",
                 "For testing purposes",
                 99.99,
                 1L,
@@ -111,7 +111,7 @@ public class ProductControllerTest {
         Long p1Id = response.jsonPath().getLong("id");
 
         ProductDTO newProductDTO1 = new ProductDTO(
-                "TESTP11331122",
+                "TESTP1231311331122",
                 "For testing purposes",
                 99.99,
                 1L,
@@ -129,7 +129,7 @@ public class ProductControllerTest {
         Long p2Id = response1.jsonPath().getLong("id");
 
         User user= new User(
-                "TestNOW31123212",
+                "1312312",
                 "L@Gmail.com",
                 1L,
                 "123456"
@@ -173,7 +173,7 @@ public class ProductControllerTest {
         Long f1Id = response3.jsonPath().getLong("id");
 
         Response response5 = RestAssured.given()
-                .get("/favoriteItem/get/" + uId);
+                .get("/favoriteItem/getByUser/" + uId);
 
         assertEquals(200, response5.getStatusCode());
 
