@@ -129,6 +129,8 @@ public class ProductService {
         Product product = createProductModel(productDTO);
         productRepository.createProduct(product);
 
+        productDTO.setId(product.getId());
+
         Inventory existingInventory = inventoryRepository.findByProductId(product.getId());
 
         Response quantityResponse;

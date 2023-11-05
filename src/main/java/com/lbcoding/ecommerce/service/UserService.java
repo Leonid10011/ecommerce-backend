@@ -85,6 +85,10 @@ public class UserService {
         }
     }
 
+    /**
+     * Get all Users
+     * @return
+     */
     public Response getUser(){
         List<User> userList = userRepository.getUsers();
 
@@ -99,6 +103,11 @@ public class UserService {
         }
     }
 
+    /**
+     * Get User By Name
+     * @param username
+     * @return
+     */
     public Response getUser(String username){
         Optional<User> user = userRepository.findUserByUsername(username);
 

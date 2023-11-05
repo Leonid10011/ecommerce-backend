@@ -49,3 +49,5 @@ src/main/resources/application.properties
 src/main/java/com/lbcoding/ecommerce/security/RoleCheckFilter.java
 
 dontUpload
+
+deployRemoteContainer.sh

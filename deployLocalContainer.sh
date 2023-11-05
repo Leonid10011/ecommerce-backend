@@ -24,4 +24,15 @@ if [ -n "$running_container" ]; then
   fi
 fi
 
-docker run -d --name ecommerce -d lb/ecommerce:1.0.0-SNAPSHOT -p 8090:8090 -it
+
+container_id=$(docker run -d --name ecommerce -d lb/ecommerce:1.0.0-SNAPSHOT -p 8090:8090)
+
+if [ -z "$container_id" ]; then
+  echo "Failed to start the container."
+  exit 1
+fi
+
+echo "Container started with ID: $container_id"
+
+# move keys into container
+docker cp src/jwt/ $container_id:/home/jwt
