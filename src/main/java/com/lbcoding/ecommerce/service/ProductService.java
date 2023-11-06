@@ -61,6 +61,12 @@ public class ProductService {
     public Response getByProductId(Long productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
 
+        if(productOptional.isPresent()){
+            ProductDTO productDTO = mapProductToProductDTO(productOptional.get());
+            return Response.status(Response.Status.OK).entity(productDTO).build();
+        }
+
+        /**
         if (productOptional.isPresent()) {
             Product product = productOptional.get();
             Inventory inventory = inventoryRepository.findByProductId(product.getId());
@@ -69,7 +75,7 @@ public class ProductService {
                 ProductDTO productDTO = createProductDTO(product, inventory);
                 return Response.status(Response.Status.OK).entity(productDTO).build();
             }
-        }
+        }*/
 
         return Response.status(Response.Status.NOT_FOUND).entity("Product not found or inventory not available.").build();
     }
