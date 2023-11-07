@@ -2,6 +2,9 @@
 
 Welcome to the backend component of my Fullstack E-commerce portfolio project, designed for job applications. The corresponding frontend is available in a separate repository on my GitHub profile. This backend is responsible for providing a RESTful API that handles various aspects of the E-commerce platform.
 
+## Preview
+Hosted on : http://217.72.204.244
+
 ## Table of Contents
 - [Overview](#project-description)
 - [Technologies Used](#features)
@@ -39,7 +42,7 @@ The project is built using the following technologies and tools:
 - **Other libraries and dependencies:** Various Java libraries and packages to facilitate routing, validation, and more.
 ## TODO:  
 ### Cleaning Code for all Components and writing tests
-**TODO clean code:**
+**TODO clean up code:**
 
 - [x] Address
 - [x] CartItem
@@ -62,48 +65,13 @@ The project is built using the following technologies and tools:
 
 To run this project locally or deploy it to a server, follow these steps:
 
-1. Clone this repository to your local machine.
-
-2. Configure your MySQL database and update the database connection settings in the project.
-
-**application.properties that I use:  **
-
-| Property                                | Value                                       |
-|-----------------------------------------|---------------------------------------------|
-| quarkus.http.port                       | `<port>`                                    |
-| quarkus.datasource.jdbc.url             | `jdbc:mysql://localhost:3306/<databasename>` |
-| quarkus.datasource.username              | `<username>`                                |
-| quarkus.datasource.password              | `<password>`                                |
-| quarkus.hibernate-orm.dialect           | `org.hibernate.dialect.MySQLDialect`      |
-| quarkus.hibernate-orm.database.generation| `update`                                    |
-| smallrye.jwt.enabled                    | `true`                                      |
-| mp.jwt.verify.publickey.location         | `src/jwt/publicKey.pem`                     |
-| mp.jwt.verify.issuer                    | `my-issuer`                                 |
-| smallrye.jwt.sign.key.location           | `src/jwt/privateKey.pem`                    |
-| smallrye.jwt.issuer                     | `my-app`                                   |
-| smallrye.jwt.audience                   | `my-app`                                   |
-| smallrye.jwt.duration                   | `3600`                                      |
-
-
-3. Configure environment variables for sensitive information, such as authentication secrets.
-
-4. Build and run the Quarkus application.
-
-5. Access the API endpoints through the base URL and feel free to test the available functionality.
+**todo**
 
 ## API Endpoints
 
 The API provides endpoints for interacting with different aspects of the E-commerce platform:
 
-- `/users`: User profiles and addresses.
-- `/product`: Product details and management.
-- `/order`: Order creation, order history, and transactions.
-- `/category`: Category creation for products. Will be used to add new categories
-- `/discount`: Discount creation.
-- `/orderhistory`: OrderHistory creation.
-- `/rating`: Rating creation.
-- `/transaction`: Transaction creation.
-- `/usercoupon`: UserCoupon creation.
+**todo**
 
 For detailed information on each endpoint and its functionality, please refer to the project's API documentation in the comments (todo).
 
@@ -111,7 +79,7 @@ For detailed information on each endpoint and its functionality, please refer to
 
 ## Frontend Repository
 
-To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](link-to-frontend-repo).
+To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](https://github.com/Leonid10011/ecommerce-frontend).
 
 ## Contact
 
