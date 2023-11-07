@@ -53,6 +53,15 @@ public class FavoriteProductRepository {
     }
 
     @Transactional
+    public List<FavoriteProduct> findFavoriteProductIdsByUserId(Long userId){
+        TypedQuery<FavoriteProduct> query = entityManager.createQuery(
+                "SELECT f FROM FavoriteProduct f WHERE f.userId = :userId", FavoriteProduct.class
+        ).setParameter("userId", userId);
+
+        return query.getResultList();
+    }
+
+    @Transactional
     public void delete(Long id){
         Optional<FavoriteProduct> optionalFavoriteProduct = findById(id);
 

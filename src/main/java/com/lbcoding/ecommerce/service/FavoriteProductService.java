@@ -86,4 +86,14 @@ public class FavoriteProductService {
             return Response.status(Response.Status.NOT_FOUND).build();
         }
     }
+
+    @Transactional
+    public Response getFavoriteProductsIdByUser(Long userId){
+        List<FavoriteProduct> favoriteProductList = favoriteProductRepository.findFavoriteProductIdsByUserId(userId);
+
+        if(!favoriteProductList.isEmpty()){
+            return Response.status(Response.Status.OK).entity(favoriteProductList).build();
+        }
+        return Response.status(Response.Status.NOT_FOUND).build();
+    }
 }

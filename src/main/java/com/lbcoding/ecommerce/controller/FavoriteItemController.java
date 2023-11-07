@@ -24,6 +24,12 @@ public class FavoriteItemController {
         return favoriteProductService.getByUserId(userId);
     }
 
+    @GET
+    @Path("/getProductIdsByUser/{userId}")
+    public Response getProductIds(@PathParam("userId") Long userId){
+        return favoriteProductService.getFavoriteProductsIdByUser(userId);
+    }
+
     @DELETE
     @Path("/delete/{id}")
     public Response delete(@PathParam("id") Long id){
