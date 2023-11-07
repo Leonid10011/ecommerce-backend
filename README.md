@@ -2,6 +2,9 @@
 
 Welcome to the backend component of my Fullstack E-commerce portfolio project, designed for job applications. The corresponding frontend is available in a separate repository on my GitHub profile. This backend is responsible for providing a RESTful API that handles various aspects of the E-commerce platform.
 
+## Preview
+Hosted on : http://217.72.204.244
+
 ## Table of Contents
 - [Overview](#project-description)
 - [Technologies Used](#features)
@@ -76,7 +79,7 @@ For detailed information on each endpoint and its functionality, please refer to
 
 ## Frontend Repository
 
-To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](link-to-frontend-repo).
+To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](https://github.com/Leonid10011/ecommerce-backend).
 
 ## Contact
 
