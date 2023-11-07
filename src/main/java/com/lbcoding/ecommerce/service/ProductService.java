@@ -66,17 +66,6 @@ public class ProductService {
             return Response.status(Response.Status.OK).entity(productDTO).build();
         }
 
-        /**
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            Inventory inventory = inventoryRepository.findByProductId(product.getId());
-
-            if (inventory != null) {
-                ProductDTO productDTO = createProductDTO(product, inventory);
-                return Response.status(Response.Status.OK).entity(productDTO).build();
-            }
-        }*/
-
         return Response.status(Response.Status.NOT_FOUND).entity("Product not found or inventory not available.").build();
     }
 

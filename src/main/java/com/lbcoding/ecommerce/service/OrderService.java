@@ -113,9 +113,10 @@ public class OrderService {
         if (existingOrderItem.isPresent()) {
             System.out.println("Present !");
             orderItemRepository.delete(existingOrderItem.get().getId());
-            orderItemRepository.create(createOrderItemFromDTO(orderItemDTO));
+            OrderItem orderItem = createOrderItemFromDTO(orderItemDTO);
+            orderItemRepository.create(orderItem);
             //inventoryRepository.update(orderItemDTO.getQuantity(), orderItemDTO.getProductId(), false);
-            return Response.status(Response.Status.OK).entity("Updated quantity").build();
+            return Response.status(Response.Status.OK).entity(orderItem).build();
         } else {
             System.out.println("NOT Present !");
             OrderItem orderItem = createOrderItemFromDTO(orderItemDTO);
