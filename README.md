@@ -79,7 +79,7 @@ For detailed information on each endpoint and its functionality, please refer to
 
 ## Frontend Repository
 
-To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](https://github.com/Leonid10011/ecommerce-backend).
+To explore the frontend component of this project, please visit the corresponding repository on my GitHub profile [here](https://github.com/Leonid10011/ecommerce-frontend).
 
 ## Contact
 
