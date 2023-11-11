@@ -2,6 +2,7 @@ package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.dto.UserProfileDTO;
+import com.lbcoding.ecommerce.dto.response.UserResponseDTO;
 import com.lbcoding.ecommerce.model.Address;
 import com.lbcoding.ecommerce.model.Role;
 import com.lbcoding.ecommerce.model.User;
@@ -58,11 +59,13 @@ public class UserService {
 
         userRepository.createUser(user);
 
+        UserResponseDTO userResponseDTO = createResponseDTOFromUser(user);
+
         // URI
         UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-        builder.path(Long.toString(user.getId()));
+        builder.path(Long.toString(userResponseDTO.getId()));
 
-        return Response.created(builder.build()).entity(user).build();
+        return Response.created(builder.build()).entity(userResponseDTO).build();
     }
 
     public User createUserFromUserDTO(UserDTO userDTO, Role role){
@@ -71,6 +74,15 @@ public class UserService {
             userDTO.getEmail(),
             (role != null) ? role.getId() : 0L,
             BcryptUtil.bcryptHash(userDTO.getPassword())
+        );
+    }
+
+    public UserResponseDTO createResponseDTOFromUser(User user){
+        return new UserResponseDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getEmail(),
+                user.getRoleId()
         );
     }
 

@@ -1,7 +1,9 @@
 # Fullstack E-commerce Project - Backend
-
 Welcome to the backend component of my Fullstack E-commerce portfolio project, designed for job applications. The corresponding frontend is available in a separate repository on my GitHub profile. This backend is responsible for providing a RESTful API that handles various aspects of the E-commerce platform.
 
+# Currently Woring On:
+- Main focus is on Frontend for now. Adjusting the backend according to desired data from frontend.
+- After wards commenting and cleaning code for all need endpoints and removing unnecessary code and functions.
 ## Preview
 Hosted on : http://217.72.204.244
 
