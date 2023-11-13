@@ -3,19 +3,19 @@
  */
 package com.lbcoding.ecommerce.model;
 
-import com.lbcoding.ecommerce.dto.ProductDTO;
 import com.lbcoding.ecommerce.dto.ProductImageDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class ProductImage {
     @Id
     @GeneratedValue
     private Long id;
+    @OneToOne
+    @JoinColumn(name = "productId", insertable = false, updatable = false)
+    private Product product;
     private String imageURL;
-    private Long productID;
+    private Long productId;
 
     public ProductImage(){
 
@@ -30,7 +30,7 @@ public class ProductImage {
     public ProductImage(Long id, String imageURL, Long productID) {
         this.id = id;
         this.imageURL = imageURL;
-        this.productID = productID;
+        this.productId = productID;
     }
 
     public Long getId() {
@@ -50,16 +50,16 @@ public class ProductImage {
     }
 
     public Long getProductID() {
-        return productID;
+        return productId;
     }
 
     public void setProductID(Long productID) {
-        this.productID = productID;
+        this.productId = productID;
     }
 
     public ProductImageDTO toDTO(){
         ProductImageDTO productImageDTO = new ProductImageDTO(
-                this.productID,
+                this.productId,
                 this.imageURL
         );
 

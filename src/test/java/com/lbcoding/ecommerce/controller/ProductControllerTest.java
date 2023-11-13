@@ -145,6 +145,7 @@ public class ProductControllerTest {
         Long uId = response2.jsonPath().getLong("id");
 
         FavoriteProductDTO favoriteProductDTO = new FavoriteProductDTO(
+                0L,
                 uId,
                 p1Id
         );
@@ -157,6 +158,7 @@ public class ProductControllerTest {
         assertEquals(201, response3.getStatusCode());
 
         FavoriteProductDTO favoriteProductDTO2 = new FavoriteProductDTO(
+                0L,
                 uId,
                 p2Id
         );

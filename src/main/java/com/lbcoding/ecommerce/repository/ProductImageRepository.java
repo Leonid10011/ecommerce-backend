@@ -35,7 +35,7 @@ public class ProductImageRepository {
 
     @Transactional
     public Optional<ProductImage> getProductImageByProduct(Long productId) {
-        TypedQuery<ProductImage> query = entityManager.createQuery("SELECT pi FROM ProductImage pi WHERE pi.productID = :productId", ProductImage.class);
+        TypedQuery<ProductImage> query = entityManager.createQuery("SELECT pi FROM ProductImage pi WHERE pi.productId = :productId", ProductImage.class);
         query.setParameter("productId", productId);
 
         Optional<ProductImage> productImage;

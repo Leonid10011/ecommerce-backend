@@ -9,7 +9,7 @@ import io.smallrye.common.constraint.NotNull;
  */
 public class    ProductImageDTO {
     @NotNull
-    private Long productID;
+    private Long productId;
     @NotNull
     private String imageURL;
 
@@ -23,16 +23,16 @@ public class    ProductImageDTO {
      * @param imageURL
      */
     public ProductImageDTO(Long productID, String imageURL) {
-        this.productID = productID;
+        this.productId = productID;
         this.imageURL = imageURL;
     }
 
     public Long getProductID() {
-        return productID;
+        return productId;
     }
 
     public void setProductID(Long productID) {
-        this.productID = productID;
+        this.productId = productID;
     }
 
     public String getImageURL() {

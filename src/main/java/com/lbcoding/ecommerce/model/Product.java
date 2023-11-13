@@ -7,10 +7,7 @@
 package com.lbcoding.ecommerce.model;
 
 import com.lbcoding.ecommerce.dto.ProductDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 
 import java.util.List;
 
@@ -32,13 +29,16 @@ public class Product {
 
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItemList;
+
+    @OneToOne(mappedBy = "product")
+    private ProductImage productImage;
     private String name;
 
     private String description;
 
     private Double price;
 
-    private Long categoryID;
+    private Long categoryId;
 
     public Product(){
 
@@ -57,7 +57,7 @@ public class Product {
         this.name = name;
         this.description = description;
         this.price = price;
-        this.categoryID = categoryID;
+        this.categoryId = categoryID;
     }
 
     public Long getId() {
@@ -93,11 +93,11 @@ public class Product {
     }
 
     public Long getCategoryID() {
-        return categoryID;
+        return categoryId;
     }
 
     public void setCategoryID(Long categoryID) {
-        this.categoryID = categoryID;
+        this.categoryId = categoryID;
     }
 
     public ProductDTO toDTO(int quantity, String imageURL){
@@ -106,7 +106,7 @@ public class Product {
             this.name,
             this.description,
             this.price,
-            this.categoryID,
+            this.categoryId,
                 quantity,
                 imageURL
         );

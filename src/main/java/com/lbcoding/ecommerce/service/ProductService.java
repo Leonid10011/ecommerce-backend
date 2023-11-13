@@ -41,7 +41,11 @@ public class ProductService {
     @Inject
     private UriInfo uriInfo;
 
-    // Get a list of all products
+    /**
+     * Retrieves all available products and send them to the client.
+     *
+     * @return A {@link Response} object containing either a List of products if exists, otherwise a NOT FOUND status code is returned.
+     */
     public Response getProducts() {
         List<Product> products = productRepository.getProducts();
 
@@ -57,7 +61,11 @@ public class ProductService {
         return Response.status(Response.Status.NOT_FOUND).build();
     }
 
-    // Get a product by its ID
+    /**
+     *
+     * @param productId
+     * @return
+     */
     public Response getByProductId(Long productId) {
         Optional<Product> productOptional = productRepository.findById(productId);
 
@@ -69,7 +77,11 @@ public class ProductService {
         return Response.status(Response.Status.NOT_FOUND).entity("Product not found or inventory not available.").build();
     }
 
-    // Map a Product to ProductDTO
+    /**
+     *
+     * @param product
+     * @return
+     */
     private ProductDTO mapProductToProductDTO(Product product) {
         Inventory inventory = inventoryRepository.findByProductId(product.getId());
         Optional<ProductImage> productImage = productImageRepository.getProductImageByProduct(product.getId());
@@ -88,7 +100,11 @@ public class ProductService {
         );
     }
 
-    // Delete a product by its ID
+    /**
+     *
+     * @param id
+     * @return
+     */
     @Transactional
     public Response deleteProduct(Long id) {
         Optional<Product> product = productRepository.findById(id);
@@ -103,6 +119,96 @@ public class ProductService {
         }
     }
 
+    /**
+     *
+     * @param productDTO
+     * @return
+     */
+    private Response validateProductDTO(ProductDTO productDTO) {
+        Set<String> validationErrors = DTOValidator.validateDTO(productDTO);
+        if (!validationErrors.isEmpty()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity(validationErrors).build();
+        }
+        return null; // Indicates no validation errors
+    }
+
+    /**
+     *
+     * @param productName
+     * @return
+     */
+    private Response checkExistingProduct(String productName) {
+        Optional<Product> existingProduct = productRepository.findProductByName(productName);
+        if (existingProduct.isPresent()) {
+            return Response.status(Response.Status.CONFLICT).entity("Product with this name already exists.").build();
+        }
+        return null; // Indicates the product does not exist
+    }
+    /**
+     * Handles the inventory for a newly created or updated product. It checks if an inventory
+     * record already exists for the given product. If it does, it updates the inventory quantity;
+     * otherwise, it creates a new inventory record with the specified quantity.
+     *
+     * @param productDTO The data transfer object containing product details including quantity.
+     * @param productId The ID of the product for which inventory is being handled.
+     * @return A {@link Response} object indicating the success or failure of the operation.
+     * If successful, the response status is OK; if there's an issue with the quantity or
+     * if the inventory can't be updated or created, a BAD REQUEST status is returned.
+     */
+    private Response handleInventory(ProductDTO productDTO, Long productId) {
+        Inventory existingInventory = inventoryRepository.findByProductId(productId);
+        Response quantityResponse;
+
+        if (existingInventory != null) {
+            quantityResponse = inventoryService.updateQuantity(productDTO.getQuantity(), existingInventory.getId(), true);
+        } else {
+            InventoryDTO inventoryDTO = inventoryService.createInventoryDTO(productDTO);
+            quantityResponse = inventoryService.setQuantity(inventoryDTO);
+        }
+
+        return quantityResponse;
+    }
+    private Response handleProductImage(ProductDTO productDTO) {
+        Optional<ProductImage> existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
+        if (existingImage.isPresent()) {
+            return Response.status(Response.Status.OK).build();
+        } else {
+            ProductImageDTO productImageDTO = productImageService.createProductImageDTO(productDTO);
+            return productImageService.addProductImageURL(productImageDTO);
+        }
+    }
+    @Transactional
+    public Response createProduct(ProductDTO productDTO) {
+        // Validate ProductDTO
+        Response validationResponse = validateProductDTO(productDTO);
+        if (validationResponse != null) return validationResponse;
+
+        // Check if product exists
+        Response existingProductResponse = checkExistingProduct(productDTO.getName());
+        if (existingProductResponse != null) return existingProductResponse;
+
+        // Create and save new product
+        Product product = createProductModel(productDTO);
+        productRepository.createProduct(product);
+        productDTO.setId(product.getId());
+
+        // Handle inventory and image
+        Response inventoryResponse = handleInventory(productDTO, product.getId());
+        Response imageResponse = handleProductImage(productDTO);
+
+        // Check for errors in inventory or image handling
+        if (inventoryResponse.getStatus() != Response.Status.OK.getStatusCode() ||
+                imageResponse.getStatus() != Response.Status.OK.getStatusCode()) {
+            return Response.status(Response.Status.BAD_REQUEST).entity("There was a problem with quantity or imageURL").build();
+        }
+
+        // Build response
+        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
+        builder.path(Long.toString(product.getId()));
+        return Response.created(builder.build()).entity(productDTO).build();
+    }
+
+    /*
     // Create a product
     @Transactional
     public Response createProduct(ProductDTO productDTO) {
@@ -159,7 +265,7 @@ public class ProductService {
 
         return Response.created(builder.build()).entity(productDTO).build();
     }
-
+    */
     // Search for products by name
     public Response getSearchName(String searchTerm) {
         List<Product> products = productRepository.searchProductsByName(searchTerm);

@@ -3,6 +3,7 @@ package com.lbcoding.ecommerce.service;
 import com.lbcoding.ecommerce.dto.OrderDTO;
 import com.lbcoding.ecommerce.dto.OrderItemDTO;
 import com.lbcoding.ecommerce.dto.ProductDTO;
+import com.lbcoding.ecommerce.dto.response.OrderItemResponseDTO;
 import com.lbcoding.ecommerce.model.Order;
 import com.lbcoding.ecommerce.model.OrderItem;
 import com.lbcoding.ecommerce.model.Product;
@@ -173,5 +174,16 @@ public class OrderService {
             return Response.status(Response.Status.NOT_FOUND).build();
 
         return Response.status(Response.Status.OK).entity(orderItemList).build();
+    }
+
+    @Transactional
+    public Response getOrderItemsWithProductByOrderId(Long orderId) {
+        List<OrderItemResponseDTO> orderItemResponseDTOList = orderItemRepository.getOrderItemsWithProduct(orderId);
+
+        if(orderItemResponseDTOList.isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).build();
+        }
+
+        return Response.status(Response.Status.OK).entity(orderItemResponseDTOList).build();
     }
 }

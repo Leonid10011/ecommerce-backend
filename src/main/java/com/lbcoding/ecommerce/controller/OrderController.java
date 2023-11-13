@@ -39,6 +39,11 @@ public class OrderController {
     public Response getOrderProducts(@PathParam("orderId") Long orderId){
         return orderService.getOrderItemProductByOrderId(orderId);
     }
+    @GET
+    @Path("/getOrderItemsWithProduct/{orderId}")
+    public Response getOrderItemsWithProduct(@PathParam("orderId") Long orderId){
+        return orderService.getOrderItemsWithProductByOrderId(orderId);
+    }
     @DELETE
     @Path("/delete/{id}")
     public Response delete(@PathParam("id") Long id){

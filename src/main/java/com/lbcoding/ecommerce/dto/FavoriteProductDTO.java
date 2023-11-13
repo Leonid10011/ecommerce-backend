@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.dto;
 
 public class FavoriteProductDTO {
+    private Long id;
     private Long userId;
     private Long productId;
 
@@ -8,9 +9,17 @@ public class FavoriteProductDTO {
 
     }
 
-    public FavoriteProductDTO(Long userId, Long productId) {
+    public FavoriteProductDTO(Long id, Long userId, Long productId) {
         this.userId = userId;
         this.productId = productId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Long getUserId() {
