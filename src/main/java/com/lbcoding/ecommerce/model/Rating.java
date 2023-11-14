@@ -87,15 +87,4 @@ public class Rating {
     public void setProductId(Long productId) {
         this.productId = productId;
     }
-
-    public RatingDTO toDTO(){
-        RatingDTO ratingDTO = new RatingDTO(
-                this.rating,
-                this.text,
-                this.date,
-                this.userId,
-                this.productId
-        );
-        return ratingDTO;
-    }
 }

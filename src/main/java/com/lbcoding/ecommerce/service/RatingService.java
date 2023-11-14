@@ -11,6 +11,7 @@ import jakarta.ws.rs.core.UriBuilder;
 import jakarta.ws.rs.core.UriInfo;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -26,21 +27,16 @@ public class RatingService {
         Set<String> errorMessages = DTOValidator.validateDTO(ratingDTO);
 
         if(!errorMessages.isEmpty()){
-            return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
+            return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages.add(("Could not validate!"))).build();
         }
 
-        Rating existingRating = ratingRepository.get(ratingDTO.getUserId(), ratingDTO.getProductId());
+        Optional<Rating> existingRating = ratingRepository.get(ratingDTO.getUserId(), ratingDTO.getProductId());
 
-        if(existingRating != null){
+        if(existingRating.isPresent()){
             return Response.status(Response.Status.CONFLICT).entity("A Rating from this user for this product already exists").build();
         }
 
-        Rating rating = new Rating();
-        rating.setRating(ratingDTO.getRating());
-        rating.setText(ratingDTO.getText());
-        rating.setDate(ratingDTO.getDate());
-        rating.setUserId(ratingDTO.getUserId());
-        rating.setProductId(ratingDTO.getProductId());
+        Rating rating = createRatingFromRatingDTO(ratingDTO);
 
         ratingRepository.create(rating);
 
@@ -50,12 +46,34 @@ public class RatingService {
         return Response.created(builder.build()).entity(rating).build();
     }
 
+    public  Rating createRatingFromRatingDTO(RatingDTO ratingDTO){
+        return new Rating(
+                ratingDTO.getId(),
+                ratingDTO.getRating(),
+                ratingDTO.getText(),
+                ratingDTO.getDate(),
+                ratingDTO.getUserId(),
+                ratingDTO.getProductId()
+        );
+    }
+
+    public  RatingDTO createRatingDTOFromRating(Rating rating){
+        return new RatingDTO(
+                rating.getId(),
+                rating.getRating(),
+                rating.getText(),
+                rating.getDate(),
+                rating.getUserId(),
+                rating.getProductId()
+        );
+    }
+
     public Response getByUser(Long id){
         List<Rating> ratingList = ratingRepository.getByUser(id);
 
         if(!ratingList.isEmpty()){
             List<RatingDTO> ratingDTOList = ratingList.stream()
-                    .map(rating -> rating.toDTO())
+                    .map(this::createRatingDTOFromRating)
                     .collect(Collectors.toList());
 
             return Response.status(Response.Status.OK).entity(ratingDTOList).build();
@@ -69,7 +87,7 @@ public class RatingService {
 
         if(!ratingList.isEmpty()){
             List<RatingDTO> ratingDTOList = ratingList.stream()
-                    .map(rating -> rating.toDTO())
+                    .map(this::createRatingDTOFromRating)
                     .collect(Collectors.toList());
 
             return Response.status(Response.Status.OK).entity(ratingDTOList).build();
@@ -79,12 +97,35 @@ public class RatingService {
     }
 
     public Response delete(Long id){
-        Rating rating = ratingRepository.get(id);
-        if(rating != null){
+        Optional<Rating> rating = ratingRepository.get(id);
+        if(rating.isPresent()){
             ratingRepository.delete(id);
             return Response.noContent().build();
         } else {
             return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
+
+    public Response updateRatingValue(RatingDTO ratingDTO) {
+        Optional<Rating> rating = ratingRepository.get(ratingDTO.getId());
+
+        if (rating.isPresent()) {
+            ratingRepository.updateRatingValue(ratingDTO.getId(), ratingDTO.getRating());
+            return Response.ok().entity("Rating updated successfully").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Rating not found").build();
+        }
+    }
+
+    public Response updateRatingText(RatingDTO ratingDTO) {
+        Optional<Rating> rating = ratingRepository.get(ratingDTO.getId());
+
+        if (rating.isPresent()) {
+            ratingRepository.updateRatingText(ratingDTO.getId(), ratingDTO.getText());
+            return Response.ok().entity("Rating text updated successfully").build();
+        } else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Rating not found").build();
+        }
+    }
+
 }

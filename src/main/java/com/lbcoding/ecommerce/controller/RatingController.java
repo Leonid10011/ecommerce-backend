@@ -25,9 +25,20 @@ public class RatingController {
     }
 
     @POST
-    @Path("/create")
+    @Path("/")
     public Response create(RatingDTO ratingDTO){
         return ratingService.create(ratingDTO);
+    }
+
+    @PUT
+    @Path("/updateRatingValue")
+    public Response updateRatingValue(RatingDTO ratingDTO) {
+        return ratingService.updateRatingValue(ratingDTO);
+    }
+    @PUT
+    @Path("/updateRatingText")
+    public Response updateRatingText(RatingDTO ratingDTO) {
+        return ratingService.updateRatingText(ratingDTO);
     }
 
     @DELETE
