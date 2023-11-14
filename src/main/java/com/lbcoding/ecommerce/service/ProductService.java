@@ -208,65 +208,6 @@ public class ProductService {
         return Response.created(builder.build()).entity(productDTO).build();
     }
 
-    /*
-    // Create a product
-    @Transactional
-    public Response createProduct(ProductDTO productDTO) {
-        Set<String> validationErrors = DTOValidator.validateDTO(productDTO);
-
-        if (!validationErrors.isEmpty()) {
-            System.out.println("Errors ");
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(validationErrors)
-                    .build();
-        }
-
-        Optional<Product> existingProduct = productRepository.findProductByName(productDTO.getName());
-
-        if (existingProduct.isPresent()) {
-            return Response.status(Response.Status.CONFLICT).entity("Product with this name already exists.").build();
-        }
-
-        Product product = createProductModel(productDTO);
-        productRepository.createProduct(product);
-
-        productDTO.setId(product.getId());
-
-        Inventory existingInventory = inventoryRepository.findByProductId(product.getId());
-
-        Response quantityResponse;
-        Response imageResponse;
-
-        if (existingInventory != null) {
-            quantityResponse = inventoryService.updateQuantity(productDTO.getQuantity(), existingInventory.getId(), true);
-        } else {
-            InventoryDTO inventoryDTO = inventoryService.createInventoryDTO(productDTO);
-            quantityResponse = inventoryService.setQuantity(inventoryDTO);
-        }
-
-        Optional<ProductImage> existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
-
-        if (existingImage.isPresent()) {
-            imageResponse = Response.status(Response.Status.OK).build();
-        } else {
-            ProductImageDTO productImageDTO = productImageService.createProductImageDTO(productDTO);
-            imageResponse = productImageService.addProductImageURL(productImageDTO);
-        }
-
-        if (quantityResponse.getStatus() == 400 || quantityResponse.getStatus() == 409 || imageResponse.getStatus() == 409) {
-            System.out.println("Error " + quantityResponse.getStatus());
-            return Response.status(Response.Status.BAD_REQUEST).entity("There was a problem with quantity or imageURL").build();
-        }
-
-        UriBuilder builder = uriInfo.getAbsolutePathBuilder();
-        builder.build(Long.toString(product.getId()));
-
-        productDTO.setId(product.getId());
-
-        return Response.created(builder.build()).entity(productDTO).build();
-    }
-    */
-    // Search for products by name
     public Response getSearchName(String searchTerm) {
         List<Product> products = productRepository.searchProductsByName(searchTerm);
         if (!products.isEmpty()) {
