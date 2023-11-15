@@ -2,7 +2,7 @@
 This repository is part of my ecommerce project. This serves as a RESTApi for my frontend which can be visited [here](https://www.github.com/Leonid10011/ecommerce-frontend).
 
 ## Currently working on:
-Reworking data structure and cleaning api.
+Reworking data structure and cleaning api at **reworkProduct** branch.
 
 ## Preview
 Hosted on : http://217.72.204.244
