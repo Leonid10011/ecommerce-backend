@@ -85,6 +85,7 @@ import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,10 +103,27 @@ public class InventoryRepository {
     public void create(Inventory inventory) {
         entityManager.persist(inventory);
     }
+    @Transactional
+    public void setQuantity(Long productId, int quantity){
+        logger.info("Setting quantity for product ID: " + productId);
+        Inventory inventory = findOrCreate(productId);
+        inventory.setQuantity(quantity);
+        entityManager.persist(inventory);
+        logger.info("Quantity set successfully for product ID: " + productId);
+    }
 
+    /**
+     * Increments the quantity for a product ID. It will attempt to find an inventory, if none exists, it will create a new one
+     * @param productId
+     * @param quantity
+     */
+    @Transactional
     public void incrementQuantity(Long productId, int quantity){
+        logger.info("Incrementing quantity for product ID: " + productId);
         Inventory inventory = findOrCreate(productId);
         inventory.setQuantity(inventory.getQuantity() + quantity);
+        entityManager.persist(inventory);
+        logger.info("Quantity incremented successfully for product ID: " + productId);
     }
 
     /**
@@ -114,11 +132,14 @@ public class InventoryRepository {
      * @param quantity
      * @throws InsufficientInventoryException
      */
+    @Transactional
     public void decrementQuantity(Long productId, int quantity) throws InsufficientInventoryException{
+        logger.info("Decrementing quantity for product ID: " + productId);
         Inventory inventory = findOrCreate(productId);
         int currentQuantity = inventory.getQuantity();
 
         if(quantity > currentQuantity){
+            logger.info("Insufficient inventory for product ID: " + productId);
             throw new InsufficientInventoryException(
                     "Insufficient inventory for product ID" + productId,
                     currentQuantity
@@ -127,38 +148,58 @@ public class InventoryRepository {
 
         inventory.setQuantity(currentQuantity - quantity);
         entityManager.merge(inventory);
+        logger.info("Quantity decremented successfully for product ID: " + productId);
     }
 
     public Inventory findOrCreate(Long productId) {
+        logger.info("Finding inventory for product ID: " + productId);
         return findByProductId(productId).orElseGet(() -> {
+            logger.info("Inventory not found for product ID: " + productId);
+            logger.info("Persisting new inventory for product ID: " + productId);
             Inventory newInventory = new Inventory();
             newInventory.setProductId(productId);
             newInventory.setQuantity(0);
             entityManager.persist(newInventory);
+            logger.info("Inventory persisted successfully for product ID: " + productId);
             return newInventory;
         });
     }
 
     @Transactional
     public Optional<Inventory> findByProductId(Long productId) {
+        logger.info("Querying find by product ID: " + productId);
         TypedQuery<Inventory> query = entityManager.createQuery(
                         "SELECT i FROM Inventory i WHERE i.productID = :productID", Inventory.class)
                 .setParameter("productID", productId);
         try {
-            return Optional.ofNullable(query.getSingleResult());
+            Inventory inventory = query.getSingleResult();
+            logger.info("Category found by product ID " + productId);
+            return Optional.ofNullable(inventory);
         } catch ( NoResultException e) {
+            logger.info("Category not found for productId ID "+ productId);
             return Optional.empty();
         }
     }
+    public Optional<Inventory> findById(Long id){
+        logger.info("Finding inventory by ID: " + id);
+        Inventory inventory = entityManager.find(Inventory.class, id);
+        if(inventory != null){
+            logger.info("Inventory found by ID: " + id);
+            return Optional.of(inventory);
+        }
+        logger.info("Inventory not found by ID: " + id);
+        return Optional.empty();
+    }
 
+    /**
+     * Attemps to delete inventory by id. If not found, throws an NotFoundException
+     * @param id- The inventory's unique identifier
+     */
     @Transactional
     public void delete(Long id) {
-        Inventory inventory = entityManager.find(Inventory.class, id);
-
-        if (inventory != null) {
-            entityManager.remove(inventory);
-        } else {
-            logger.error("Inventory not found");
-        }
+        logger.info("Deleting inventory by ID: " + id);
+        Inventory inventory = findById(id).orElseThrow(() -> new NotFoundException("Inventory not found by ID: " + id));
+        entityManager.remove(inventory);
+        logger.info("Inventory deleted successfully");
     }
 }

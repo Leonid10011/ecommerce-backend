@@ -50,7 +50,7 @@ public class CategoryRepository {
         return categories;
     }
     /**
-     * Get category by name
+     * Get category by name. If not found throw an NotFoundException.
      * @param name
      * @return
      */

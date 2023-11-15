@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.dto;
 
 import io.smallrye.common.constraint.NotNull;
+import jakarta.validation.constraints.Min;
 
 /**
  * @params int quantity
@@ -9,6 +10,7 @@ import io.smallrye.common.constraint.NotNull;
 public class InventoryDTO {
 
     @NotNull
+    @Min(message = "Quantity must be at least 1", value = 1)
     private int quantity;
 
     @NotNull
