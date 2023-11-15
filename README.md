@@ -1,8 +1,8 @@
 # Fullstack E-commerce Project - Backend
-This repository is part of my ecommerce project. This serves as a RESTApi for my frontend which can be visited [here](https://www.github.com/Leonid10011/ecommerce-frontend).
 
-## Preview
-Hosted on : http://217.72.204.244
+## Currently Working on
+
+I'm currently in the process of reworking this backend repository to align with RESTful standards and clean coding practices.  
 
 ## Technologies Used
 
