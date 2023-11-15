@@ -68,6 +68,15 @@ public class ProductImageService {
 
         return Response.status(Response.Status.NOT_FOUND).entity("ImageURL not found").build();
     }
+    public Response handleProductImage(ProductDTO productDTO) {
+        Optional<ProductImage> existingImage = productImageRepository.getProductImageByURL(productDTO.getImgURL());
+        if (existingImage.isPresent()) {
+            return Response.status(Response.Status.OK).build();
+        } else {
+            ProductImageDTO productImageDTO = createProductImageDTO(productDTO);
+            return addProductImageURL(productImageDTO);
+        }
+    }
     // Helper functions
     public ProductImageDTO createProductImageDTO(ProductDTO productDTO) {
         return new ProductImageDTO(
@@ -81,5 +90,9 @@ public class ProductImageService {
         productImage.setImageURL(productImageDTO.getImageURL());
         productImage.setProductID(productImageDTO.getProductID());
         return productImage;
+    }
+
+    public Optional<ProductImage> getProductImageByProduct(Long productId){
+        return productImageRepository.getProductImageByProduct(productId);
     }
 }

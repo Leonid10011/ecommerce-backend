@@ -15,32 +15,21 @@ public class Inventory {
     @Column(name = "quantity")
     private int quantity;
 
-    private Long productID;
+    private Long productId;
 
     public Inventory(){
 
     }
 
-    /**
-     *
-     * @param quantity
-     * @param productID
-     */
-    public Inventory(int quantity, Long productID) {
+    public Inventory(int quantity, Long productId) {
         this.quantity = quantity;
-        this.productID = productID;
+        this.productId = productId;
     }
 
-    /**
-     *
-     * @param id
-     * @param quantity
-     * @param productID
-     */
-    public Inventory(Long id, int quantity, Long productID) {
+    public Inventory(Long id, int quantity, Long productId) {
         this.id = id;
         this.quantity = quantity;
-        this.productID = productID;
+        this.productId = productId;
     }
 
     public Long getId() {
@@ -59,11 +48,11 @@ public class Inventory {
         this.quantity = quantity;
     }
 
-    public Long getProductID() {
-        return productID;
+    public Long getProductId() {
+        return productId;
     }
 
-    public void setProductID(Long productID) {
-        this.productID = productID;
+    public void setProductId(Long productID) {
+        this.productId = productId;
     }
 }

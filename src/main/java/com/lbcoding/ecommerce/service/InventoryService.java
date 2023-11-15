@@ -13,6 +13,7 @@ import jakarta.validation.ValidatorFactory;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -60,9 +61,9 @@ public class InventoryService {
      */
     public Response updateQuantity(int quantity, Long productId, Boolean operation){
 
-        Inventory existingInventory = inventoryRepository.findByProductId(productId);
+        Optional<Inventory> existingInventory = inventoryRepository.findByProductId(productId);
 
-        if(existingInventory != null){
+        if(existingInventory.isPresent()){
             inventoryRepository.update(quantity, productId, operation);
             return Response.status(Response.Status.OK).entity("Updated").build();
         }
@@ -70,7 +71,7 @@ public class InventoryService {
     }
 
     public Response delete(Long productId){
-        if(inventoryRepository.findByProductId(productId) != null){
+        if(inventoryRepository.findByProductId(productId).isPresent()){
             inventoryRepository.delete(productId);
 
             return Response.noContent().build();
@@ -79,10 +80,10 @@ public class InventoryService {
     }
 
     public Response get(Long productId){
-        Inventory inventory = inventoryRepository.findByProductId(productId);
+        Optional<Inventory> inventory = inventoryRepository.findByProductId(productId);
 
-        if(inventory != null){
-            InventoryDTO inventoryDTO = new InventoryDTO(inventory.getQuantity(), inventory.getProductID());
+        if(inventory.isPresent()){
+            InventoryDTO inventoryDTO = new InventoryDTO(inventory.get().getQuantity(), inventory.get().getProductID());
 
             return Response.status(Response.Status.OK).entity(inventoryDTO).build();
         } else {
@@ -97,11 +98,20 @@ public class InventoryService {
                 productDTO.getId()
         );
     }
+    public Optional<Inventory> getInventoryByProductId(Long productId){
+        return inventoryRepository.findByProductId(productId);
+    }
+    public Response handleInventory(ProductDTO productDTO, Long productId) {
+        Optional<Inventory> existingInventory = inventoryRepository.findByProductId(productId);
+        Response quantityResponse;
 
-    public Inventory createInventoryModel(ProductDTO productDTO){
-        return new Inventory(
-                productDTO.getQuantity(),
-                productDTO.getId()
-        );
+        if (existingInventory.isPresent()) {
+            quantityResponse = updateQuantity(productDTO.getQuantity(), existingInventory.get().getId(), true);
+        } else {
+            InventoryDTO inventoryDTO = createInventoryDTO(productDTO);
+            quantityResponse = setQuantity(inventoryDTO);
+        }
+
+        return quantityResponse;
     }
 }

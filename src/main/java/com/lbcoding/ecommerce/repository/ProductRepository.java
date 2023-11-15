@@ -108,7 +108,7 @@ public class ProductRepository {
         return Optional.ofNullable(entityManager.find(Product.class, id));
     }
 
-    public Optional<Product> findProductByName(String name) {
+    public Optional<Product> findByName(String name) {
         TypedQuery<Product> query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.name = :name", Product.class);
         query.setParameter("name", name);
@@ -117,7 +117,7 @@ public class ProductRepository {
         return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList.get(0));
     }
 
-    public List<Product> getProducts() {
+    public List<Product> findAll() {
         TypedQuery<Product> query = entityManager.createQuery(
                 "SELECT p FROM Product p", Product.class);
 
@@ -125,7 +125,7 @@ public class ProductRepository {
     }
 
     @Transactional
-    public void createProduct(Product product) {
+    public void create(Product product) {
         entityManager.persist(product);
     }
 
@@ -138,11 +138,10 @@ public class ProductRepository {
         });
     }
 
-    public List<Product> searchProductsByName(String searchTerm) {
+    public List<Product> searchByName(String searchTerm) {
         TypedQuery<Product> query = entityManager.createQuery(
                 "SELECT p FROM Product p WHERE p.name LIKE :searchTerm", Product.class
         ).setParameter("searchTerm", "%" + searchTerm + "%");
-        List<Product> products = query.getResultList();
-        return products;
+        return query.getResultList();
     }
 }

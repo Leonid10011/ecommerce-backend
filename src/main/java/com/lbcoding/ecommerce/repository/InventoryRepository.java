@@ -77,9 +77,11 @@ public class InventoryRepository {
 
 package com.lbcoding.ecommerce.repository;
 
+import com.lbcoding.ecommerce.exception.InsufficientInventoryException;
 import com.lbcoding.ecommerce.model.Inventory;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
@@ -87,6 +89,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 
 @ApplicationScoped
 public class InventoryRepository {
@@ -96,46 +99,56 @@ public class InventoryRepository {
     private EntityManager entityManager;
 
     @Transactional
-    public void setQuantity(int quantity, Long productId) {
-        Inventory newInventory = new Inventory();
-        newInventory.setQuantity(quantity);
-        newInventory.setProductID(productId);
-
-        entityManager.persist(newInventory);
+    public void create(Inventory inventory) {
+        entityManager.persist(inventory);
     }
 
-    @Transactional
-    public void update(int quantity, Long productId, boolean isIncrement) {
-        TypedQuery<Inventory> query = entityManager.createQuery(
-                        "SELECT i FROM Inventory i WHERE i.productID = :productId", Inventory.class)
-                .setParameter("productId", productId);
+    public void incrementQuantity(Long productId, int quantity){
+        Inventory inventory = findOrCreate(productId);
+        inventory.setQuantity(inventory.getQuantity() + quantity);
+    }
 
-        try {
-            Inventory existingInventory = query.getSingleResult();
-            if (existingInventory != null) {
-                int oldQuantity = existingInventory.getQuantity();
+    /**
+     * Decrements the quantity of a product. If not sufficient products available throw error with current quantity.
+     * @param productId
+     * @param quantity
+     * @throws InsufficientInventoryException
+     */
+    public void decrementQuantity(Long productId, int quantity) throws InsufficientInventoryException{
+        Inventory inventory = findOrCreate(productId);
+        int currentQuantity = inventory.getQuantity();
 
-                int newQuantity = isIncrement ? oldQuantity + quantity : Math.max(oldQuantity - quantity, 0);
-
-                String jpql = "UPDATE Inventory i SET i.quantity = :quantity WHERE i.productID = :productID";
-                entityManager.createQuery(jpql)
-                        .setParameter("quantity", newQuantity)
-                        .setParameter("productID", productId)
-                        .executeUpdate();
-            }
-        } catch (Exception e) {
-            logger.error("Fehler beim Aktualisieren des Inventars: " + e.getMessage(), e);
+        if(quantity > currentQuantity){
+            throw new InsufficientInventoryException(
+                    "Insufficient inventory for product ID" + productId,
+                    currentQuantity
+            );
         }
+
+        inventory.setQuantity(currentQuantity - quantity);
+        entityManager.merge(inventory);
+    }
+
+    public Inventory findOrCreate(Long productId) {
+        return findByProductId(productId).orElseGet(() -> {
+            Inventory newInventory = new Inventory();
+            newInventory.setProductId(productId);
+            newInventory.setQuantity(0);
+            entityManager.persist(newInventory);
+            return newInventory;
+        });
     }
 
     @Transactional
-    public Inventory findByProductId(Long productId) {
+    public Optional<Inventory> findByProductId(Long productId) {
         TypedQuery<Inventory> query = entityManager.createQuery(
                         "SELECT i FROM Inventory i WHERE i.productID = :productID", Inventory.class)
                 .setParameter("productID", productId);
-
-        List<Inventory> resultList = query.getResultList();
-        return resultList.isEmpty() ? null : resultList.get(0);
+        try {
+            return Optional.ofNullable(query.getSingleResult());
+        } catch ( NoResultException e) {
+            return Optional.empty();
+        }
     }
 
     @Transactional
@@ -144,6 +157,8 @@ public class InventoryRepository {
 
         if (inventory != null) {
             entityManager.remove(inventory);
+        } else {
+            logger.error("Inventory not found");
         }
     }
 }
