@@ -6,60 +6,45 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class Products {
+public class product {
     @Id
     @GeneratedValue
-    private long id;
+    private long product_id;
     private String name;
     private String description;
     private double price;
 
     @ManyToOne
-    @JoinColumn(name = "categoryId")
+    @JoinColumn(name = "category_id")
     private Categories category;
 
     @OneToMany(mappedBy = "product")
     private Set<Images> images;
-    public Products() {
-    }
 
     @ManyToMany
     @JoinTable(
-            name = "ProductSizes",
+            name = "product_size",
             joinColumns = @JoinColumn(name = "categoryId"),
             inverseJoinColumns = @JoinColumn(name = "productId")
     )
     private Set<Sizes> sizes = new HashSet<>();
 
-    public Products(long id, String name, String description, double price, long categoryId) {
-        this.id = id;
+    public product() {
+    }
+
+    public product(long product_id, String name, String description, double price) {
+        this.product_id = product_id;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    public Set<Sizes> getSizes() {
-        return sizes;
+    public long getProduct_id() {s
+        return product_id;
     }
 
-    public void setSizes(Set<Sizes> sizes) {
-        this.sizes = sizes;
-    }
-
-    public Categories getCategory() {
-        return category;
-    }
-
-    public void setCategory(Categories category) {
-        this.category = category;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public void setProduct_id(long product_id) {
+        this.product_id = product_id;
     }
 
     public String getName() {
@@ -86,12 +71,28 @@ public class Products {
         this.price = price;
     }
 
+    public Categories getCategory() {
+        return category;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
+    }
+
     public Set<Images> getImages() {
         return images;
     }
 
     public void setImages(Set<Images> images) {
         this.images = images;
+    }
+
+    public Set<Sizes> getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(Set<Sizes> sizes) {
+        this.sizes = sizes;
     }
 }
 
