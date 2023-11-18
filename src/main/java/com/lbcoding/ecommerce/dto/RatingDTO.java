@@ -5,31 +5,22 @@ import io.smallrye.common.constraint.NotNull;
 import java.util.Date;
 
 public class RatingDTO {
-    private Long id;
+    private long id;
     @NotNull
-    private int rating;
+    private int value;
     private String text;
     @NotNull
     private Date date;
-    private Long userId;
-    private Long productId;
+    private long userId;
+    private long productId;
 
     public RatingDTO(){
 
     }
 
-    /**
-     *
-     * @param id
-     * @param rating
-     * @param text
-     * @param date
-     * @param userId
-     * @param productId
-     */
     public RatingDTO(Long id, int rating, String text, Date date, Long userId, Long productId) {
         this.id = id;
-        this.rating = rating;
+        this.value = rating;
         this.text = text;
         this.date = date;
         this.userId = userId;
@@ -45,11 +36,11 @@ public class RatingDTO {
     }
 
     public int getRating() {
-        return rating;
+        return value;
     }
 
     public void setRating(int rating) {
-        this.rating = rating;
+        this.value = rating;
     }
 
     public String getText() {

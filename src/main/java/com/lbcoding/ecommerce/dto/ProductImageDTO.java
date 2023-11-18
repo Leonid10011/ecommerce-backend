@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.dto;
 
-import com.lbcoding.ecommerce.model.ProductImage;
 import io.smallrye.common.constraint.NotNull;
 
 /**

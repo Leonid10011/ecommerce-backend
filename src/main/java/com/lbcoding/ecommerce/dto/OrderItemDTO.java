@@ -1,7 +1,5 @@
 package com.lbcoding.ecommerce.dto;
 
-import com.lbcoding.ecommerce.model.OrderItem;
-
 /**
  * @params Long orderId
  * @params Long productId
