@@ -6,7 +6,7 @@ Reworking data structure and cleaning api at **reworkProduct** branch.
 ## Database ER Diagram (database schema for reworked backend)
 ![Alt text](er.svg "Title")
 
-## Preview
+## Preview( Old. Will be updated after rework for akcend is finished and frontend is adjusted)
 Hosted on : http://217.72.204.244
 
 ## Technologies Used
