@@ -3,6 +3,8 @@ This repository is part of my ecommerce project. This serves as a RESTApi for my
 
 ## Currently working on:
 Reworking data structure and cleaning api at **reworkProduct** branch.
+## Database ER Diagram
+![Alt text](er.svg "Title")
 
 ## Preview
 Hosted on : http://217.72.204.244

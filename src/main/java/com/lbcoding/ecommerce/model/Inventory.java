@@ -4,40 +4,44 @@
  */
 package com.lbcoding.ecommerce.model;
 
+import com.lbcoding.ecommerce.model.compositeKey.InventoryId;
 import jakarta.persistence.*;
 
 @Entity
+@IdClass(InventoryId.class)
 @Table(name = "Inventory")
 public class Inventory {
     @Id
-    @GeneratedValue
-    private Long id;
+    private Long productId;
+    @Id
+    private Long sizeId;
+
     @Column(name = "quantity")
     private int quantity;
 
-    private Long productId;
-
-    public Inventory(){
-
+    public Inventory() {
     }
 
-    public Inventory(int quantity, Long productId) {
+    public Inventory(Long productId, Long sizeId, int quantity) {
+        this.productId = productId;
+        this.sizeId = sizeId;
         this.quantity = quantity;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public void setProductId(Long productId) {
         this.productId = productId;
     }
 
-    public Inventory(Long id, int quantity, Long productId) {
-        this.id = id;
-        this.quantity = quantity;
-        this.productId = productId;
+    public Long getSizeId() {
+        return sizeId;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        id = id;
+    public void setSizeId(Long sizeId) {
+        this.sizeId = sizeId;
     }
 
     public int getQuantity() {
@@ -46,13 +50,5 @@ public class Inventory {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
-    }
-
-    public Long getProductId() {
-        return productId;
-    }
-
-    public void setProductId(Long productID) {
-        this.productId = productId;
     }
 }

@@ -1,10 +1,11 @@
 package com.lbcoding.ecommerce.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
-@Entity(name = "Product")
+import java.util.HashSet;
+import java.util.Set;
+
+@Entity
 public class Products {
     @Id
     @GeneratedValue
@@ -12,17 +13,45 @@ public class Products {
     private String name;
     private String description;
     private double price;
-    private long categoryId;
 
+    @ManyToOne
+    @JoinColumn(name = "categoryId")
+    private Categories category;
+
+    @OneToMany(mappedBy = "product")
+    private Set<Images> images;
     public Products() {
     }
+
+    @ManyToMany
+    @JoinTable(
+            name = "ProductSizes",
+            joinColumns = @JoinColumn(name = "categoryId"),
+            inverseJoinColumns = @JoinColumn(name = "productId")
+    )
+    private Set<Sizes> sizes = new HashSet<>();
 
     public Products(long id, String name, String description, double price, long categoryId) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.price = price;
-        this.categoryId = categoryId;
+    }
+
+    public Set<Sizes> getSizes() {
+        return sizes;
+    }
+
+    public void setSizes(Set<Sizes> sizes) {
+        this.sizes = sizes;
+    }
+
+    public Categories getCategory() {
+        return category;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
     }
 
     public long getId() {
@@ -57,11 +86,12 @@ public class Products {
         this.price = price;
     }
 
-    public long getCategoryId() {
-        return categoryId;
+    public Set<Images> getImages() {
+        return images;
     }
 
-    public void setCategoryId(long categoryId) {
-        this.categoryId = categoryId;
+    public void setImages(Set<Images> images) {
+        this.images = images;
     }
 }
+

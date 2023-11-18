@@ -5,21 +5,39 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Categories for our products
+ */
 @Entity
-public class Sizes {
+public class Categories {
     @Id
     @GeneratedValue
     private Long id;
-    private String description;
-    @ManyToMany(mappedBy = "sizes")
+
+    private String name;
+    @OneToMany(mappedBy = "category")
     private Set<Products> products = new HashSet<>();
 
-    public Sizes() {
+    public Categories(){
+
     }
 
-    public Sizes(Long id, String description) {
+    /**
+     *
+     * @param name
+     */
+    public Categories(String name) {
+        this.name = name;
+    }
+
+    /**
+     *
+     * @param id
+     * @param name
+     */
+    public Categories(Long id, String name) {
         this.id = id;
-        this.description = description;
+        this.name = name;
     }
 
     public Long getId() {
@@ -30,12 +48,12 @@ public class Sizes {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Set<Products> getProducts() {

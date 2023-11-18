@@ -1,8 +1,8 @@
 package com.lbcoding.ecommerce.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+
+import java.util.Set;
 
 @Entity
 public class Images {
@@ -11,7 +11,9 @@ public class Images {
     private long id;
     private long productId;
     private String imageUrl;
-
+    @ManyToOne
+    @JoinColumn(name = "productId", insertable=false, updatable=false)
+    private Products product;
     public Images() {
     }
 
@@ -43,5 +45,13 @@ public class Images {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Products getProduct() {
+        return product;
+    }
+
+    public void setProduct(Products product) {
+        this.product = product;
     }
 }

@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.model;
 
-import com.lbcoding.ecommerce.dto.RoleDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -40,13 +39,5 @@ public class Role {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public RoleDTO toDTO(){
-        RoleDTO roleDTO = new RoleDTO(
-                this.name
-        );
-
-        return roleDTO;
     }
 }
