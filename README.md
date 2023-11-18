@@ -8,31 +8,31 @@ currently implementing entities aligning with this schema:
 
 ## Entities
 ### category
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller
 
 ### product
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller
 
 ### image
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller
 
 ### size
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller
 
 ### inventory
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller

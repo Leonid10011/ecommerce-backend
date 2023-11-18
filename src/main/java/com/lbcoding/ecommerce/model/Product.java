@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-public class product {
+public class Product {
     @Id
     @GeneratedValue
     private long product_id;
@@ -16,30 +16,34 @@ public class product {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Categories category;
+    private Category category;
 
     @OneToMany(mappedBy = "product")
-    private Set<Images> images;
+    private Set<Image> images;
 
     @ManyToMany
     @JoinTable(
             name = "product_size",
-            joinColumns = @JoinColumn(name = "categoryId"),
-            inverseJoinColumns = @JoinColumn(name = "productId")
+            joinColumns = @JoinColumn(name = "category_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
     )
-    private Set<Sizes> sizes = new HashSet<>();
+    private Set<Size> sizes = new HashSet<>();
 
-    public product() {
+    @OneToMany(mappedBy = "product")
+    private  Set<Inventory> inventories;
+
+
+    public Product() {
     }
 
-    public product(long product_id, String name, String description, double price) {
+    public Product(long product_id, String name, String description, double price) {
         this.product_id = product_id;
         this.name = name;
         this.description = description;
         this.price = price;
     }
 
-    public long getProduct_id() {s
+    public long getProduct_id() {
         return product_id;
     }
 
@@ -71,27 +75,27 @@ public class product {
         this.price = price;
     }
 
-    public Categories getCategory() {
+    public Category getCategory() {
         return category;
     }
 
-    public void setCategory(Categories category) {
+    public void setCategory(Category category) {
         this.category = category;
     }
 
-    public Set<Images> getImages() {
+    public Set<Image> getImages() {
         return images;
     }
 
-    public void setImages(Set<Images> images) {
+    public void setImages(Set<Image> images) {
         this.images = images;
     }
 
-    public Set<Sizes> getSizes() {
+    public Set<Size> getSizes() {
         return sizes;
     }
 
-    public void setSizes(Set<Sizes> sizes) {
+    public void setSizes(Set<Size> sizes) {
         this.sizes = sizes;
     }
 }

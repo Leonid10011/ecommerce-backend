@@ -12,36 +12,43 @@ import jakarta.persistence.*;
 @Table(name = "Inventory")
 public class Inventory {
     @Id
-    private Long productId;
+    private Long product_id;
     @Id
-    private Long sizeId;
-
+    private Long size_id;
     @Column(name = "quantity")
     private int quantity;
+
+    @ManyToOne
+    @JoinColumn(name= "size")
+    private Size size;
+
+    @ManyToOne
+    @JoinColumn(name = "product")
+    private Product product;
 
     public Inventory() {
     }
 
-    public Inventory(Long productId, Long sizeId, int quantity) {
-        this.productId = productId;
-        this.sizeId = sizeId;
+    public Inventory(Long product_id, Long size_id, int quantity) {
+        this.product_id = product_id;
+        this.size_id = size_id;
         this.quantity = quantity;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getProduct_id() {
+        return product_id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct_id(Long product_id) {
+        this.product_id = product_id;
     }
 
-    public Long getSizeId() {
-        return sizeId;
+    public Long getSize_id() {
+        return size_id;
     }
 
-    public void setSizeId(Long sizeId) {
-        this.sizeId = sizeId;
+    public void setSize_id(Long size_id) {
+        this.size_id = size_id;
     }
 
     public int getQuantity() {
@@ -50,5 +57,21 @@ public class Inventory {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+
+    public void setProduct(Product product) {
+        this.product = product;
     }
 }

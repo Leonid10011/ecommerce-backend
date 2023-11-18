@@ -1,7 +1,7 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.request.SizesRequestDTO;
-import com.lbcoding.ecommerce.model.Sizes;
+import com.lbcoding.ecommerce.model.Size;
 import com.lbcoding.ecommerce.repository.SizesRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -51,7 +51,7 @@ public class SizesService {
      */
     public Response findAll(){
         logger.info("Received request get all sizes");
-        List<Sizes> sizes = sizesRepository.findAll();
+        List<Size> sizes = sizesRepository.findAll();
         logger.info("Successfully retrieved sizes");
         return Response.status(Response.Status.OK).entity(sizes).build();
     }

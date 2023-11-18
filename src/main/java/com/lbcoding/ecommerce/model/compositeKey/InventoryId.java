@@ -3,30 +3,30 @@ package com.lbcoding.ecommerce.model.compositeKey;
 import java.io.Serializable;
 
 public class InventoryId implements Serializable {
-    private Long productId;
-    private Long sizeId;
+    private Long product_id;
+    private Long size_id;
 
     public InventoryId() {
     }
 
-    public InventoryId(Long productId, Long sizeId) {
-        this.productId = productId;
-        this.sizeId = sizeId;
+    public InventoryId(Long product_id, Long size_id) {
+        this.product_id = product_id;
+        this.size_id = size_id;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Long getProduct_id() {
+        return product_id;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setProduct_id(Long product_id) {
+        this.product_id = product_id;
     }
 
-    public Long getSizeId() {
-        return sizeId;
+    public Long getSize_id() {
+        return size_id;
     }
 
-    public void setSizeId(Long sizeId) {
-        this.sizeId = sizeId;
+    public void setSize_id(Long size_id) {
+        this.size_id = size_id;
     }
 }

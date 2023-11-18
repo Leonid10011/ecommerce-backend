@@ -4,57 +4,33 @@ import com.lbcoding.ecommerce.dto.UserDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 @Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue
-    private Long id;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
+    private Long user_id;
     private String username;
     private String email;
-    private Long roleId;
     private String password;
 
-    public User(){
+    public User(){}
 
-    }
-
-    /**
-     *
-     * @param username
-     * @param email
-     * @param roleId
-     * @param password
-     */
-    public User(String username, String email, Long roleId, String password) {
+    public User(Long user_id, String username, String email, String password) {
+        this.user_id = user_id;
         this.username = username;
         this.email = email;
-        this.roleId = roleId;
         this.password = password;
     }
 
-    /**
-     *
-     * @param id
-     * @param username
-     * @param email
-     * @param roleId
-     * @param password
-     */
-    public User(Long id, String username, String email, Long roleId, String password) {
-        this.id = id;
-        this.username = username;
-        this.email = email;
-        this.roleId = roleId;
-        this.password = password;
+    public Long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(Long user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {
@@ -73,29 +49,11 @@ public class User {
         this.email = email;
     }
 
-    public Long getRoleId() {
-        return roleId;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.roleId = roleId;
-    }
-
     public String getPassword() {
         return password;
     }
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    //To DTO Konversion
-    public UserDTO toDTO(){
-        return new UserDTO(
-            getUsername(),
-            getEmail(),
-            getRoleId(),
-            getPassword()
-        );
     }
 }
