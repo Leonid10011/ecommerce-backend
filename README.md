@@ -9,9 +9,9 @@ currently implementing entities aligning with this schema:
 ## Entities
 ### category
 - [x] model
-- [ ] repository
-- [ ] service
-- [ ] controller
+- [x] repository
+- [x] service
+- [x] controller
 
 ### product
 - [x] model
@@ -38,7 +38,7 @@ currently implementing entities aligning with this schema:
 - [ ] controller
 
 ### user
-- [ ] model
+- [x] model
 - [ ] repository
 - [ ] service
 - [ ] controller

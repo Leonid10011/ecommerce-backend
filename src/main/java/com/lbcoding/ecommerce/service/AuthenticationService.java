@@ -19,7 +19,7 @@ public class AuthenticationService {
     public Response login(CredentialDTO credentialDTO) {
         // Validieren Sie die Anmeldeinformationen und den Benutzer
         if (isValidUser(credentialDTO.getUsername(), credentialDTO.getPassword())) {
-            Long UserId = userRepository.findUserByUsername(credentialDTO.getUsername()).get().getId();
+            Long UserId = userRepository.findUserByUsername(credentialDTO.getUsername()).get().getUser_id();
             String token = generateJwtToken(credentialDTO.getUsername(),  UserId);
             return Response.status(Response.Status.OK).entity(token).build();
         } else {

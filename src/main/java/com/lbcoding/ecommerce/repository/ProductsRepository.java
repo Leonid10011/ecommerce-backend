@@ -99,7 +99,7 @@ public class ProductsRepository {
         // find category ID and insert
         logger.info("Retrieving and setting category for product with ID: " + product.getProduct_id());
         TypedQuery<Category>  query = entityManager.createQuery(
-                "SELECT c FROM Categories c WHERE c.name = :categoryName", Category.class
+                "SELECT c FROM category c WHERE c.name = :categoryName", Category.class
         ).setParameter("categoryName", productDTO.getCategory());
         try{
             Category category = query.getSingleResult();
@@ -117,8 +117,8 @@ public class ProductsRepository {
             newSize.getProducts().add(product);
 
             Inventory inventory = new Inventory();
-            inventory.setProductId(product.getProduct_id());
-            inventory.setSizeId(newSize.getSize_id());
+            inventory.setProduct_id(product.getProduct_id());
+            inventory.setSize_id(newSize.getSize_id());
             inventory.setQuantity(100);
             entityManager.persist(inventory);
         });

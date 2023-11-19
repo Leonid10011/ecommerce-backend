@@ -38,9 +38,9 @@ public class SizesRepository {
             throw new NonUniqueResultException("Size already exists with description: " + sizeDTO.getDescription());
         }
         Size newSize = new Size();
-        newSize.setDescription(sizeDTO.getDescription());
+        newSize.setName(sizeDTO.getDescription());
         entityManager.persist(newSize);
-        logger.info("Size persisted successfully with ID: " + newSize.getId());
+        logger.info("Size persisted successfully with ID: " + newSize.getSize_id());
     }
 
     /**
