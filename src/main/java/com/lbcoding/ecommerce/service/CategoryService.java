@@ -1,7 +1,6 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.CategoryDTO;
-import com.lbcoding.ecommerce.dto.request.CategoriesRequestDTO;
 import com.lbcoding.ecommerce.model.Category;
 import com.lbcoding.ecommerce.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -9,7 +8,9 @@ import jakarta.inject.Inject;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
+import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,8 +18,8 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class CategoriesService {
-    public final static Logger logger = LoggerFactory.getLogger(CategoriesService.class);
+public class CategoryService {
+    public final static Logger logger = LoggerFactory.getLogger(CategoryService.class);
     @Inject
     CategoryRepository categoryRepository;
 
@@ -28,7 +29,7 @@ public class CategoriesService {
      * @return status code 201 on success. Status code 409 if such category already exists.
      */
     @Transactional
-    public Response create(CategoriesRequestDTO categoryDTO){
+    public Response create(CategoryDTO categoryDTO){
         logger.info("Received request create Categories");
         try {
             Category category = new Category();

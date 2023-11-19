@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.dto.request.CategoriesRequestDTO;
 import com.lbcoding.ecommerce.model.Category;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;

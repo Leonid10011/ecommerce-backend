@@ -1,8 +1,7 @@
 package com.lbcoding.ecommerce.controller;
 
 import com.lbcoding.ecommerce.dto.CategoryDTO;
-import com.lbcoding.ecommerce.dto.request.CategoriesRequestDTO;
-import com.lbcoding.ecommerce.service.CategoriesService;
+import com.lbcoding.ecommerce.service.CategoryService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
@@ -10,7 +9,7 @@ import jakarta.ws.rs.core.Response;
 @Path("/category")
 public class CategoryController {
     @Inject
-    CategoriesService categoriesService;
+    CategoryService categoriesService;
 
     @GET
     @Path("/{name}")
@@ -20,7 +19,7 @@ public class CategoryController {
 
     @POST
     @Path("/")
-    public Response create(CategoriesRequestDTO categoryDTO){
+    public Response create(CategoryDTO categoryDTO){
         return categoriesService.create(categoryDTO);
     }
 
