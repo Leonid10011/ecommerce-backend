@@ -1,7 +1,7 @@
 package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.dto.request.SizesRequestDTO;
-import com.lbcoding.ecommerce.model.Sizes;
+import com.lbcoding.ecommerce.model.Size;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.*;
@@ -37,19 +37,19 @@ public class SizesRepository {
             logger.warn("Size already exists with description: " + sizeDTO.getDescription());
             throw new NonUniqueResultException("Size already exists with description: " + sizeDTO.getDescription());
         }
-        Sizes newSize = new Sizes();
-        newSize.setDescription(sizeDTO.getDescription());
+        Size newSize = new Size();
+        newSize.setName(sizeDTO.getDescription());
         entityManager.persist(newSize);
-        logger.info("Size persisted successfully with ID: " + newSize.getId());
+        logger.info("Size persisted successfully with ID: " + newSize.getSize_id());
     }
 
     /**
      * Retrieves all Sizes objects. If none exist returns an empty list.
      * @return List of Sizes or an empty list.
      */
-    public List<Sizes> findAll(){
-        TypedQuery<Sizes> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s", Sizes.class
+    public List<Size> findAll(){
+        TypedQuery<Size> query = entityManager.createQuery(
+                "SELECT s FROM Sizes s", Size.class
         );
 
         return query.getResultList();
@@ -62,8 +62,8 @@ public class SizesRepository {
      *  If size by name does not exist returns an empty Optional object.
      */
     @Transactional
-    public Optional<Sizes> findById(Long id){
-        return Optional.ofNullable(entityManager.find(Sizes.class, id));
+    public Optional<Size> findById(Long id){
+        return Optional.ofNullable(entityManager.find(Size.class, id));
     }
 
     /**
@@ -72,14 +72,14 @@ public class SizesRepository {
      * @return Sizes object if successful. If nothing was found returns an empty Optional object.
      */
     @Transactional
-    public Optional<Sizes> findByDescription(String description){
+    public Optional<Size> findByDescription(String description){
         logger.info("Querying for size by description");
-        TypedQuery<Sizes> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.description = :description", Sizes.class
+        TypedQuery<Size> query = entityManager.createQuery(
+                "SELECT s FROM Sizes s WHERE s.description = :description", Size.class
         ).setParameter("description", description);
 
         try {
-            Sizes result = query.getSingleResult();
+            Size result = query.getSingleResult();
             logger.info("Size found for description: " + description);
             return Optional.of(result);
         } catch( NoResultException e ) {
@@ -96,7 +96,7 @@ public class SizesRepository {
     @Transactional
     public void delete(Long id){
         logger.info("Deleting size with ID: " + id);
-        Sizes size = findById(id).orElseThrow(() ->new EntityNotFoundException("Size with ID " + id + " not found"));
+        Size size = findById(id).orElseThrow(() ->new EntityNotFoundException("Size with ID " + id + " not found"));
         logger.info("Size with ID " + id + " deleted successfully");
         entityManager.remove(size);
     }
@@ -106,8 +106,8 @@ public class SizesRepository {
      */
     private boolean doesSizeExists(String description){
         logger.info("Querying for size by description");
-        TypedQuery<Sizes> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.description = :description", Sizes.class
+        TypedQuery<Size> query = entityManager.createQuery(
+                "SELECT s FROM Sizes s WHERE s.description = :description", Size.class
         ).setParameter("description", description);
         if(query.getResultList().isEmpty())
             return false;

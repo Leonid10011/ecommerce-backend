@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.model;
 
-import com.lbcoding.ecommerce.dto.RatingDTO;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;

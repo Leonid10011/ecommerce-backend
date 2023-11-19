@@ -157,7 +157,7 @@ public class InventoryRepository {
             logger.info("Inventory not found for product ID: " + productId);
             logger.info("Persisting new inventory for product ID: " + productId);
             Inventory newInventory = new Inventory();
-            newInventory.setProductId(productId);
+            newInventory.setProduct_id(productId);
             newInventory.setQuantity(0);
             entityManager.persist(newInventory);
             logger.info("Inventory persisted successfully for product ID: " + productId);
