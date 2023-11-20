@@ -3,8 +3,7 @@
 Reworking backend such that it follows RESTFul specification. 
 
 # Implementing Entities
-currently implementing entities aligning with this schema:
-![Alt text](path_to_svg_file.svg "Title")
+currently implementing entities
 
 ## Entities
 ### category
