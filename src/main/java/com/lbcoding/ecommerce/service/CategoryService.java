@@ -26,7 +26,7 @@ public class CategoryService {
     /**
      * Attempts to create a new category entry with the given DTO.
      * @param categoryDTO
-     * @return status code 201 on success. Status code 409 if such category already exists.
+     * @return status code 201 on success. Status code 409 if such category already exists. 500 if something unexpected happens.
      */
     @Transactional
     public Response create(CategoryDTO categoryDTO){
@@ -35,9 +35,13 @@ public class CategoryService {
             Category category = new Category();
             category.setName(categoryDTO.getName());
             categoryRepository.create(category);
-            return Response.status(Response.Status.CREATED).entity("created").build();
+            return Response.status(Response.Status.CREATED).entity("Category created").build();
         } catch ( NonUniqueResultException e) {
+            logger.warn("Attempt to create a category that already exists: " + categoryDTO.getName());
             return Response.status(Response.Status.CONFLICT).entity("Already exists").build();
+        } catch ( Exception e) {
+            logger.error("Unexpected error occurred while creating category: " + categoryDTO.getName());
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal server error").build();
         }
     }
 
