@@ -43,3 +43,73 @@ public interface ICategoryRepository {
 ```
 
 ### Service
+#### Interface
+```java
+public interface ICategoryService {
+    Response create(CategoryDTO categoryDTO);
+    Response findAll();
+    Response findById(Long id);
+    Response findByName(String name);
+    Response update(CategoryDTO categoryDTO);
+    Response delete(Long id);
+}
+```
+
+### Controller
+Endpoints
+#### Get Category by Name
+
+- **METHOD** `GET`
+- **URL Path**  `/api/category/{name}`
+- **Request Parameters** 
+  - `name` (`String`): The name of the category to be retrieved
+- **Success Response**
+  - **Code** `200 OK`
+  - **Content**
+  ```json
+    {
+      "category_id": "id",
+      "name": "{name}"
+    }
+  ```
+- **Error Response**
+  - **Code**: `404 NOT FOUND`
+  - **Content**
+    ```text
+    Could not find category with name: "{name}"
+    ```
+    - **Code**: `400 BAD REQUEST`
+    - **Content**
+    ```text
+    Should not happen
+    ```
+
+- **Example call**
+    ```shell
+    curl -X GET http://example.com/api/category/name -H "Content-Type: application/json"
+    ```
+
+#### Create Category
+- **Method** `POST`
+- **URL Path**: `/api/category/`
+- **Request Parameters**
+  - None
+- **Success Response**
+  - **Code** `201 CREATED`
+  - **Content**
+    ```text
+        Category created
+    ```
+- **Error Response**
+  - **Code** `409 CONFLICT`
+    ```text
+        Attempt to create a category that already exists: ${categoryDTO.getName()}
+    ```
+  - **Code** `500 INTERNAL SERVER ERROR`
+    ```text
+    "Internal server error"
+    ```
+- **Example call**
+    ```shell
+      curl -X POST http://example.com/api/category/ -H "Content-Type: application/json" -d '{"name": "New Category Name"}'
+    ```

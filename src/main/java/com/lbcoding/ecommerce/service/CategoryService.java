@@ -3,6 +3,7 @@ package com.lbcoding.ecommerce.service;
 import com.lbcoding.ecommerce.dto.CategoryDTO;
 import com.lbcoding.ecommerce.model.Category;
 import com.lbcoding.ecommerce.repository.interfaces.ICategoryRepository;
+import com.lbcoding.ecommerce.service.inerfaces.ICategoryService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.NonUniqueResultException;
@@ -16,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class CategoryService {
+public class CategoryService implements ICategoryService {
     public final static Logger logger = LoggerFactory.getLogger(CategoryService.class);
     @Inject
     ICategoryRepository categoryRepository;
@@ -36,7 +37,7 @@ public class CategoryService {
             return Response.status(Response.Status.CREATED).entity("Category created").build();
         } catch ( NonUniqueResultException e) {
             logger.warn("Attempt to create a category that already exists: " + categoryDTO.getName());
-            return Response.status(Response.Status.CONFLICT).entity("Already exists").build();
+            return Response.status(Response.Status.CONFLICT).entity("Attempt to create a category that already exists: " + categoryDTO.getName()).build();
         } catch ( Exception e) {
             logger.error("Unexpected error occurred while creating category: " + categoryDTO.getName());
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Internal server error").build();
