@@ -2,15 +2,13 @@ package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.CategoryDTO;
 import com.lbcoding.ecommerce.model.Category;
-import com.lbcoding.ecommerce.repository.CategoryRepository;
+import com.lbcoding.ecommerce.repository.interfaces.ICategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
-import jdk.jfr.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,11 +19,11 @@ import java.util.Optional;
 public class CategoryService {
     public final static Logger logger = LoggerFactory.getLogger(CategoryService.class);
     @Inject
-    CategoryRepository categoryRepository;
+    ICategoryRepository categoryRepository;
 
     /**
      * Attempts to create a new category entry with the given DTO.
-     * @param categoryDTO
+     * @param categoryDTO The DTO that as the information that will be used to create a new Category entity.
      * @return status code 201 on success. Status code 409 if such category already exists. 500 if something unexpected happens.
      */
     @Transactional
@@ -47,7 +45,7 @@ public class CategoryService {
 
     /**
      * Attempts to find alle categories.Will always return a list of categories. If none were found returns an empty list.
-     * @return
+     * @return Returns a Response Object with either a list with found categories or an empty list with status code 200.
      */
     public Response findAll(){
         logger.info("Received request to find all categories");
@@ -60,7 +58,7 @@ public class CategoryService {
      * Attempts to find a category with given ID.
      * @param id The unique identifier of the category.
      * @return A category with the given id and status code 200.
-     *          Otherwise returns status code 404.
+     *          Otherwise, returns status code 404.
      */
     public Response findById(Long id){
         logger.info("Received request to find category by ID: " + id);
@@ -76,11 +74,11 @@ public class CategoryService {
     }
 
     /**
-     * Attempts to retrieve an category with given name parameter.
-     * @param name
+     * Attempts to retrieve a category with given name parameter.
+     * @param name The name of the category to find
      * @return The category with the given name and a status code 200.
      *          If category does not exist, return status code 404.
-     *          If (shouldn't happen) multiple entries with that name exist throw an NonUniqueResultException" with status code 400
+     *          If (shouldn't happen) multiple entries with that name exist throw an NonUniqueResultException with status code 400
      */
     public Response findByName(String name){
         logger.info("Received request to find category by name: " + name);
@@ -102,7 +100,7 @@ public class CategoryService {
 
     /**
      * Updates the values of category. I.e. updates the name attribute passed in the categoryDTO
-     * @param categoryDTO
+     * @param categoryDTO The DTO that has the information that will be updated
      * @return The updated categoryDTO with status code 200.
      *  Or returns NOT_FOUND (404) status code when category does not exist.
      */
@@ -123,7 +121,7 @@ public class CategoryService {
     /**
      * Attempts to delete a category by its id.
      * @param id category_id
-     * @return noCOntent on succes. NOT_FOUND (404) status code if not category does not exists.
+     * @return noContent on success. NOT_FOUND (404) status code if not category does not exist.
      */
     public Response delete(Long id){
         logger.info("Received request to delete category by ID: " + id);
@@ -139,8 +137,8 @@ public class CategoryService {
 
     /**
      * Helper Function
-     * @param category
-     * @return
+     * @param category The category that needs to be transformed to a DTO
+     * @return A DTO with the category's information.
      */
     private CategoryDTO categoryEntityToDTO(Category category){
         return new CategoryDTO(
@@ -151,8 +149,8 @@ public class CategoryService {
 
     /**
      * Helper Function
-     * @param categoryDTO
-     * @return
+     * @param categoryDTO The DTO that has the information for the creation of the entity
+     * @return A category entity with the information of the provided DTO.
      */
     private Category categoryDTOtoEntity(CategoryDTO categoryDTO){
         return new Category(

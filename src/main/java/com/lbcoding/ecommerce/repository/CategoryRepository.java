@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.model.Category;
+import com.lbcoding.ecommerce.repository.interfaces.ICategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class CategoryRepository {
+public class CategoryRepository implements ICategoryRepository {
     public static final Logger logger = LoggerFactory.getLogger(CategoryRepository.class);
     @PersistenceContext
     private EntityManager entityManager;

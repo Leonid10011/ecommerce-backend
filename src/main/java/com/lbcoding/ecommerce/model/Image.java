@@ -9,17 +9,17 @@ public class Image {
     @GeneratedValue
     private long image_id;
     private long product_id;
-    private String imageUrl;
+    private String url;
     @ManyToOne
     @JoinColumn(name = "product_id", insertable=false, updatable=false)
     private Product product;
     public Image() {
     }
 
-    public Image(long image_id, long product_id, String imageUrl) {
+    public Image(long image_id, long product_id, String url) {
         this.image_id = image_id;
         this.product_id = product_id;
-        this.imageUrl = imageUrl;
+        this.url = url;
     }
 
     public long getImage_id() {
@@ -39,11 +39,11 @@ public class Image {
     }
 
     public String getImageUrl() {
-        return imageUrl;
+        return url;
     }
 
     public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+        this.url = imageUrl;
     }
 
     public Product getProduct() {
