@@ -65,7 +65,7 @@ Endpoints
   - `name` (`String`): The name of the category to be retrieved
 - **Success Response**
   - **Code** `200 OK`
-  - **Content**
+  - **Content** json object
   ```json
     {
       "category_id": "id",
@@ -74,12 +74,12 @@ Endpoints
   ```
 - **Error Response**
   - **Code**: `404 NOT FOUND`
-  - **Content**
+  - **Content** text
     ```text
     Could not find category with name: "{name}"
     ```
     - **Code**: `400 BAD REQUEST`
-    - **Content**
+    - **Content** text
     ```text
     Should not happen
     ```
@@ -94,9 +94,11 @@ Endpoints
 - **URL Path**: `/api/category/`
 - **Request Parameters**
   - None
+- **Request Body**
+  - CategoryDTO
 - **Success Response**
   - **Code** `201 CREATED`
-  - **Content**
+  - **Content** text
     ```text
         Category created
     ```
@@ -113,3 +115,40 @@ Endpoints
     ```shell
       curl -X POST http://example.com/api/category/ -H "Content-Type: application/json" -d '{"name": "New Category Name"}'
     ```
+  
+#### Update Category
+- **Method** `PUT`
+- **URL Path** `/api/category/`
+- **Request Parameters**
+  - None
+- **Request Body**
+  - CategoryDTO 
+- **Success Response**
+  - **Code** `200 OK`
+  - **Content**
+    - `categoryDTO` with updated values
+  - **Error Response**
+    - **Code** `404 NOT FOUND`
+    - **Content** text
+      ```text
+        "Category not found with ID: " + category.getCategory_id()
+      ```
+  ### Delete Category
+- **Method** `DELETE`
+- **URL Path** `/api/category/{id}`
+- **Request Parameters**
+  - `id`: The unique identifier of the category to be deleted
+- **Request Body**
+  - None
+- **Success Response**
+  - **Code** `204 NO CONTENT`
+  - **Content** text
+     ```text
+     "Category deleted successfully"
+     ```
+- **Error Response**
+  - **Code** `404 NOT FOUND`
+  - **Content**
+     ```text
+     "Category does not exists"
+     ```
