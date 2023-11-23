@@ -109,9 +109,6 @@ public class CategoryRepository implements ICategoryRepository {
                 "SELECT c FROM Category c WHERE c.name = :name", Category.class);
         query.setParameter("name", name);
 
-        if(query.getResultList().isEmpty())
-            return false;
-        else
-            return true;
+        return !query.getResultList().isEmpty();
     }
 }

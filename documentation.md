@@ -1,4 +1,7 @@
 # Database Entities Documentation
+- [Category](#category-entity)
+- [Image](#image-entity)
+- 
 ## Category Entity
 
 ### Overview 
@@ -152,3 +155,24 @@ Endpoints
      ```text
      "Category does not exists"
      ```
+## Image Entity
+### Overview
+- **Purpose**
+  - This section focuses on the 'image' table, which is responsible for storing the images of our products. It stores all the images corresponding to a product.
+- **Relationship**
+  - In terms of database relationships, the 'product' table maintainse a Many-To-One connection with the 'products' table. This design ensures that each product is associated with multiple images.
+
+### Entity Implementation
+#### Entity Diagram
+  ![Image ER](dist/image_er.png)
+- **Field Description**
+  - `image_id`: The unique identifier of the image
+  - `product_id`: The unique identifier of the product this image belongs to
+  - `url`: The location of the image for the corresponding product
+### Data Transfer Object
+#### DTO Structure
+  - `long` `image_id`: The unique identifier of the image
+  - `long` `product_id`: The unique identifier of the product this image belongs to
+  - `String` `url`: The location of the image for the corresponding product
+#### Mapping Logic
+  - Maps each attribute of the entity on one to one onto the DTO.

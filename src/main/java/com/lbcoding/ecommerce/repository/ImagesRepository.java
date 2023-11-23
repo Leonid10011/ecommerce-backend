@@ -1,9 +1,11 @@
 package com.lbcoding.ecommerce.repository;
 
+import com.lbcoding.ecommerce.model.Category;
 import com.lbcoding.ecommerce.model.Image;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,15 +19,28 @@ public class ImagesRepository {
     @Inject
     EntityManager entityManager;
 
+    /**
+     * Persists an image with the provided product_id and url to the database. If an entry with that product_id and url already exists, throws an NonUniqueResultException.
+     * @param image An Image entity
+     */
     public void create(Image image) {
       if(image == null){
           throw new IllegalArgumentException("Image cannot be null");
       }
       logger.info("Persisting new image");
+      if(doesImageWithProductAndUrlExists(image)){
+          String errorMessage = "Image for product_id " + image.getProduct() +  " and url " + image.getImageUrl() + " already exists";
+          throw new NonUniqueResultException(errorMessage);
+      }
       entityManager.persist(image);
       logger.info("Image persisted successfully with ID: " + image.getImage_id());
     }
 
+    /**
+     * Retrieves an image by its id.
+     * @param id
+     * @return
+     */
     public Optional<Image> findById(Long id){
         return Optional.ofNullable(entityManager.find(Image.class, id));
     }
@@ -36,19 +51,20 @@ public class ImagesRepository {
      * @param productId
      * @return Images - returns an image when at least one was found or throws Exception indicating no image exists.
      */
-    public Image findByProductId(Long productId){
+    public Optional<Image> findByProductId(Long productId){
         logger.debug("Querying for image by productId: " + productId);
         TypedQuery<Image> query = entityManager.createQuery(
                 "SELECT i FROM Images i WHERE i.productId = :productId", Image.class
         ).setParameter("productId", productId);
         // Handle possible multiple pictures
-        List<Image> results = query.setMaxResults(1).getResultList();
-        if(results.isEmpty()) {
+        try {
+            List<Image> results = query.setMaxResults(1).getResultList();
+            logger.info("Image found for product ID: " + productId);
+            return Optional.of(results.get(0));
+        } catch( NoResultException e ) {
             logger.info("No image found for product ID: " + productId);
-            throw new NotFoundException("Image not found for product ID: " + productId);
+            return Optional.empty();
         }
-        logger.info("Image found for product ID: " + productId);
-        return results.get(0);
     }
 
     /**
@@ -60,5 +76,26 @@ public class ImagesRepository {
         Image image = findById(id).orElseThrow(() -> new EntityNotFoundException("Image with ID " + id + " not found"));
         entityManager.remove(image);
         logger.info("Image with ID: " + id + " deleted successfully");
+    }
+
+    @Transactional
+    public void update(Image image){
+        Image updatedImage = entityManager.find(Image.class, image.getImage_id());
+        if(updatedImage != null){
+            updatedImage.setProduct_id(image.getProduct_id());
+            updatedImage.setImageUrl(image.getImageUrl());
+            entityManager.merge(updatedImage);
+        } else {
+            throw new NotFoundException("Category not found with ID: " + image.getImage_id());
+        }
+    }
+
+    private boolean doesImageWithProductAndUrlExists(Image image){
+        TypedQuery<Image> query = entityManager.createQuery(
+                "SELECT i FROM image i WHERE i.product_id =:product_id AND i.url =:url", Image.class
+        ).setParameter("product_id", image.getProduct_id())
+                .setParameter("url", image.getImageUrl());
+
+        return !query.getResultList().isEmpty();
     }
 }
