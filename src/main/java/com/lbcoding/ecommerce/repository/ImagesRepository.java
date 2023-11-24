@@ -29,7 +29,7 @@ public class ImagesRepository {
       }
       logger.info("Persisting new image");
       if(doesImageWithProductAndUrlExists(image)){
-          String errorMessage = "Image for product_id " + image.getProduct() +  " and url " + image.getImageUrl() + " already exists";
+          String errorMessage = "Image for product_id " + image.getProduct_id() +  " and url " + image.getImageUrl() + " already exists";
           throw new NonUniqueResultException(errorMessage);
       }
       entityManager.persist(image);
