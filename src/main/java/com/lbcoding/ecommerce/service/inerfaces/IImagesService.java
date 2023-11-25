@@ -5,4 +5,5 @@ import jakarta.ws.rs.core.Response;
 
 public interface IImagesService {
     Response create(ImageDTO imageDTO);
+    Response getByProduct(long product_id);
 }

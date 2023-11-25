@@ -12,6 +12,7 @@ import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
@@ -50,6 +51,25 @@ public class ImagesService implements IImagesService {
             return Response.status(Response.Status.CONFLICT).entity(errorMessage).build();
         }
     }
+
+    /**
+     * Handles the retrieval of images for a product. If images are found returns a list of images and status code 200.
+     * When the list is empty sends a message and a status code 404, to allow the client handle no images, like a "no image found" image.
+     * @param product_id The unique identifier of the product.
+     * @return List<Image> and status code 200 on Success.
+     *  Empty List and status 404 when nothing was found.
+     */
+    @Override
+    public Response getByProduct(long product_id) {
+        logger.info("Received request to retrieve images for product ID: " + product_id);
+        List<Image> images = imagesRepository.findByProductId(product_id);
+        if(images.isEmpty()){
+            return Response.status(Response.Status.NOT_FOUND).entity("No images found for product ID: " + product_id).build();
+        } else {
+            return Response.status(Response.Status.OK).entity(images).build();
+        }
+    }
+
 
     private ImageDTO imageEntityToDTO(Image image){
         return new ImageDTO(

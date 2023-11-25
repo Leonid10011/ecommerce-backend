@@ -51,22 +51,16 @@ public class ImagesRepository {
      * @param productId
      * @return Images - returns an image when at least one was found or throws Exception indicating no image exists.
      */
-    public Optional<Image> findByProductId(Long productId){
+    public List<Image> findByProductId(Long productId){
         logger.debug("Querying for image by productId: " + productId);
         TypedQuery<Image> query = entityManager.createQuery(
                 "SELECT i FROM Images i WHERE i.productId = :productId", Image.class
         ).setParameter("productId", productId);
         // Handle possible multiple pictures
-        try {
-            List<Image> results = query.setMaxResults(1).getResultList();
-            logger.info("Image found for product ID: " + productId);
-            return Optional.of(results.get(0));
-        } catch( NoResultException e ) {
-            logger.info("No image found for product ID: " + productId);
-            return Optional.empty();
-        }
+        List<Image> results = query.getResultList();
+        logger.info("Image found for product ID: " + productId);
+        return results;
     }
-
     /**
      * Deletes an image by its id. If not found throw an EntityNotFoundException
      * @param id
