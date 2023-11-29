@@ -20,9 +20,9 @@ currently implementing entities
 
 ### image
 - [x] model
-- [ ] repository
-- [ ] service
-- [ ] controller
+- [x] repository
+- [x] service
+- [x] controller
 
 ### size
 - [x] model
