@@ -64,6 +64,7 @@ public class ImagesRepository {
     /**
      * Deletes an image by its id. If not found throw an EntityNotFoundException
      * @param id
+     * @throws EntityNotFoundException when image with give id was not found.
      */
     public void delete(Long id){
         logger.info("Deleting image with ID: " + id);
@@ -72,6 +73,11 @@ public class ImagesRepository {
         logger.info("Image with ID: " + id + " deleted successfully");
     }
 
+    /**
+     * Updates an existing image with the given image data.
+     * @param image An Image entity which holds the new image values
+     * @throws NotFoundException when the image with the given id does not exist
+     */
     @Transactional
     public void update(Image image){
         Image updatedImage = entityManager.find(Image.class, image.getImage_id());

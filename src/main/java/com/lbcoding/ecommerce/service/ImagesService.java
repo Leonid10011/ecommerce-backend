@@ -7,12 +7,15 @@ import com.lbcoding.ecommerce.service.inerfaces.IImagesService;
 import com.lbcoding.ecommerce.service.validation.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NonUniqueResultException;
+import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @ApplicationScoped
@@ -70,6 +73,58 @@ public class ImagesService implements IImagesService {
         }
     }
 
+    /**
+     * Attempts to update the values of an existing image in the database.
+     * @param imageDTO The DTO containing the new values for the image
+     * @return The update Image as DTO and status code 200 on success.
+     * On failure returns a message and status code 404.
+     */
+    @Override
+    public Response update(ImageDTO imageDTO){
+        Set<String> errorMessage = DTOValidator.validateDTO(imageDTO);
+        if(!errorMessage.isEmpty()){
+            return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage).build();
+        }
+
+        Image image = imageDTOtoEntity(imageDTO);
+
+        try {
+            imagesRepository.update(image);
+            ImageDTO responseImage = imageEntityToDTO(image);
+
+            return Response.status(Response.Status.OK).entity(responseImage).build();
+        } catch( NotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Image does not exists with ID: " + image.getImage_id()).build();
+        }
+    }
+
+    @Override
+    public Response delete(long id){
+        try {
+            imagesRepository.delete(id);
+            return Response.noContent().entity("Image deleted successfully").build();
+        } catch( EntityNotFoundException e) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Image not found with ID: " + id).build();
+        }
+    }
+
+    /**
+     * Attempts to find an image for the given ID.
+     * @param id The unique identifier of the image to find
+     * @return On success returns a Response containing the found image as DTO and status code 200.
+     * On Failure returns a message and status code 404.
+     */
+    @Override
+    public Response getById(long id) {
+        Optional<Image> image = imagesRepository.findById(id);
+        if(image.isPresent()){
+            ImageDTO imageDTO = imageEntityToDTO(image.get());
+            return Response.status(Response.Status.OK).entity(imageDTO).build();
+        } else {
+            // When image is empty, it means none was found for that ID
+            return Response.status(Response.Status.NOT_FOUND).entity("Image not found for ID: " + id).build();
+        }
+    }
 
     private ImageDTO imageEntityToDTO(Image image){
         return new ImageDTO(
