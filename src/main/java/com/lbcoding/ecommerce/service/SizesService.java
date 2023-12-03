@@ -49,8 +49,9 @@ public class SizesService implements ISizesService {
         logger.info("Received request create size");
         try {
             sizesRepository.create(size);
+            SizeDTO resDTO = sizeEntityToDTO(size);
             logger.info("Created size successfully");
-            return Response.status(Response.Status.CREATED).entity("Created size successfully").build();
+            return Response.status(Response.Status.CREATED).entity(resDTO).build();
         } catch( NonUniqueResultException e) {
             logger.warn("Request declined. Size with the same name already exists");
             return Response.status(Response.Status.CONFLICT).entity("Size could not be created. Size with same name already exists.").build();

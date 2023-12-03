@@ -1,7 +1,9 @@
 # Database Entities Documentation
 - [Category](#category-entity)
+  - [controller](#controller)
 - [Image](#image-entity)
-- 
+  - [controller](#controller)
+- [Size](#size-entity)
 # Category Entity Documentation
 
 ## Overview
@@ -317,7 +319,7 @@ The product entity represents the main data of an ecommerce application. It stor
 
 ## Purpose 
 
-The size represents a size characteristic of a `prodcut`. 
+The size represents a size characteristic of a `product`. 
 
 ## Relationship
 
@@ -327,4 +329,92 @@ We use it together with the product to define a specific `inventory`, which stor
 - `long` **size_id**: The unique identifier of the size.
 - `String` **name**: The description of the size
 
-## 
+## Controller
+
+### Get Size By ID
+- **Method** `GET`
+- **URL Path** `/api/size/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the size
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - `SizeDTO` as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find size with ID: {id}
+      ```
+
+### Get Size By NAME
+- **Method** `GET`
+- **URL Path** `/api/size/{name}`
+- **Request Parameter**
+  - `String` **name** the descriptor of the size
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - `SizeDTO` as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find size with NAME: {name}
+      ```
+
+### Create Size
+- **Method** `POST`
+- **URL Path** `/api/size/`
+- **Request Body**
+  - `SizeDTO` [**sizeDTO**](#data-transfer-object) the DTO holding the information
+- **Success Response**
+  - **Code** `201 Created`
+  - **Content**
+    - `SizeDTO` as JSON - The created size
+- **Error Response**
+  - **Code** `409 Conflict`
+  - **Content**
+    - ```text
+        Size could not be created. Size with same name already exists."
+      ```
+- **Error Response**
+  - **Code** `400 Bad Request`
+  - **Content**
+    - Validation error messages
+
+### Update Size
+- **Method** `PUT`
+- **URL Path** `/api/size/`
+- **Request Body**
+  - `SizeDTO` [**sizeDTO**](#data-transfer-object) the DTO holding the new information
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - `SizeDTO` as JSON - sizeDTO with updated values
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find and update size with ID:  {sizeDTO.getSize_id()}
+      ```
+- **Error Response**
+  - **Code** `400 Bad Request`
+  - **Content**
+    - Validation error messages
+
+### Delete Size By Id
+
+- **Method** `DELETE`
+- **URL Path** `/api/sizes/{id}`
+- **Request Parameter**
+  - `long` **id** The id of the size to delete
+- **Success Response**
+  - **Code** `204 No Content`
+  - **Content**
+    - `None`
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Size not found with ID: {id}
