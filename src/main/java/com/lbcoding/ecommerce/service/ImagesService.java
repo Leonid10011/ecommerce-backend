@@ -47,7 +47,8 @@ public class ImagesService implements IImagesService {
             Image newImage = imageDTOtoEntity(imageDTO);
             imagesRepository.create(newImage);
             logger.info("Successfully persisted image");
-            return Response.status(Response.Status.CREATED).entity(newImage).build();
+            ImageDTO resImage = imageEntityToDTO(newImage);
+            return Response.status(Response.Status.CREATED).entity(resImage).build();
         } catch ( NonUniqueResultException e) {
             String errorMessage = "Image for product_id " + imageDTO.getProduct_id() +  " and url " + imageDTO.getUrl() + " already exists";
             logger.warn(errorMessage);

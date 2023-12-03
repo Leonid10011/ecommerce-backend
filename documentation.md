@@ -24,10 +24,10 @@ In terms of database relationships, the 'category' table maintains a One-To-Many
 ## Data Transfer Object
 
 ### DTO Structure
-```java
-long category_id: The category entity's id.
-String name: The category entity's name.
-```
+
+- `long` **category_id**: The category entity's id.
+- `String` **name**: The category entity's name.
+
 
 ### Mapping Logic
 Entity is mapped one to one on each field of the DTO.
@@ -162,7 +162,9 @@ public interface ICategoryService {
     ```text
     Category does not exist
     ```
-    
+
+# Image Entity
+
 ## Overview
 
 ### Purpose
@@ -181,7 +183,133 @@ In terms of database relationships, the 'product' table maintains a Many-To-One 
 ## Data Transfer Object
 
 ### DTO Structure
+
+- `long` **image_id**: The unique identifier of the image.
+- `long` **product_id**: The unique identifier of the product this image belongs to.
+- `String` **url**: The location of the image for the corresponding product.
+
+## Repository Implementation
+
+### Interface
 ```java
-long image_id: The unique identifier of the image.
-long product_id: The unique identifier of the product this image belongs to.
-String url: The location of the image for the corresponding product.
+public interface IImageRepository {
+  void create(Image image);
+  Optional<Image> findById(long id);
+  List<Image> findByProductId(long product_id);
+  void delete(long id);
+  void update(Image image);
+}
+```
+
+## Service
+### Interface
+```java
+public interface IImagesService {
+  Response create(ImageDTO imageDTO);
+  Response getByProduct(long product_id);
+  Response update(ImageDTO imageDTO);
+  Response delete(long id);
+  Response getById(long id);
+}
+```
+
+## Controller
+### Get Image by ID
+
+- **METHOD** `GET`
+- **URL Path** `/api/images/{id}`
+- **Request Paramters**
+  - `id` `long` The id of the image to get
+- **Request Body**
+  - None
+- **Success Response**
+  - **Code** `200 OK`
+  - **Content** 
+    `imageDTO` as json
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    ```text
+        Image not found for ID: `{id}`
+    ```
+### Get Image By Product ID
+- **METHOD** `GET`
+- **URL Path** `/api/images/{product_id}`
+- **Request Parameters**
+  - `id` `long` The id of the product the image belongs to
+- **Request Body**
+  - None
+- **Success Response**
+  - **Code** `200 OK`
+  - **Content**
+    `imageDTO` as json
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    ```text
+        Image not found for ID: `{id}`
+    ```
+    
+### Create Image
+
+- **Method** `POST`
+- **URL Path** `/api/image`
+- **Request Body**
+  - `ImageDTO` as JSON
+- **Success Response**
+  - **Code** `201 Created`
+  - **Content**
+    - `ImageDTO` as JSON that was created
+- **Error Response**
+  - **Code** `409 Conflict`
+  - **Conent** 
+    - ```text
+        "Image for product_id " + imageDTO.getProduct_id() +  " and url " + imageDTO.getUrl() + " already exists"
+      ```
+
+### Update Image
+
+- **Method** `PUT`
+- **URL Path** `/api/image/`
+- **Request Body**
+  - `ImageDTO` 
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - `ImageDTO` as JSON with updated values
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+  - ```text
+      "Image does not exists with ID: " + image.getImage_id()
+    ```
+    
+### Delete Image By Id
+
+- **Method** `DELETE`
+- **URL Path** `/api/image/{id}`
+- **Request Parameter**
+  - `long` **id** The id of the image to delete
+- **Success Response**
+  - **Code** `204 No Content`
+  - **Content**
+    - `None`
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content** 
+    - ```text
+        Image not found with ID: {id}
+      ```
+
+# Product Entity 
+
+## Purpose 
+
+The product entity represents the main data of an ecommerce application. It stores various basic ifnormation like name, price and a description. Additional information, like quantity and sizes is managed through joined tables like `product_size` or `prodcut_category`.
+
+## Relationship
+- Many-To-Many with `category` : Each product can belong to many categories
+- One-To-Many with `image` : Each product belongs to many images. Each Image is unique to a product
+- Many-To-Many with `size` : Each Product is available in many sizes.
+- One-To-Many with `inventory` : Each Product has an inventory where it is stored. 
+- 

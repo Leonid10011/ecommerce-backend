@@ -15,7 +15,7 @@ public class Category {
     @GeneratedValue
     private Long category_id;
     private String name;
-    @OneToMany(mappedBy = "category")
+    @ManyToMany(mappedBy = "categories")
     private Set<Product> products = new HashSet<>();
 
     public Category(){

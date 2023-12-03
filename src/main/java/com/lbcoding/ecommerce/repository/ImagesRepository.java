@@ -2,6 +2,7 @@ package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.model.Category;
 import com.lbcoding.ecommerce.model.Image;
+import com.lbcoding.ecommerce.repository.interfaces.IImageRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class ImagesRepository {
+public class ImagesRepository implements IImageRepository {
     private static final Logger logger = LoggerFactory.getLogger(InventoryRepository.class);
     @Inject
     EntityManager entityManager;
@@ -23,6 +24,7 @@ public class ImagesRepository {
      * Persists an image with the provided product_id and url to the database. If an entry with that product_id and url already exists, throws an NonUniqueResultException.
      * @param image An Image entity
      */
+    @Override
     public void create(Image image) {
       if(image == null){
           throw new IllegalArgumentException("Image cannot be null");
@@ -41,7 +43,8 @@ public class ImagesRepository {
      * @param id
      * @return
      */
-    public Optional<Image> findById(Long id){
+    @Override
+    public Optional<Image> findById(long id){
         return Optional.ofNullable(entityManager.find(Image.class, id));
     }
 
@@ -51,7 +54,8 @@ public class ImagesRepository {
      * @param productId
      * @return Images - returns an image when at least one was found or throws Exception indicating no image exists.
      */
-    public List<Image> findByProductId(Long productId){
+    @Override
+    public List<Image> findByProductId(long productId){
         logger.debug("Querying for image by productId: " + productId);
         TypedQuery<Image> query = entityManager.createQuery(
                 "SELECT i FROM Images i WHERE i.productId = :productId", Image.class
@@ -66,7 +70,8 @@ public class ImagesRepository {
      * @param id
      * @throws EntityNotFoundException when image with give id was not found.
      */
-    public void delete(Long id){
+    @Override
+    public void delete(long id){
         logger.info("Deleting image with ID: " + id);
         Image image = findById(id).orElseThrow(() -> new EntityNotFoundException("Image with ID " + id + " not found"));
         entityManager.remove(image);
@@ -78,6 +83,7 @@ public class ImagesRepository {
      * @param image An Image entity which holds the new image values
      * @throws NotFoundException when the image with the given id does not exist
      */
+    @Override
     @Transactional
     public void update(Image image){
         Image updatedImage = entityManager.find(Image.class, image.getImage_id());
