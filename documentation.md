@@ -311,5 +311,20 @@ The product entity represents the main data of an ecommerce application. It stor
 - Many-To-Many with `category` : Each product can belong to many categories
 - One-To-Many with `image` : Each product belongs to many images. Each Image is unique to a product
 - Many-To-Many with `size` : Each Product is available in many sizes.
-- One-To-Many with `inventory` : Each Product has an inventory where it is stored. 
-- 
+- One-To-Many with `inventory` : Each Product has an inventory where it is stored.
+
+# Size Entity
+
+## Purpose 
+
+The size represents a size characteristic of a `prodcut`. 
+
+## Relationship
+
+We use it together with the product to define a specific `inventory`, which stores the quantity of a product specific size. 
+
+## Data Transfer Object
+- `long` **size_id**: The unique identifier of the size.
+- `String` **name**: The description of the size
+
+## 

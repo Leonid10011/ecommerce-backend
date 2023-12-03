@@ -28,8 +28,8 @@ public class Product {
     @ManyToMany
     @JoinTable(
             name = "product_size",
-            joinColumns = @JoinColumn(name = "size_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id")
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "size_id")
     )
     private Set<Size> sizes = new HashSet<>();
 

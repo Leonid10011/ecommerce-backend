@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @ApplicationScoped
 public class ProductsRepository {
@@ -102,8 +103,8 @@ public class ProductsRepository {
                 "SELECT c FROM category c WHERE c.name = :categoryName", Category.class
         ).setParameter("categoryName", productDTO.getCategory());
         try{
-            Category category = query.getSingleResult();
-            product.setCategory(category);
+            List<Category> category = query.getResultList();
+            product.setCategories(Set.copyOf(category));
             logger.info("Category retrieved and set successfully for product with ID: " + product.getProduct_id());
         } catch ( NoResultException e) {
             logger.info("Category " + productDTO.getCategory() + " not found. Please provide a valid category");

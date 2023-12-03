@@ -93,7 +93,7 @@ public class CategoryRepository implements ICategoryRepository {
     public void update(Category category){
         Category updatedCategory = entityManager.find(Category.class, category.getCategory_id());
         if(updatedCategory != null){
-            category.setName(category.getName());
+            updatedCategory.setName(category.getName());
             entityManager.merge(updatedCategory);
         } else {
             throw new NotFoundException("Category not found with ID: " + category.getCategory_id());

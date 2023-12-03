@@ -1,11 +1,13 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.dto.request.SizesRequestDTO;
+import com.lbcoding.ecommerce.dto.SizeDTO;
 import com.lbcoding.ecommerce.model.Size;
+import com.lbcoding.ecommerce.repository.interfaces.ISizeRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,32 +15,31 @@ import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
-public class SizesRepository {
+public class SizesRepository implements ISizeRepository {
     private static final Logger logger = LoggerFactory.getLogger(InventoryRepository.class);
     @Inject
     EntityManager entityManager;
-
     /**
      * Creates a new Sizes entity and persists it in the database. This method ensures the uniqueness of the size description;
      * if a size with the given description already exists, it throws a NonUniqueResultException.
      * It validates that the provided SizesRequestDTO is not null before attempting the persistence operation.
      *
-     * @param sizeDTO The data transfer object (DTO) representing the size to be created.
+     * @param size The data transfer object (DTO) representing the size to be created.
      * @throws IllegalArgumentException If the provided sizeDTO is null.
      * @throws NonUniqueResultException If a size with the same description already exists in the database.
      */
     @Transactional
-    public void create(SizesRequestDTO sizeDTO){
-        if(sizeDTO == null) {
+    public void create(Size size){
+        if(size == null) {
             throw new IllegalArgumentException("Size cannot be null");
         }
         logger.info("Persisting new size");
-        if(doesSizeExists(sizeDTO.getDescription())){
-            logger.warn("Size already exists with description: " + sizeDTO.getDescription());
-            throw new NonUniqueResultException("Size already exists with description: " + sizeDTO.getDescription());
+        if(doesSizeExists(size.getName())){
+            logger.warn("Size already exists with description: " + size.getName());
+            throw new NonUniqueResultException("Size already exists with description: " + size.getName());
         }
         Size newSize = new Size();
-        newSize.setName(sizeDTO.getDescription());
+        newSize.setName(size.getName());
         entityManager.persist(newSize);
         logger.info("Size persisted successfully with ID: " + newSize.getSize_id());
     }
@@ -54,7 +55,6 @@ public class SizesRepository {
 
         return query.getResultList();
     }
-
     /**
      * Finds a size by ID. If size not available returns an empty Optional object.
      * @param id
@@ -62,28 +62,28 @@ public class SizesRepository {
      *  If size by name does not exist returns an empty Optional object.
      */
     @Transactional
-    public Optional<Size> findById(Long id){
+    public Optional<Size> findById(long id){
         return Optional.ofNullable(entityManager.find(Size.class, id));
     }
-
     /**
      * Finds a size by description.
-     * @param description
+     * @param name
      * @return Sizes object if successful. If nothing was found returns an empty Optional object.
+     * @throws NoResultException
      */
     @Transactional
-    public Optional<Size> findByDescription(String description){
+    public Optional<Size> findByName(String name){
         logger.info("Querying for size by description");
         TypedQuery<Size> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.description = :description", Size.class
-        ).setParameter("description", description);
+                "SELECT s FROM Sizes s WHERE s.name = :name", Size.class
+        ).setParameter("description", name);
 
         try {
             Size result = query.getSingleResult();
-            logger.info("Size found for description: " + description);
+            logger.info("Size found for description: " + name);
             return Optional.of(result);
         } catch( NoResultException e ) {
-            logger.info("No size found for description: " + description);
+            logger.info("No size found for description: " + name);
             return Optional.empty();
         }
     }
@@ -94,21 +94,37 @@ public class SizesRepository {
      * @param id
      */
     @Transactional
-    public void delete(Long id){
+    public void delete(long id){
         logger.info("Deleting size with ID: " + id);
         Size size = findById(id).orElseThrow(() ->new EntityNotFoundException("Size with ID " + id + " not found"));
         logger.info("Size with ID " + id + " deleted successfully");
         entityManager.remove(size);
     }
 
+    /** Updates an existing size entity int the database with the provided information
+     * @param size The size entity that holds the new information
+     * @throws NotFoundException
+     */
+    @Override
+    public void update(Size size) {
+        logger.info("Finding size with ID: " + size.getSize_id());
+        Size updateSize = entityManager.find(Size.class, size.getSize_id());
+        if(updateSize != null){
+            updateSize.setName(size.getName());
+            entityManager.merge(updateSize);
+        } else {
+            throw new NotFoundException("Size not found with ID: " + size.getSize_id());
+        }
+    }
+
     /**
      * Check for existing Size by description
      */
-    private boolean doesSizeExists(String description){
+    private boolean doesSizeExists(String name){
         logger.info("Querying for size by description");
         TypedQuery<Size> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.description = :description", Size.class
-        ).setParameter("description", description);
+                "SELECT s FROM Sizes s WHERE s.name = :name", Size.class
+        ).setParameter("description", name);
         if(query.getResultList().isEmpty())
             return false;
         else
