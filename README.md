@@ -7,7 +7,7 @@ You can find the (ongoing) documentation [here](https://github.com/Leonid10011/e
 
 ## Database Schema
 
-<<<<<<< HEAD
+
 ![Database schema](dist/db_data.png)
 =======
 ### product
