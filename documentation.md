@@ -9,10 +9,6 @@
 `Relationships`: In terms of database relationships, the 'category' table maintains a One-To-Many connection with the 'products' table. This design ensures that each product is associated with exactly one category, establishing a clear, unambiguous categorization system.
 
 ### Entity Implementation
-#### Entity Diagram
-
-![Local Image](dist/category_er.png "Category ER")
-
 #### Field Description
 `category_id`: The unique identifier of the category
 
@@ -163,8 +159,6 @@ Endpoints
   - In terms of database relationships, the 'product' table maintainse a Many-To-One connection with the 'products' table. This design ensures that each product is associated with multiple images.
 
 ### Entity Implementation
-#### Entity Diagram
-  ![Image ER](dist/image_er.png)
 - **Field Description**
   - `image_id`: The unique identifier of the image
   - `product_id`: The unique identifier of the product this image belongs to

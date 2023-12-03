@@ -17,6 +17,12 @@ public class CategoryController {
         return categoriesService.findByName(name);
     }
 
+    @GET
+    @Path("/")
+    public  Response getAll(){
+        return categoriesService.findAll();
+    }
+
     @POST
     @Path("/")
     public Response create(CategoryDTO categoryDTO){

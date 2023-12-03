@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class CategoryService implements ICategoryService {
@@ -46,13 +47,14 @@ public class CategoryService implements ICategoryService {
 
     /**
      * Attempts to find alle categories.Will always return a list of categories. If none were found returns an empty list.
-     * @return Returns a Response Object with either a list with found categories or an empty list with status code 200.
+     * @return Returns a Response Object with either a list with found categories as DTO or an empty list with status code 200.
      */
     public Response findAll(){
         logger.info("Received request to find all categories");
         List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryDTO> result = categoryList.stream().map(this::categoryEntityToDTO).collect(Collectors.toList());
         logger.info("Successfully found categories");
-        return Response.status(Response.Status.OK).entity(categoryList).build();
+        return Response.status(Response.Status.OK).entity(result).build();
     }
 
     /**
