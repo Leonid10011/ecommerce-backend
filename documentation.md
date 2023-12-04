@@ -1,9 +1,10 @@
 # Database Entities Documentation
 - [Category](#category-entity)
-  - [controller](#controller)
+  - [controller](#category-controller)
 - [Image](#image-entity)
-  - [controller](#controller)
+  - [controller](#image-controller)
 - [Size](#size-entity)
+  - [controller](#size-entity)
 # Category Entity Documentation
 
 ## Overview
@@ -25,7 +26,7 @@ In terms of database relationships, the 'category' table maintains a One-To-Many
 
 ## Data Transfer Object
 
-### DTO Structure
+### Category DTO
 
 - `long` **category_id**: The category entity's id.
 - `String` **name**: The category entity's name.
@@ -62,7 +63,7 @@ public interface ICategoryService {
 }
 ```
 
-## Controller
+## Category Controller
 
 ### Endpoints
 
@@ -104,7 +105,7 @@ public interface ICategoryService {
 - **Request Parameters**
   - None
 - **Request Body**
-  - CategoryDTO
+  - [CategoryDTO](#category-dto) 
 - **Success Response**
   - **Code** `201 CREATED`
   - **Content**
@@ -132,7 +133,7 @@ public interface ICategoryService {
 - **Request Parameters**
   - None
 - **Request Body**
-  - CategoryDTO
+  - [CategoryDTO](#category-dto)
 - **Success Response**
   - **Code** `200 OK`
   - **Content**
@@ -184,7 +185,7 @@ In terms of database relationships, the 'product' table maintains a Many-To-One 
 
 ## Data Transfer Object
 
-### DTO Structure
+### Image DTO
 
 - `long` **image_id**: The unique identifier of the image.
 - `long` **product_id**: The unique identifier of the product this image belongs to.
@@ -215,7 +216,7 @@ public interface IImagesService {
 }
 ```
 
-## Controller
+## Image Controller
 ### Get Image by ID
 
 - **METHOD** `GET`
@@ -227,7 +228,7 @@ public interface IImagesService {
 - **Success Response**
   - **Code** `200 OK`
   - **Content** 
-    `imageDTO` as json
+    - [ImageDTO](#image-dto) `imageDTO` as json
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**
@@ -244,7 +245,7 @@ public interface IImagesService {
 - **Success Response**
   - **Code** `200 OK`
   - **Content**
-    `imageDTO` as json
+    - [ImageDTO](#image-dto) `imageDTO` as json
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**
@@ -257,11 +258,11 @@ public interface IImagesService {
 - **Method** `POST`
 - **URL Path** `/api/image`
 - **Request Body**
-  - `ImageDTO` as JSON
+  - [ImageDTO](#image-dto) as JSON
 - **Success Response**
   - **Code** `201 Created`
   - **Content**
-    - `ImageDTO` as JSON that was created
+    - [ImageDTO](#image-dto) as JSON that was created
 - **Error Response**
   - **Code** `409 Conflict`
   - **Conent** 
@@ -274,11 +275,11 @@ public interface IImagesService {
 - **Method** `PUT`
 - **URL Path** `/api/image/`
 - **Request Body**
-  - `ImageDTO` 
+  - [ImageDTO](#image-dto) 
 - **Success Response**
   - **Code** `200 Ok`
   - **Content**
-    - `ImageDTO` as JSON with updated values
+    - [ImageDTO](#image-dto) as JSON with updated values
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**
@@ -326,10 +327,34 @@ The size represents a size characteristic of a `product`.
 We use it together with the product to define a specific `inventory`, which stores the quantity of a product specific size. 
 
 ## Data Transfer Object
+### Size DTO
 - `long` **size_id**: The unique identifier of the size.
 - `String` **name**: The description of the size
 
-## Controller
+## Repository Implementation
+### Interface
+```java
+  public interface IImageRepository {
+    void create(Image image);
+    Optional<Image> findById(long id);
+    List<Image> findByProductId(long product_id);
+    void delete(long id);
+    void update(Image image);
+  }
+```
+## Service
+### Interface
+```java
+  public interface IImagesService {
+    Response create(ImageDTO imageDTO);
+    Response getByProduct(long product_id);
+    Response update(ImageDTO imageDTO);
+    Response delete(long id);
+    Response getById(long id);
+  }
+```
+
+## Size Controller
 
 ### Get Size By ID
 - **Method** `GET`
@@ -339,7 +364,7 @@ We use it together with the product to define a specific `inventory`, which stor
 - **Success Response**
   - **Code** `200 Ok`
   - **Content**
-    - `SizeDTO` as JSON
+    - [SizeDTO](#size-dto) as JSON
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**
@@ -355,7 +380,7 @@ We use it together with the product to define a specific `inventory`, which stor
 - **Success Response**
   - **Code** `200 Ok`
   - **Content**
-    - `SizeDTO` as JSON
+    - [SizeDTO](#size-dto) as JSON
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**
@@ -367,11 +392,11 @@ We use it together with the product to define a specific `inventory`, which stor
 - **Method** `POST`
 - **URL Path** `/api/size/`
 - **Request Body**
-  - `SizeDTO` [**sizeDTO**](#data-transfer-object) the DTO holding the information
+  - [`SizeDTO`](#size-dto) the DTO holding the information
 - **Success Response**
   - **Code** `201 Created`
   - **Content**
-    - `SizeDTO` as JSON - The created size
+    - [`SizeDTO`](#size-dto) as JSON - The created size
 - **Error Response**
   - **Code** `409 Conflict`
   - **Content**
@@ -387,11 +412,11 @@ We use it together with the product to define a specific `inventory`, which stor
 - **Method** `PUT`
 - **URL Path** `/api/size/`
 - **Request Body**
-  - `SizeDTO` [**sizeDTO**](#data-transfer-object) the DTO holding the new information
+  - [`SizeDTO`](#size-dto) the DTO holding the new information
 - **Success Response**
   - **Code** `200 Ok`
   - **Content**
-    - `SizeDTO` as JSON - sizeDTO with updated values
+    - [`SizeDTO`](#size-dto) as JSON - sizeDTO with updated values
 - **Error Response**
   - **Code** `404 Not Found`
   - **Content**

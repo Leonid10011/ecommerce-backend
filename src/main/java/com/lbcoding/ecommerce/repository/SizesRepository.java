@@ -1,6 +1,5 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.dto.SizeDTO;
 import com.lbcoding.ecommerce.model.Size;
 import com.lbcoding.ecommerce.repository.interfaces.ISizeRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -29,20 +28,26 @@ public class SizesRepository implements ISizeRepository {
      * @throws NonUniqueResultException If a size with the same description already exists in the database.
      */
     @Transactional
-    public void create(Size size){
-        if(size == null) {
+    public Size create(Size size) {
+        if (size == null) {
             throw new IllegalArgumentException("Size cannot be null");
         }
+
         logger.info("Persisting new size");
-        if(doesSizeExists(size.getName())){
+
+        if (doesSizeExist(size.getName())) {
             logger.warn("Size already exists with description: " + size.getName());
             throw new NonUniqueResultException("Size already exists with description: " + size.getName());
         }
+
         Size newSize = new Size();
         newSize.setName(size.getName());
         entityManager.persist(newSize);
+        entityManager.flush(); // (optional) Force the synchronization of the persistence context with the database
         logger.info("Size persisted successfully with ID: " + newSize.getSize_id());
+        return newSize;
     }
+
 
     /**
      * Retrieves all Sizes objects. If none exist returns an empty list.
@@ -75,8 +80,8 @@ public class SizesRepository implements ISizeRepository {
     public Optional<Size> findByName(String name){
         logger.info("Querying for size by description");
         TypedQuery<Size> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.name = :name", Size.class
-        ).setParameter("description", name);
+                "SELECT s FROM Size s WHERE s.name = :name", Size.class
+        ).setParameter("name", name);
 
         try {
             Size result = query.getSingleResult();
@@ -106,6 +111,7 @@ public class SizesRepository implements ISizeRepository {
      * @throws NotFoundException
      */
     @Override
+    @Transactional
     public void update(Size size) {
         logger.info("Finding size with ID: " + size.getSize_id());
         Size updateSize = entityManager.find(Size.class, size.getSize_id());
@@ -120,14 +126,11 @@ public class SizesRepository implements ISizeRepository {
     /**
      * Check for existing Size by description
      */
-    private boolean doesSizeExists(String name){
-        logger.info("Querying for size by description");
+    private boolean doesSizeExist(String name){
+        logger.info("Querying for size by name");
         TypedQuery<Size> query = entityManager.createQuery(
-                "SELECT s FROM Sizes s WHERE s.name = :name", Size.class
-        ).setParameter("description", name);
-        if(query.getResultList().isEmpty())
-            return false;
-        else
-            return true;
+                "SELECT s FROM Size s WHERE s.name = :name", Size.class
+        ).setParameter("name", name);
+        return !query.getResultList().isEmpty();
     }
 }

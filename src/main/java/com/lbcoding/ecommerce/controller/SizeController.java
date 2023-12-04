@@ -4,6 +4,7 @@ import com.lbcoding.ecommerce.dto.SizeDTO;
 import com.lbcoding.ecommerce.service.SizesService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
+import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 @Path("/sizes")
@@ -18,7 +19,8 @@ public class SizeController {
     }
 
     @GET
-    @Path("/{name}")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/byName/{name}")
     public Response findByName(@PathParam("name") String name){
         return sizesService.findByName(name);
     }

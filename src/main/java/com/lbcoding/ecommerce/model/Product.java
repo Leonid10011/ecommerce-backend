@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
-
 @Entity
 public class Product {
     @Id
@@ -33,8 +32,8 @@ public class Product {
     )
     private Set<Size> sizes = new HashSet<>();
 
-    @OneToMany(mappedBy = "product")
-    private  Set<Inventory> inventories;
+    //@OneToMany(mappedBy = "product")
+    //private  Set<Inventory> inventories;
 
 
     public Product() {
@@ -87,6 +86,10 @@ public class Product {
         this.categories = categories;
     }
 
+    /**
+     *
+     * @return
+
     public Set<Inventory> getInventories() {
         return inventories;
     }
@@ -94,7 +97,7 @@ public class Product {
     public void setInventories(Set<Inventory> inventories) {
         this.inventories = inventories;
     }
-
+     */
     public Set<Image> getImages() {
         return images;
     }

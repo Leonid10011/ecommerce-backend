@@ -7,9 +7,6 @@ package com.lbcoding.ecommerce.model;
 import com.lbcoding.ecommerce.model.compositeKey.InventoryId;
 import jakarta.persistence.*;
 
-@Entity
-@IdClass(InventoryId.class)
-@Table(name = "Inventory")
 public class Inventory {
     @Id
     private Long product_id;

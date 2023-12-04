@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ISizeRepository {
-    void create(Size size);
+    Size create(Size size);
     Optional<Size> findById(long id);
     Optional<Size> findByName(String name);
     List<Size> findAll();

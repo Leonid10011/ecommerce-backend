@@ -1,15 +1,16 @@
 package com.lbcoding.ecommerce.service;
 
 import com.lbcoding.ecommerce.dto.SizeDTO;
-import com.lbcoding.ecommerce.dto.request.SizesRequestDTO;
 import com.lbcoding.ecommerce.model.Size;
 import com.lbcoding.ecommerce.repository.SizesRepository;
 import com.lbcoding.ecommerce.service.inerfaces.ISizesService;
 import com.lbcoding.ecommerce.service.validation.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NonUniqueResultException;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -18,13 +19,14 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class SizesService implements ISizesService {
     private final static Logger logger = LoggerFactory.getLogger(SizesService.class);
     @Inject
     private SizesRepository sizesRepository;
+    @Inject
+    EntityManager entityManager;
 
     /**
      * Handles the creation of a new size entity based on the provided SizesRequestDTO.
@@ -38,6 +40,7 @@ public class SizesService implements ISizesService {
      *         "Size could not be created. Size with same name already exists.") in case of
      *         a duplicate size.
      */
+    @Transactional
     public Response create(SizeDTO sizeDTO){
         Set<String> errorMessage = DTOValidator.validateDTO(sizeDTO);
         if(!errorMessage.isEmpty()){
@@ -48,9 +51,9 @@ public class SizesService implements ISizesService {
 
         logger.info("Received request create size");
         try {
-            sizesRepository.create(size);
-            SizeDTO resDTO = sizeEntityToDTO(size);
-            logger.info("Created size successfully");
+            Size newSize = sizesRepository.create(size);
+            SizeDTO resDTO = sizeEntityToDTO(newSize);
+            logger.info("Created size successfully with ID: " + resDTO.getSize_id());
             return Response.status(Response.Status.CREATED).entity(resDTO).build();
         } catch( NonUniqueResultException e) {
             logger.warn("Request declined. Size with the same name already exists");
@@ -105,6 +108,7 @@ public class SizesService implements ISizesService {
      */
     @Override
     public Response update(SizeDTO sizeDTO) {
+        logger.info("REceived request to update DTO with NAME: " + sizeDTO.getName());
         Set<String> errorMessages = DTOValidator.validateDTO(sizeDTO);
         if(!errorMessages.isEmpty()){
             return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
