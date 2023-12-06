@@ -1,5 +1,6 @@
 package com.lbcoding.ecommerce.repository;
 
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.model.Size;
 import com.lbcoding.ecommerce.repository.interfaces.ISizeRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -10,6 +11,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -43,7 +45,7 @@ public class SizesRepository implements ISizeRepository {
         Size newSize = new Size();
         newSize.setName(size.getName());
         entityManager.persist(newSize);
-        entityManager.flush(); // (optional) Force the synchronization of the persistence context with the database
+        entityManager.flush();
         logger.info("Size persisted successfully with ID: " + newSize.getSize_id());
         return newSize;
     }
@@ -108,7 +110,7 @@ public class SizesRepository implements ISizeRepository {
 
     /** Updates an existing size entity int the database with the provided information
      * @param size The size entity that holds the new information
-     * @throws NotFoundException
+     * @throws NotFoundException When no size was found to be updated
      */
     @Override
     @Transactional
@@ -121,6 +123,20 @@ public class SizesRepository implements ISizeRepository {
         } else {
             throw new NotFoundException("Size not found with ID: " + size.getSize_id());
         }
+    }
+
+    /**
+     * @param product
+     * @param sizes
+     */
+    @Override
+    public void setSizesForProduct(Product product, String[] sizes) {
+        logger.info("Setting sizes for prodcut with ID: " + product.getProduct_id());
+        Arrays.stream(sizes).forEach(size -> {
+            Optional<Size> foundSize = findByName(size);
+            foundSize.ifPresent(value -> product.getSizes().add(value));
+        });
+        logger.info("Successfully set sizes");
     }
 
     /**

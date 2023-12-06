@@ -308,7 +308,7 @@ public interface IImagesService {
 
 ## Purpose 
 
-The product entity represents the main data of an ecommerce application. It stores various basic ifnormation like name, price and a description. Additional information, like quantity and sizes is managed through joined tables like `product_size` or `prodcut_category`.
+The product entity represents the main data of an ecommerce application. It stores various basic information like name, price and a description. Additional information, like quantity and sizes is managed through joined tables like `product_size` or `prodcut_category`.
 
 ## Relationship
 - Many-To-Many with `category` : Each product can belong to many categories

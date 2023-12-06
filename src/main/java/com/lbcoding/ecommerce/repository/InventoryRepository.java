@@ -79,17 +79,14 @@ package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.exception.InsufficientInventoryException;
 import com.lbcoding.ecommerce.model.Inventory;
+import com.lbcoding.ecommerce.model.Product;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
@@ -99,19 +96,41 @@ public class InventoryRepository {
     @PersistenceContext
     private EntityManager entityManager;
 
-    @Transactional
-    public void create(Inventory inventory) {
-        entityManager.persist(inventory);
-    }
-    @Transactional
-    public void setQuantity(Long productId, int quantity){
-        logger.info("Setting quantity for product ID: " + productId);
-        Inventory inventory = findOrCreate(productId);
-        inventory.setQuantity(quantity);
-        entityManager.persist(inventory);
-        logger.info("Quantity set successfully for product ID: " + productId);
-    }
+    /**
+     * Persists a new inventory
+     * @param inventory An Inventory entity
+     * @return Inventory Entity on success.
+     * @throws EntityExistsException when inventory with size ID and product ID already exist
+     * @throws Exception in all other exceptional cases
 
+    @Transactional
+    public Inventory create(Inventory inventory) {
+        try {
+            logger.info("Persisting inventory with size ID: " + inventory.getSize_id() + " and product ID: " + inventory.getProduct_id());
+
+            // Check if the inventory already exists
+            Inventory existingInventory = entityManager.find(Inventory.class, new InventoryId(inventory.getProduct_id(), inventory.getSize_id()));
+            if (existingInventory != null) {
+                logger.warn("Inventory with size ID: " + inventory.getSize_id() + " and product ID: " + inventory.getProduct_id() + " already exists");
+                throw new EntityExistsException("Inventory for size ID: " + inventory.getSize_id() + " and product ID: " + inventory.getProduct_id() + " already exists");
+            }
+
+            // Create and persist the new inventory
+            Inventory newInventory = new Inventory();
+            newInventory.setQuantity(inventory.getQuantity());
+            newInventory.setLocation(inventory.getLocation());
+
+            entityManager.persist(newInventory);
+            logger.info("Successfully persisted inventory with size ID: " + inventory.getSize_id() + " and product ID: " + inventory.getProduct_id());
+
+            return newInventory;
+        } catch (Exception e) {
+            // Log or handle exceptions based on your use case
+            logger.error("Error creating inventory", e);
+            throw e; // Re-throw the exception to propagate it up the stack
+        }
+    }
+     */
     /**
      * Increments the quantity for a product ID. It will attempt to find an inventory, if none exists, it will create a new one
      * @param productId
@@ -157,7 +176,7 @@ public class InventoryRepository {
             logger.info("Inventory not found for product ID: " + productId);
             logger.info("Persisting new inventory for product ID: " + productId);
             Inventory newInventory = new Inventory();
-            newInventory.setProduct_id(productId);
+            //newInventory.setProduct_id(productId);
             newInventory.setQuantity(0);
             entityManager.persist(newInventory);
             logger.info("Inventory persisted successfully for product ID: " + productId);
@@ -202,4 +221,21 @@ public class InventoryRepository {
         entityManager.remove(inventory);
         logger.info("Inventory deleted successfully");
     }
+    @Transactional
+    public void setInventoryForProduct(Product product, int quantity){
+        logger.info("Setting inventory for product with ID: " + product.getProduct_id());
+        product.getSizes().forEach(size -> {
+            Inventory inventory = new Inventory();
+            inventory.setProduct_id(product.getProduct_id());
+            inventory.setSize_id(size.getSize_id());
+            inventory.setLocation("Test");
+            inventory.setQuantity(100);
+            inventory.setProduct(product);
+            inventory.setSize(size);
+
+            entityManager.persist(inventory);
+        });
+        logger.info("Successfully set inventory for product");
+    }
+
 }

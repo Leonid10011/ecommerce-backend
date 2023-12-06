@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.model.Category;
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.interfaces.ICategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -97,6 +99,29 @@ public class CategoryRepository implements ICategoryRepository {
             entityManager.merge(updatedCategory);
         } else {
             throw new NotFoundException("Category not found with ID: " + category.getCategory_id());
+        }
+    }
+
+    /**
+     * @param product
+     * @param categories
+     */
+    @Override
+    public void setCategoryForProduct(Product product, String categories) {
+        // Set category for product
+        logger.info("Retrieving and setting category for product with ID: " + product.getProduct_id());
+        TypedQuery<Category> query = entityManager.createQuery(
+                "SELECT c FROM Category c WHERE c.name = :categoryName", Category.class
+        ).setParameter("categoryName", categories);
+
+        try {
+            logger.info("Try to set category with NAME: " + categories);
+            List<Category> categoryList = query.getResultList();
+            product.setCategories(new HashSet<>(categoryList));
+            logger.info("Category retrieved and set successfully for product with ID: " + product.getProduct_id());
+        } catch (NoResultException e) {
+            logger.info("Category " + categories + " not found. Please provide a valid category");
+            throw new NotFoundException("Category " + categories + " not found. Please provide a valid category");
         }
     }
 

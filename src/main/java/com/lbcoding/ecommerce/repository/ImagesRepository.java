@@ -1,16 +1,20 @@
 package com.lbcoding.ecommerce.repository;
 
-import com.lbcoding.ecommerce.model.Category;
 import com.lbcoding.ecommerce.model.Image;
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.interfaces.IImageRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NonUniqueResultException;
+import jakarta.persistence.TypedQuery;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,7 @@ public class ImagesRepository implements IImageRepository {
      * @param image An Image entity
      */
     @Override
+    @Transactional
     public void create(Image image) {
       if(image == null){
           throw new IllegalArgumentException("Image cannot be null");
@@ -96,9 +101,27 @@ public class ImagesRepository implements IImageRepository {
         }
     }
 
+    /**
+     * @param product
+     * @param url
+     */
+    @Override
+    @Transactional
+    public void setImagesForProduct(Product product, String[] url) {
+        logger.info("Persisting images for product");
+        Arrays.stream(url).forEach(imageUrl -> {
+            Image newImage = new Image();
+            newImage.setProduct_id(product.getProduct_id());
+            newImage.setProduct(product);
+            newImage.setImageUrl(imageUrl);
+            entityManager.persist(newImage);
+        });
+        logger.info("Images persisted successfully");
+    }
+
     private boolean doesImageWithProductAndUrlExists(Image image){
         TypedQuery<Image> query = entityManager.createQuery(
-                "SELECT i FROM image i WHERE i.product_id =:product_id AND i.url =:url", Image.class
+                "SELECT i FROM Image i WHERE i.product_id =:product_id AND i.url =:url", Image.class
         ).setParameter("product_id", image.getProduct_id())
                 .setParameter("url", image.getImageUrl());
 

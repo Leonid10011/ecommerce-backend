@@ -10,12 +10,11 @@ public class Image {
     private long image_id;
     private long product_id;
     private String url;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "product_id", insertable=false, updatable=false)
     private Product product;
     public Image() {
     }
-
     public Image(long image_id, long product_id, String url) {
         this.image_id = image_id;
         this.product_id = product_id;

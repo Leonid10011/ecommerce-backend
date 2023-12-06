@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 @Entity
+@Table(name = "product")
 public class Product {
     @Id
     @GeneratedValue
@@ -21,7 +22,7 @@ public class Product {
     )
     private Set<Category> categories = new HashSet<>();
 
-    @OneToMany(mappedBy = "product")
+    @OneToMany(mappedBy = "product", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private Set<Image> images;
 
     @ManyToMany
@@ -32,13 +33,12 @@ public class Product {
     )
     private Set<Size> sizes = new HashSet<>();
 
-    //@OneToMany(mappedBy = "product")
-    //private  Set<Inventory> inventories;
+    @OneToMany(mappedBy = "product")
+    private  Set<Inventory> inventories;
 
-
-    public Product() {
+    public Product(){
+        this.product_id = 0;
     }
-
     public Product(long product_id, String name, String description, double price) {
         this.product_id = product_id;
         this.name = name;
@@ -86,10 +86,6 @@ public class Product {
         this.categories = categories;
     }
 
-    /**
-     *
-     * @return
-
     public Set<Inventory> getInventories() {
         return inventories;
     }
@@ -97,7 +93,7 @@ public class Product {
     public void setInventories(Set<Inventory> inventories) {
         this.inventories = inventories;
     }
-     */
+
     public Set<Image> getImages() {
         return images;
     }

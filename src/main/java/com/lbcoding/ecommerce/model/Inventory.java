@@ -4,47 +4,57 @@
  */
 package com.lbcoding.ecommerce.model;
 
-import com.lbcoding.ecommerce.model.compositeKey.InventoryId;
 import jakarta.persistence.*;
 
+@Entity
+@Table(name = "inventory")
 public class Inventory {
     @Id
-    private Long product_id;
-    @Id
-    private Long size_id;
-    @Column(name = "quantity")
+    @GeneratedValue
+    private long inventory_id;
+    private long product_id;
+    private long size_id;
     private int quantity;
-
+    private String location;
     @ManyToOne
-    @JoinColumn(name= "size")
+    @JoinColumn(name = "size_id", insertable = false, updatable = false, nullable = true)
     private Size size;
-
     @ManyToOne
-    @JoinColumn(name = "product")
+    @JoinColumn(name = "product_id", insertable = false, updatable = false, nullable = true)
     private Product product;
 
     public Inventory() {
     }
 
-    public Inventory(Long product_id, Long size_id, int quantity) {
+    public Inventory(long inventory_id, long product_id, long size_id, int quantity, String location) {
+        this.inventory_id = inventory_id;
         this.product_id = product_id;
         this.size_id = size_id;
         this.quantity = quantity;
+        this.location = location;
     }
 
-    public Long getProduct_id() {
+    public long getInventory_id() {
+        return inventory_id;
+    }
+
+    public void setInventory_id(long inventory_id) {
+        this.inventory_id = inventory_id;
+    }
+
+    public long getProduct_id() {
         return product_id;
     }
 
-    public void setProduct_id(Long product_id) {
+    public void setProduct_id(long product_id) {
         this.product_id = product_id;
     }
 
-    public Long getSize_id() {
+    public long getSize_id() {
         return size_id;
     }
 
-    public void setSize_id(Long size_id) {
+    public void setSize_id(long size_id) {
         this.size_id = size_id;
     }
 
@@ -54,6 +64,14 @@ public class Inventory {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public Size getSize() {
@@ -70,5 +88,7 @@ public class Inventory {
 
     public void setProduct(Product product) {
         this.product = product;
+
     }
+
 }

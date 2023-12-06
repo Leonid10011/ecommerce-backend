@@ -1,5 +1,6 @@
 package com.lbcoding.ecommerce.repository.interfaces;
 
+import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.model.Size;
 
 import java.util.List;
@@ -12,4 +13,5 @@ public interface ISizeRepository {
     List<Size> findAll();
     void delete(long id);
     void update(Size size);
+    void setSizesForProduct(Product product, String[] sizes);
 }
