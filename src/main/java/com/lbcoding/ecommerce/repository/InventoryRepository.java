@@ -125,14 +125,9 @@ public class InventoryRepository implements IInventoryRepository {
         TypedQuery<Inventory> query = entityManager.createQuery(
                         "SELECT i FROM Inventory i WHERE i.productID = :productID", Inventory.class)
                 .setParameter("productID", productId);
-        List<Inventory> inventory = query.getResultList();
-        if(!inventory.isEmpty()) {
-            logger.info("Categories found for product ID " + productId);
-            return inventory;
-        } else {
-            logger.info("Category not found for productId ID "+ productId);
-            return inventory;
-        }
+        List<Inventory> inventories = query.getResultList();
+        logger.info("Successfully found inventories for product ID: " + productId);
+        return inventories;
     }
 
     /** Finds the inventories that contain a prodcut with a specific size
