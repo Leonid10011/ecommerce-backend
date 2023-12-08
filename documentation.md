@@ -443,3 +443,133 @@ We use it together with the product to define a specific `inventory`, which stor
   - **Content**
     - ```text
         Size not found with ID: {id}
+
+# Inventory Entity
+
+## Purpose
+
+## Relationship
+
+## Data Transfer Object
+### Inventory DTO
+- `long` **inventory_id**: The unique identifier of the inventory.
+- `long` **product_id**: The ID of the product that is stored in this inventory
+- `long` **size_id**: The ID of the size of the product that is strore in this inventory
+- `int` **quantity**: The amount of the product for the size in this inventory
+- `String` **location**: The name of the location where the inventory resides
+
+## Repository Implementation
+### Interface
+```java
+  public interface IInventoryRepository {
+    void create(Inventory inventory);
+    List<Inventory> findByProduct(long product_id);
+    List<Inventory> findByProductAndSize(long product_id, long size_id);
+    void update(Inventory inventory);
+    void delete(long id);
+    void setInventoryForProduct(Product product, int quantity);
+  }
+```
+## Service
+### Interface
+```java
+  public interface IInventoryService {
+    Response create(InventoryDTO inventoryDTO);
+    Response findById(long id);
+    Response findByProductAndSize(InventoryDTO inventoryDTO);
+    Response findByProduct(long product_id);
+    Response update(InventoryDTO inventoryDTO);
+    Response delete(long id);
+  }
+```
+
+## Size Controller
+
+### Get Inventory By ID
+- **Method** `GET`
+- **URL Path** `/api/inventory/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the inventory
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - [InventoryDTO](#inventory-dto) as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find inventory with ID: {id}
+      ```
+
+### Get Inventory By PRODUCT
+- **Method** `GET`
+- **URL Path** `/api/inventory/product/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the product
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
+
+### Get Inventory By PRODUCT and SIZE
+- **Method** `GET`
+- **URL Path** `/api/inventory/findByProductAndSize`
+- **Request Parameter**
+  - `InventoryDTO` inventoryDTO containing the product and size ID
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
+
+### Post Inventory 
+- **Method** `POST`
+- **URL Path** `/api/inventory/`
+- **Request Parameter**
+  - `InventoryDTO` inventoryDTO containing the necessary data
+- **Success Response**
+  - **Code** `201 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
+- **Error Response**
+  - **Code** `400 Bad Request`
+  - **Content**
+    - ```text
+        Error validating inventory
+      ```
+  - **Error Response**
+  - **Code** `409 Conflict`
+  - **Content**
+    - ```text
+        Inventory already exist with product, size and location combination
+      ```
+
+### Update Inventory
+- **Method** `PUT`
+- **URL Path** `/api/inventory/`
+- **Request Parameter**
+  - `InventoryDTO` inventoryDTO containing the necessary data
+- **Success Response**
+  - **Code** `201 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
+- **Error Response**
+  - **Code** `400 Bad Request`
+  - **Content**
+    - ```text
+        Error validating inventory
+      ```
+  - **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Inventory not found with ID
+      ```
+### Delete Inventory
+- **Method** `DELETE`
+- **URL Path** `/api/inventory/{id}`
+- **Request Parameter**
+  - `InventoryDTO` inventoryDTO containing the necessary data
+- **Success Response**
+  - **Code** `204 No Content`
+  - **Content**
+    `None`

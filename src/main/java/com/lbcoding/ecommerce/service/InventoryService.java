@@ -41,7 +41,8 @@ public class InventoryService implements IInventoryService {
         try {
             inventoryRepository.create(newInventory);
             logger.info("Successfully create inventory with ID: " + newInventory.getInventory_id());
-            return Response.status(Response.Status.CREATED).entity(newInventory).build();
+            InventoryDTO resDTO = inventoryEntityToDTO(newInventory);
+            return Response.status(Response.Status.CREATED).entity(resDTO).build();
         } catch (EntityExistsException e) {
             logger.warn("Entity already exist");
             return Response.status(Response.Status.CONFLICT).entity("Inventory already exist with product, size and location combination").build();
@@ -93,8 +94,9 @@ public class InventoryService implements IInventoryService {
     public Response findByProduct(long product_id) {
         logger.info("Received request to find inventory by product");
         List<Inventory> inventoryList = inventoryRepository.findByProduct(product_id);
+        List<InventoryDTO> inventoryDTOS = inventoryList.stream().map(this::inventoryEntityToDTO).toList();
         logger.info("Successfully found inventories for product ID: " + product_id);
-        return Response.status(Response.Status.OK).entity(inventoryList).build();
+        return Response.status(Response.Status.OK).entity(inventoryDTOS).build();
     }
 
     /**
@@ -113,7 +115,8 @@ public class InventoryService implements IInventoryService {
             Inventory newInventory = inventoryDTOToEntity(inventoryDTO);
             inventoryRepository.update(newInventory);
             logger.info("Successfully updated inventory with ID: " + inventoryDTO.getInventory_id());
-            return Response.status(Response.Status.CREATED).entity(newInventory).build();
+            InventoryDTO resDTO = inventoryEntityToDTO(newInventory);
+            return Response.status(Response.Status.CREATED).entity(resDTO).build();
         } catch( NotFoundException e ) {
             String errorMessage = "Inventory not found with ID: " + inventoryDTO.getInventory_id();
             logger.warn(errorMessage);

@@ -123,7 +123,7 @@ public class InventoryRepository implements IInventoryRepository {
     public List<Inventory> findByProduct(long productId) {
         logger.info("Querying find by product ID: " + productId);
         TypedQuery<Inventory> query = entityManager.createQuery(
-                        "SELECT i FROM Inventory i WHERE i.productID = :productID", Inventory.class)
+                        "SELECT i FROM Inventory i WHERE i.product_id = :productID", Inventory.class)
                 .setParameter("productID", productId);
         List<Inventory> inventories = query.getResultList();
         logger.info("Successfully found inventories for product ID: " + productId);
@@ -150,6 +150,7 @@ public class InventoryRepository implements IInventoryRepository {
      * @param inventory Inventory model with the new values
      */
     @Override
+    @Transactional
     public void update(Inventory inventory) {
         Inventory updatedInventory = entityManager.find(Inventory.class, inventory.getInventory_id());
         if(updatedInventory == null){
