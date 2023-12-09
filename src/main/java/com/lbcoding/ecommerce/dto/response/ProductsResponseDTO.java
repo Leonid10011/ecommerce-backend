@@ -5,11 +5,15 @@ public class ProductsResponseDTO {
     private String name;
     private double price;
     private String[] sizes;
-    private String imageUrl;
+    private String[] imageUrl;
     private  double ratingValue;
-    private double category;
+    private String[] category;
 
     public ProductsResponseDTO() {
+    }
+
+    public long getProductId() {
+        return productId;
     }
 
     /**
@@ -22,7 +26,7 @@ public class ProductsResponseDTO {
      * @param ratingValue
      * @param category
      */
-    public ProductsResponseDTO(long productId, String name, double price, String[] sizes, String imageUrl, double ratingValue, double category) {
+    public ProductsResponseDTO(long productId, String name, double price, String[] sizes, String[] imageUrl, double ratingValue, String[] category) {
         this.productId = productId;
         this.name = name;
         this.price = price;
@@ -30,10 +34,6 @@ public class ProductsResponseDTO {
         this.imageUrl = imageUrl;
         this.ratingValue = ratingValue;
         this.category = category;
-    }
-
-    public long getProductId() {
-        return productId;
     }
 
     public void setProductId(long productId) {
@@ -64,14 +64,6 @@ public class ProductsResponseDTO {
         this.sizes = sizes;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
     public double getRatingValue() {
         return ratingValue;
     }
@@ -80,11 +72,19 @@ public class ProductsResponseDTO {
         this.ratingValue = ratingValue;
     }
 
-    public double getCategory() {
+    public String[] getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String[] imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public String[] getCategory() {
         return category;
     }
 
-    public void setCategory(double category) {
+    public void setCategory(String[] category) {
         this.category = category;
     }
 }

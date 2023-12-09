@@ -1,18 +1,21 @@
 package com.lbcoding.ecommerce.model;
 
-import com.lbcoding.ecommerce.dto.UserDTO;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
+import java.util.List;
+
+@Entity
+@Table(name = "user")
 public class User {
     @Id
     @GeneratedValue
-    private Long user_id;
+    private long user_id;
     private String username;
     private String email;
     private String password;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
+    private List<Rating> ratings;
 
     public User(){}
 
@@ -27,7 +30,7 @@ public class User {
         return user_id;
     }
 
-    public void setUser_id(Long user_id) {
+    public void setUser_id(long user_id) {
         this.user_id = user_id;
     }
 

@@ -4,27 +4,30 @@ package com.lbcoding.ecommerce.dto;
  *
  */
 public class UserDTO {
+    private long user_id;
     private String username;
     private String email;
-    private Long roleId;
+    private long role_id;
     private String password;
 
     public UserDTO(){
 
     }
 
-    /**
-     *
-     * @param username
-     * @param email
-     * @param roleId
-     * @param password
-     */
-    public UserDTO(String username, String email, Long roleId, String password) {
+    public UserDTO(long user_id, String username, String email, Long roleId, String password) {
+        this.user_id = user_id;
         this.username = username;
         this.email = email;
-        this.roleId = roleId;
+        this.role_id = roleId;
         this.password = password;
+    }
+
+    public long getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(long user_id) {
+        this.user_id = user_id;
     }
 
     public String getUsername() {
@@ -44,11 +47,11 @@ public class UserDTO {
     }
 
     public Long getRoleId() {
-        return roleId;
+        return role_id;
     }
 
     public void setRoleId(Long roleId) {
-        this.roleId = roleId;
+        this.role_id = roleId;
     }
 
     public String getPassword() {

@@ -1,88 +1,79 @@
 package com.lbcoding.ecommerce.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.lbcoding.ecommerce.model.compositeKey.RatingId;
+import jakarta.persistence.*;
 
 import java.util.Date;
-
+@Entity
+@Table(name = "rating")
 public class Rating {
-    @Id
-    @GeneratedValue
-    private Long id;
-    private int rating;
-    private String text;
-    private Date date;
-    private Long userId;
-    private Long productId;
-
+    @EmbeddedId
+    private RatingId rating_id;
+    private int rating_value;
+    private String rating_text;
+    private Date creation_date;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_id" , referencedColumnName = "product_id",insertable=false, updatable=false)
+    private Product product;
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "user_id", referencedColumnName = "user_id",insertable=false, updatable=false)
+    private User user;
     public Rating(){
 
     }
 
-    /**
-     *
-     * @param id
-     * @param rating
-     * @param text
-     * @param date
-     * @param userId
-     * @param productId
-     */
-    public Rating(Long id, int rating, String text, Date date, Long userId, Long productId) {
-        this.id = id;
-        this.rating = rating;
-        this.text = text;
-        this.date = date;
-        this.userId = userId;
-        this.productId = productId;
+    public Rating(RatingId rating_id, int rating_value, String rating_text, Date creation_date) {
+        this.rating_id = rating_id;
+        this.rating_value = rating_value;
+        this.rating_text = rating_text;
+        this.creation_date = creation_date;
     }
 
-    public Long getId() {
-        return id;
+    public Product getProduct() {
+        return product;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setProduct(Product product) {
+        this.product = product;
     }
 
-    public int getRating() {
-        return rating;
+    public User getUser() {
+        return user;
     }
 
-    public void setRating(int rating) {
-        this.rating = rating;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getText() {
-        return text;
+    public RatingId getRating_id() {
+        return rating_id;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setRating_id(RatingId rating_id) {
+        this.rating_id = rating_id;
     }
 
-    public Date getDate() {
-        return date;
+    public int getRating_value() {
+        return rating_value;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setRating_value(int rating_value) {
+        this.rating_value = rating_value;
     }
 
-    public Long getUserId() {
-        return userId;
+    public String getRating_text() {
+        return rating_text;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setRating_text(String rating_text) {
+        this.rating_text = rating_text;
     }
 
-    public Long getProductId() {
-        return productId;
+    public Date getCreation_date() {
+        return creation_date;
     }
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
+    public void setCreation_date(Date creation_date) {
+        this.creation_date = creation_date;
     }
 }

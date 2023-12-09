@@ -5,20 +5,17 @@ package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import javax.swing.text.html.Option;
-import java.lang.reflect.Type;
 import java.util.List;
 import java.util.Optional;
 
 @ApplicationScoped
 public class UserRepository {
-
+    static final Logger logger = LoggerFactory.getLogger(UserRepository.class);
     @PersistenceContext
     EntityManager entityManager;
 
@@ -58,7 +55,15 @@ public class UserRepository {
      */
     @Transactional
     public void createUser(User user){
-        entityManager.persist(user);
+        if(user == null){
+            throw new IllegalArgumentException("User cannot be null");
+        }
+        if(doesUsernameExist(user.getUsername())){
+            throw new EntityExistsException("User with username already exist: " + user.getUsername());
+        }
+        logger.info("Persisting user");
+        User managedUser = entityManager.merge(user);
+        entityManager.persist(managedUser);
     }
 
     /**
@@ -78,5 +83,13 @@ public class UserRepository {
         );
 
         return query.getResultList();
+    }
+
+    boolean doesUsernameExist(String name){
+        TypedQuery<User> query = entityManager.createQuery(
+                "SELECT u FROM User u WHERE u.username = :name", User.class
+        ).setParameter("name", name);
+
+        return !query.getResultList().isEmpty();
     }
 }

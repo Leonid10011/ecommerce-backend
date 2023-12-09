@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface IProductRepository {
     Product create(Product product);
-    List<Product> findAll();
+    List<Product> findAll(int page, int pageSize);
     Optional<Product> findByName(String name);
     Optional<Product> findById(long id);
     Product update(Product product);

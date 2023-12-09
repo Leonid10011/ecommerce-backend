@@ -36,6 +36,8 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private  Set<Inventory> inventories;
 
+
+
     public Product(){
         this.product_id = 0;
     }

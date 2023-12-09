@@ -4,10 +4,7 @@ import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.interfaces.IProductRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
@@ -42,62 +39,71 @@ public class ProductsRepository implements IProductRepository {
         logger.info("Product persisted successfully " + product.getProduct_id());
         return product;
     }
-
     /**
      * Attempts to retrieve all products from the database
      * @return List<Product> A list of all product entities. If none were found, returns an empty list.
      */
-    public List<Product> findAll(){
-        logger.info("Querying to find all products");
-        TypedQuery<Product> query = entityManager.createQuery(
-                "SELECT p FROM Product p", Product.class
-        );
+    public List<Product> findAll(int page, int pageSize){
+        logger.info("Querying to find all products.");
+        TypedQuery<Product>  query = entityManager.createQuery(
+                "SELECT DISTINCT p FROM Product p " +
+                        "LEFT JOIN FETCH p.categories " +
+                        "LEFT JOIN FETCH p.images " +
+                        "LEFT JOIN FETCH p.sizes " +
+                        "LEFT JOIN FETCH p.inventories ",Product.class
+        )
+                .setFirstResult((page-1) * pageSize)
+                .setMaxResults(pageSize);
 
-        List<Product> products = query.getResultList();
-        if(products.isEmpty()){
-            logger.info("Products is empty");
-            return products;
-        }
-        logger.info("Products found successfully");
-        return products;
+        logger.info("Successfully retrieved products");
+        return query.getResultList();
     }
+    /**
+     * Attempts to find a product by ID.
+     * @param productId Unique identifier of the product
+     * @return Product on success, otherwise empty Optional
+     */
+    public Optional<Product> findById(long productId){
+        logger.info("Querying to find product for ID: " + productId);
+        TypedQuery<Product>  query = entityManager.createQuery(
+                "SELECT DISTINCT p FROM Product p " +
+                        "LEFT JOIN FETCH p.categories " +
+                        "LEFT JOIN FETCH p.images " +
+                        "LEFT JOIN FETCH p.sizes " +
+                        "LEFT JOIN FETCH p.inventories " +
+                        "WHERE p.product_id = :productId", Product.class
+        ).setParameter("productId", productId);
 
+        try {
+            logger.info("Successfully found product for ID: " + productId);
+            return Optional.ofNullable(query.getSingleResult());
+        } catch( NoResultException e){
+            logger.warn("Product not found with ID: " + productId);
+            return Optional.empty();
+        }
+    }
     /**
      * @param name The name of the product to find
      * @return The product with given name when found, otherwise returns an empty Optional
      */
-    @Override
-    public Optional<Product> findByName(String name) {
-        logger.info("Finding Product by NAME: " + name);
-        TypedQuery<Product> query = entityManager.createQuery("" +
-                "SELECT p FROM Product p WHERE p.name = :name", Product.class)
-                .setParameter("name", name);
-
-        Optional<Product> product = Optional.ofNullable(query.getSingleResult());
-        if(product.isEmpty())
-            logger.info("Successfully found product with ID: " + product.get().getProduct_id());
-        logger.info("Failed to find product with ID: " + product.get().getProduct_id());
-        return product;
-    }
-
-    /**
-     * @param id The ID of the product to find
-     * @return
-     */
-    @Override
-    public Optional<Product> findById(long id) {
-        logger.info("Finding Product by ID: " + id);
-        Product product = entityManager.find(Product.class, id);
-
-        if(product == null){
-            logger.info("Failed to find product with ID: " + id);
+    public Optional<Product> findByName(String name){
+        logger.info("Querying to find product for NAME: " + name);
+        TypedQuery<Product>  query = entityManager.createQuery(
+                "SELECT DISTINCT p FROM Product p " +
+                        "LEFT JOIN FETCH p.categories " +
+                        "LEFT JOIN FETCH p.images " +
+                        "LEFT JOIN FETCH p.sizes " +
+                        "LEFT JOIN FETCH p.inventories " +
+                        "WHERE p.name = :name", Product.class
+        ).setParameter("name", name);
+        try {
+            logger.info("Successfully found product for NAME: " + name);
+            return Optional.ofNullable(query.getSingleResult());
+        } catch( NoResultException e){
+            logger.warn("Product not found with NAME: " + name);
             return Optional.empty();
         }
-
-        logger.info("Successfully found product with ID: " + product.getProduct_id());
-        return Optional.of(product);
     }
-
     /**
      * @param product The Product entity that holds the new information to be updated
      * @return the updated product with new values
@@ -118,46 +124,22 @@ public class ProductsRepository implements IProductRepository {
         throw new NotFoundException("Product to updated with ID: " + product.getProduct_id() + " does not exist.");
 
     }
-
-    /**
-     * @param id The of the product to be deleted
-     */
-    @Override
-    public void delete(long id) {
-        logger.info("Deleting product with ID: " + id);
-        Product product = entityManager.find(Product.class, id);
-        if(product != null){
-            entityManager.remove(product);
-            logger.info("Successfully deleted product with ID " + id);
-        }
-
-        logger.info("Product does not exist with ID: " + id + ". Nothing to delete");
-    }
-
-    /**
-     * Attempts to find a product by ID.
-     * @param id Unique identifier of the product
-     * @return Product on success, otherwise empty Optional
-     */
-    public Optional<Product> findById(Long id){
-        logger.info("Querying find product with ID: " + id);
-        Product product = entityManager.find(Product.class, id);
-        if (product != null){
-            logger.info("Found product with ID: " + id);
-            return Optional.of(product);
-        }
-        logger.warn("Product not found with ID: " + id);
-        return Optional.empty();
-    }
-
     /**
      * Attempts to delete a product by ID.
      * @param id Unique identifier of the product
      * @throws EntityNotFoundException when no product with give ID was found.
      */
-    public void delete(Long id){
+    public void delete(long id){
         logger.info("Deleting product with ID: " + id);
-        findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
+        //findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
+        Optional<Product> productToDelete = findById(id);
+
+        if(productToDelete.isPresent()){
+            logger.info("Deleting corresponding images");
+            productToDelete.get().getImages().forEach(image -> entityManager.remove(image.getImage_id()));
+            logger.info("Deleting corresponding inventories");
+            productToDelete.get().getInventories().forEach(inventory -> entityManager.remove(inventory.getInventory_id()));
+        }
         logger.info("Product deleted successfully with ID: " + id);
     }
 

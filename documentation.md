@@ -5,6 +5,8 @@
   - [controller](#image-controller)
 - [Size](#size-entity)
   - [controller](#size-entity)
+- [Inventory](#inventory-entity)
+  - [controller](#inventory-entity)
 # Category Entity Documentation
 
 ## Overview
@@ -217,12 +219,28 @@ public interface IImagesService {
 ```
 
 ## Image Controller
+### Create Image
+
+- **Method** `POST`
+- **URL Path** `/api/image`
+- **Request Body**
+  - [ImageDTO](#image-dto) as JSON
+- **Success Response**
+  - **Code** `201 Created`
+  - **Content**
+    - [ImageDTO](#image-dto) as JSON that was created
+- **Error Response**
+  - **Code** `409 Conflict`
+  - **Conent**
+    - ```text
+        "Image for product_id " + imageDTO.getProduct_id() +  " and url " + imageDTO.getUrl() + " already exists"
+      ```
 ### Get Image by ID
 
 - **METHOD** `GET`
 - **URL Path** `/api/images/{id}`
 - **Request Paramters**
-  - `id` `long` The id of the image to get
+  `long` **id**: The id of the image to get
 - **Request Body**
   - None
 - **Success Response**
@@ -239,7 +257,7 @@ public interface IImagesService {
 - **METHOD** `GET`
 - **URL Path** `/api/images/{product_id}`
 - **Request Parameters**
-  - `id` `long` The id of the product the image belongs to
+  - `long` **id**: The id of the product the image belongs to
 - **Request Body**
   - None
 - **Success Response**
@@ -253,23 +271,6 @@ public interface IImagesService {
         Image not found for ID: `{id}`
     ```
     
-### Create Image
-
-- **Method** `POST`
-- **URL Path** `/api/image`
-- **Request Body**
-  - [ImageDTO](#image-dto) as JSON
-- **Success Response**
-  - **Code** `201 Created`
-  - **Content**
-    - [ImageDTO](#image-dto) as JSON that was created
-- **Error Response**
-  - **Code** `409 Conflict`
-  - **Conent** 
-    - ```text
-        "Image for product_id " + imageDTO.getProduct_id() +  " and url " + imageDTO.getUrl() + " already exists"
-      ```
-
 ### Update Image
 
 - **Method** `PUT`
@@ -303,18 +304,6 @@ public interface IImagesService {
     - ```text
         Image not found with ID: {id}
       ```
-
-# Product Entity 
-
-## Purpose 
-
-The product entity represents the main data of an ecommerce application. It stores various basic information like name, price and a description. Additional information, like quantity and sizes is managed through joined tables like `product_size` or `prodcut_category`.
-
-## Relationship
-- Many-To-Many with `category` : Each product can belong to many categories
-- One-To-Many with `image` : Each product belongs to many images. Each Image is unique to a product
-- Many-To-Many with `size` : Each Product is available in many sizes.
-- One-To-Many with `inventory` : Each Product has an inventory where it is stored.
 
 # Size Entity
 
@@ -355,39 +344,6 @@ We use it together with the product to define a specific `inventory`, which stor
 ```
 
 ## Size Controller
-
-### Get Size By ID
-- **Method** `GET`
-- **URL Path** `/api/size/{id}`
-- **Request Parameter**
-  - `long` **id** the unique identifier of the size
-- **Success Response**
-  - **Code** `200 Ok`
-  - **Content**
-    - [SizeDTO](#size-dto) as JSON
-- **Error Response**
-  - **Code** `404 Not Found`
-  - **Content**
-    - ```text
-        Failed to find size with ID: {id}
-      ```
-
-### Get Size By NAME
-- **Method** `GET`
-- **URL Path** `/api/size/{name}`
-- **Request Parameter**
-  - `String` **name** the descriptor of the size
-- **Success Response**
-  - **Code** `200 Ok`
-  - **Content**
-    - [SizeDTO](#size-dto) as JSON
-- **Error Response**
-  - **Code** `404 Not Found`
-  - **Content**
-    - ```text
-        Failed to find size with NAME: {name}
-      ```
-
 ### Create Size
 - **Method** `POST`
 - **URL Path** `/api/size/`
@@ -407,6 +363,37 @@ We use it together with the product to define a specific `inventory`, which stor
   - **Code** `400 Bad Request`
   - **Content**
     - Validation error messages
+### Get Size By Id
+- **Method** `GET`
+- **URL Path** `/api/size/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the size
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - [SizeDTO](#size-dto) as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find size with ID: {id}
+      ```
+
+### Get Size By Name
+- **Method** `GET`
+- **URL Path** `/api/size/{name}`
+- **Request Parameter**
+  - `String` **name** the descriptor of the size
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - [SizeDTO](#size-dto) as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find size with NAME: {name}
+      ```
 
 ### Update Size
 - **Method** `PUT`
@@ -483,45 +470,8 @@ We use it together with the product to define a specific `inventory`, which stor
   }
 ```
 
-## Size Controller
-
-### Get Inventory By ID
-- **Method** `GET`
-- **URL Path** `/api/inventory/{id}`
-- **Request Parameter**
-  - `long` **id** the unique identifier of the inventory
-- **Success Response**
-  - **Code** `200 Ok`
-  - **Content**
-    - [InventoryDTO](#inventory-dto) as JSON
-- **Error Response**
-  - **Code** `404 Not Found`
-  - **Content**
-    - ```text
-        Failed to find inventory with ID: {id}
-      ```
-
-### Get Inventory By PRODUCT
-- **Method** `GET`
-- **URL Path** `/api/inventory/product/{id}`
-- **Request Parameter**
-  - `long` **id** the unique identifier of the product
-- **Success Response**
-  - **Code** `200 Ok`
-  - **Content**
-    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
-
-### Get Inventory By PRODUCT and SIZE
-- **Method** `GET`
-- **URL Path** `/api/inventory/findByProductAndSize`
-- **Request Parameter**
-  - `InventoryDTO` inventoryDTO containing the product and size ID
-- **Success Response**
-  - **Code** `200 Ok`
-  - **Content**
-    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
-
-### Post Inventory 
+## Inventory Controller
+### Create Inventory
 - **Method** `POST`
 - **URL Path** `/api/inventory/`
 - **Request Parameter**
@@ -542,6 +492,42 @@ We use it together with the product to define a specific `inventory`, which stor
     - ```text
         Inventory already exist with product, size and location combination
       ```
+
+### Get Inventory By Id
+- **Method** `GET`
+- **URL Path** `/api/inventory/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the inventory
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - [InventoryDTO](#inventory-dto) as JSON
+- **Error Response**
+  - **Code** `404 Not Found`
+  - **Content**
+    - ```text
+        Failed to find inventory with ID: {id}
+      ```
+
+### Get Inventory By Product
+- **Method** `GET`
+- **URL Path** `/api/inventory/product/{id}`
+- **Request Parameter**
+  - `long` **id** the unique identifier of the product
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
+
+### Get Inventory By Product and Size
+- **Method** `GET`
+- **URL Path** `/api/inventory/findByProductAndSize`
+- **Request Parameter**
+  - `InventoryDTO` inventoryDTO containing the product and size ID
+- **Success Response**
+  - **Code** `200 Ok`
+  - **Content**
+    - List<[InventoryDTO](#inventory-dto)> as JSON (Can be empty)
 
 ### Update Inventory
 - **Method** `PUT`
@@ -573,3 +559,15 @@ We use it together with the product to define a specific `inventory`, which stor
   - **Code** `204 No Content`
   - **Content**
     `None`
+
+# Product Entity
+
+## Purpose
+
+The product entity represents the main data of an ecommerce application. It stores various basic information like name, price and a description. Additional information, like quantity and sizes is managed through joined tables like `product_size` or `prodcut_category`.
+
+## Relationship
+- Many-To-Many with `category` : Each product can belong to many categories
+- One-To-Many with `image` : Each product belongs to many images. Each Image is unique to a product
+- Many-To-Many with `size` : Each Product is available in many sizes.
+- One-To-Many with `inventory` : Each Product has an inventory where it is stored.
