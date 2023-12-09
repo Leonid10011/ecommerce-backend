@@ -46,4 +46,15 @@ public class ProductController {
     public Response createRating(RatingDTO ratingDTO){
         return ratingService.create(ratingDTO);
     }
+
+    @GET
+    @Path("/rating/{id}")
+    public Response getRatingValueForProduct(@PathParam("id") long id){
+        return ratingService.getRatingValue(id);
+    }
+    @GET
+    @Path("/rating/getAll/{id}")
+    public Response getRatingsForProduct(@PathParam("id") long id){
+        return ratingService.getRatingsForProduct(id);
+    }
 }

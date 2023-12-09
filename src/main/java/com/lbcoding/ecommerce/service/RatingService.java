@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Set;
 
 @ApplicationScoped
@@ -49,6 +50,31 @@ public class RatingService {
         }
     }
 
+    /**
+     * Attempts to retrieve the average rating value for a product among all user ratings
+     * @param product_id the corresponding product
+     * @return Success: The average rating with status 200
+     * If none exist rating value is 0.0
+     */
+    public Response getRatingValue(long product_id){
+        logger.info("Received request to retrieve rating value for product ID: " + product_id);
+        double value = ratingRepository.getRatingValueForProduct(product_id);
+        return Response.status(Response.Status.OK).entity(value).build();
+    }
+
+    /**
+     * Attempts to find all ratings for a product
+     * @param product_id the id of the product
+     * @return Succes List<RatingDTO> with status code 200.
+     * Can also return empty list.
+     */
+    @Transactional
+    public Response getRatingsForProduct(long product_id){
+        List<Rating> ratings = ratingRepository.getByProduct(product_id);
+        // map to dto
+        List<RatingDTO> resDTOs = ratings.stream().map(this::ratingEntityToDTO).toList();
+        return Response.status(Response.Status.OK).entity(resDTOs).build();
+    }
     private Rating ratingDTOToEntity(RatingDTO ratingDTO){
         RatingId ratingId = new RatingId(ratingDTO.getProduct_id(), ratingDTO.getUser_id());
         return new Rating(

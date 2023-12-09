@@ -11,7 +11,6 @@ import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,11 +67,14 @@ public class RatingRepository {
      */
     @Transactional
     public List<Rating> getByProduct(Long id){
+        logger.info("Searching rating for product ID: " + id);
         TypedQuery<Rating> query = entityManager.createQuery(
-                "SELECT r FROM Rating r WHERE r.product_id = :id", Rating.class
+                "SELECT r FROM Rating r WHERE r.product.product_id = :id", Rating.class
         ).setParameter("id", id);
-
-        return query.getResultList();
+        List<Rating> ratings = query.getResultList();
+        logger.info(String.valueOf(ratings.get(0).getProduct().getCategories().stream().toArray()[0].getClass().getName()));
+        logger.info("Successfully found ratings");
+        return ratings;
     }
 
     /**
@@ -86,25 +88,30 @@ public class RatingRepository {
                 "SELECT r FROM Rating r WHERE r.userId = :uId AND r.productId = :pId", Rating.class
         ).setParameter("uId", ratingId.getUser_id())
                 .setParameter("pId", ratingId.getProduct_id());
-
         try {
             return Optional.ofNullable(query.getSingleResult());
         } catch( NoResultException e) {
             return Optional.empty();
         }
     }
+
+    /**
+     * Retrieve the average rating_value for a product based on all ratings made
+     * @param product_id the product for the rating value
+     * @return the average rating value as double
+     */
     @Transactional
-    public BigDecimal getRatingValueForProduct(long product_id){
+    public double getRatingValueForProduct(long product_id){
         logger.info("Getting Rating value for product with ID: " + product_id);
-        Query query = entityManager.createQuery(
-                "SELECT SUM(r.rating_value) FROM Rating r WHERE r.product.product_id = :product_id", Rating.class
+        TypedQuery<Double> query = entityManager.createQuery(
+                "SELECT CAST(SUM(r.rating_value) AS DOUBLE) FROM Rating r WHERE r.product.product_id = :product_id", Double.class
         ).setParameter("product_id", product_id);
 
         try {
-            return (BigDecimal) query.getResultList();
+            return query.getSingleResult();
         } catch( NoResultException e){
             logger.warn("No ratings found for product with ID: " + product_id + ". Setting value to 0.0");
-            return new BigDecimal(0);
+            return 0.0;
         }
     }
     /**
