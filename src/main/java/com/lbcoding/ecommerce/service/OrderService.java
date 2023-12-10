@@ -40,9 +40,10 @@ public class OrderService {
             return  Response.status(Response.Status.CREATED).entity(orderEntityToDTO(order)).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+        } catch ( NotFoundException e ){
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
-
     /**
      * Attempts to search for orders for a user
      * @param user_id id of the user

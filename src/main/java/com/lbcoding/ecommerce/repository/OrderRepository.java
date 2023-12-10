@@ -1,6 +1,7 @@
 package com.lbcoding.ecommerce.repository;
 
 import com.lbcoding.ecommerce.model.Order;
+import com.lbcoding.ecommerce.model.User;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -27,6 +28,9 @@ public class OrderRepository {
     public void create(Order order){
         if(order == null){
             throw new IllegalArgumentException("Order cannot be null");
+        }
+        if(!doesUserExist(order.getUser_id())){
+            throw new NotFoundException("User does not exist with ID: " + order.getUser_id());
         }
         logger.info("Persisting order");
         entityManager.persist(order);
@@ -75,5 +79,10 @@ public class OrderRepository {
         }
         updatedOrder.setStatus(order.getStatus());
         entityManager.merge(updatedOrder);
+    }
+
+    boolean doesUserExist(long user_id){
+        logger.info("Checking if user exist with ID: " + user_id);
+        return entityManager.find(User.class, user_id) != null;
     }
 }
