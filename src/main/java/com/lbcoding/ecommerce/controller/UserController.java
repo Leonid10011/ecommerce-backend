@@ -1,17 +1,12 @@
 package com.lbcoding.ecommerce.controller;
 
 import com.lbcoding.ecommerce.dto.AddressDTO;
+import com.lbcoding.ecommerce.dto.OrderDTO;
 import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.dto.UserProfileDTO;
-import com.lbcoding.ecommerce.service.AddressService;
-import com.lbcoding.ecommerce.service.AuthenticationService;
-import com.lbcoding.ecommerce.service.UserProfileService;
-import com.lbcoding.ecommerce.service.UserService;
+import com.lbcoding.ecommerce.service.*;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.GET;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 @Path("/users")
@@ -24,6 +19,8 @@ public class UserController {
     UserProfileService userProfileService;
     @Inject
     AddressService addressService;
+    @Inject
+    OrderService orderService;
     @POST
     @Path("/")
     public Response create(UserDTO userDTO){
@@ -43,6 +40,12 @@ public class UserController {
     }
 
     @POST
+    @Path("/order")
+    public Response createOrder(OrderDTO orderDTO){
+        return orderService.create(orderDTO);
+    }
+
+    @POST
     @Path("/address")
     public Response createAddress(AddressDTO addressDTO) {
         return addressService.create(addressDTO);
@@ -52,5 +55,15 @@ public class UserController {
     @Path("/address/{id}")
     public Response getAddresses(@PathParam("id") long user_id) {
         return addressService.getByUser(user_id);
+    }
+    @GET
+    @Path("/order/byUserId")
+    public Response getByUser(@QueryParam("id") long user_id){
+        return orderService.getByUser(user_id);
+    }
+    @PUT
+    @Path("/order")
+    public Response updateOrderStatus(OrderDTO orderDTO){
+        return orderService.updateStatus(orderDTO);
     }
 }

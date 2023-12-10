@@ -350,14 +350,13 @@ paths:
       responses:
         "200":
           description: OK
-  /sizes/byName/{name}:
+  /sizes/byName:
     get:
       tags:
       - Size Controller
       parameters:
       - name: name
-        in: path
-        required: true
+        in: query
         schema:
           type: string
       responses:
@@ -422,6 +421,42 @@ paths:
       - name: id
         in: path
         required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /users/order:
+    put:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDTO'
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrderDTO'
+      responses:
+        "200":
+          description: OK
+  /users/order/byUserId:
+    get:
+      tags:
+      - User Controller
+      parameters:
+      - name: id
+        in: query
         schema:
           format: int64
           type: integer
@@ -511,6 +546,19 @@ components:
           type: integer
         location:
           type: string
+    OrderDTO:
+      type: object
+      properties:
+        order_id:
+          format: int64
+          type: integer
+        user_id:
+          format: int64
+          type: integer
+        creation_date:
+          $ref: '#/components/schemas/Date'
+        status:
+          type: string
     ProductsRequestDTO:
       required:
       - name
@@ -598,5 +646,4 @@ components:
     SecurityScheme:
       type: http
       description: Authentication
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: basic

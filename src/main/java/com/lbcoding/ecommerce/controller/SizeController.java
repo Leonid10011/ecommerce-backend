@@ -20,8 +20,8 @@ public class SizeController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("/byName/{name}")
-    public Response findByName(@PathParam("name") String name){
+    @Path("/byName")
+    public Response findByName(@QueryParam("name") String name){
         return sizesService.findByName(name);
     }
 
