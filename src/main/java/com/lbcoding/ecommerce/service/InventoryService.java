@@ -70,14 +70,15 @@ public class InventoryService implements IInventoryService {
     }
 
     /**
-     * Attempts to find an inventory by
-     * @param inventoryDTO 
-     * @return A List<InventoryDTO>.
+     *
+     * @param product_id
+     * @param size_id
+     * @return
      */
     @Override
-    public Response findByProductAndSize(InventoryDTO inventoryDTO) {
+    public Response findByProductAndSize(long product_id, long size_id) {
         logger.info("Received request to find inventory by product and size");
-        List<Inventory> inventoryList = inventoryRepository.findByProductAndSize(inventoryDTO.getProduct_id(), inventoryDTO.getSize_id());
+        List<Inventory> inventoryList = inventoryRepository.findByProductAndSize(product_id, size_id);
         logger.info("Successfully retrieved inventories");
         List<InventoryDTO> inventoryDTOS = inventoryList.stream().map(
                 this::inventoryEntityToDTO

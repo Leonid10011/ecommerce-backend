@@ -3,7 +3,7 @@
 Reworking backend such that it follows RESTFul specification. 
 
 ## Documentation
-You can find the (ongoing) documentation [here](https://github.com/Leonid10011/ecommerce-backend/blob/main/documentation.md)
+You can find the **openapi** specification [here](https://github.com/Leonid10011/ecommerce-backend/blob/main/openapi)
 
 ## Database Schema
 

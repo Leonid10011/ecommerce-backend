@@ -1,0 +1,602 @@
+---
+openapi: 3.0.3
+info:
+  title: code-with-quarkus API
+  version: 1.0.0-SNAPSHOT
+paths:
+  /category:
+    get:
+      tags:
+      - Category Controller
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+      - Category Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDTO'
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Category Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDTO'
+      responses:
+        "200":
+          description: OK
+  /category/getByName:
+    get:
+      tags:
+      - Category Controller
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /category/{id}:
+    delete:
+      tags:
+      - Category Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /images:
+    put:
+      tags:
+      - Image Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageDTO'
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Image Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ImageDTO'
+      responses:
+        "200":
+          description: OK
+  /images/product/{id}:
+    get:
+      tags:
+      - Image Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /images/{id}:
+    get:
+      tags:
+      - Image Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - Image Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /inventories:
+    put:
+      tags:
+      - Inventory Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryDTO'
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Inventory Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InventoryDTO'
+      responses:
+        "200":
+          description: OK
+  /inventories/findByProductAndSize:
+    get:
+      tags:
+      - Inventory Controller
+      parameters:
+      - name: productID
+        in: query
+        schema:
+          format: int64
+          type: integer
+      - name: sizeId
+        in: query
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /inventories/product/{id}:
+    get:
+      tags:
+      - Inventory Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /inventories/{id}:
+    get:
+      tags:
+      - Inventory Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - Inventory Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /products:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: page
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: pageSize
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Product Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductsRequestDTO'
+      responses:
+        "200":
+          description: OK
+  /products/getByName:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: name
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /products/ratings:
+    post:
+      tags:
+      - Product Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RatingDTO'
+      responses:
+        "200":
+          description: OK
+  /products/ratings/product/{id}:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /products/ratings/user/{id}:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /products/ratings/{id}:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /products/{id}:
+    get:
+      tags:
+      - Product Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - Product Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /sizes:
+    put:
+      tags:
+      - Size Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SizeDTO'
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Size Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SizeDTO'
+      responses:
+        "200":
+          description: OK
+  /sizes/byName/{name}:
+    get:
+      tags:
+      - Size Controller
+      parameters:
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /sizes/{id}:
+    get:
+      tags:
+      - Size Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+    delete:
+      tags:
+      - Size Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /users:
+    post:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        "200":
+          description: OK
+  /users/address:
+    post:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddressDTO'
+      responses:
+        "200":
+          description: OK
+  /users/address/{id}:
+    get:
+      tags:
+      - User Controller
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          format: int64
+          type: integer
+      responses:
+        "200":
+          description: OK
+  /users/profile:
+    post:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserProfileDTO'
+      responses:
+        "200":
+          description: OK
+  /users/signin:
+    post:
+      tags:
+      - User Controller
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTO'
+      responses:
+        "200":
+          description: OK
+components:
+  schemas:
+    AddressDTO:
+      type: object
+      properties:
+        address_id:
+          format: int64
+          type: integer
+        street:
+          type: string
+        city:
+          type: string
+        country:
+          type: string
+        zip_code:
+          type: string
+        user_id:
+          format: int64
+          type: integer
+    CategoryDTO:
+      type: object
+      properties:
+        category_id:
+          format: int64
+          type: integer
+        name:
+          type: string
+    Date:
+      format: date
+      type: string
+      example: 2022-03-10
+    ImageDTO:
+      type: object
+      properties:
+        image_id:
+          format: int64
+          type: integer
+        product_id:
+          format: int64
+          type: integer
+        url:
+          type: string
+    InventoryDTO:
+      type: object
+      properties:
+        inventory_id:
+          format: int64
+          type: integer
+        product_id:
+          format: int64
+          type: integer
+        size_id:
+          format: int64
+          type: integer
+        quantity:
+          format: int32
+          type: integer
+        location:
+          type: string
+    ProductsRequestDTO:
+      required:
+      - name
+      - price
+      type: object
+      properties:
+        productId:
+          format: int64
+          type: integer
+        name:
+          maxLength: 30
+          pattern: \S
+          type: string
+        description:
+          maxLength: 100
+          type: string
+        price:
+          format: double
+          minimum: 0
+          exclusiveMinimum: true
+          pattern: "^\\d{1,10}([.]\\d{1,2})?$"
+          type: number
+        sizes:
+          type: array
+          items:
+            type: string
+        imageUrl:
+          type: array
+          items:
+            type: string
+        category:
+          type: string
+    RatingDTO:
+      type: object
+      properties:
+        product_id:
+          format: int64
+          type: integer
+        user_id:
+          format: int64
+          type: integer
+        rating_value:
+          format: int32
+          type: integer
+        rating_text:
+          type: string
+        creation_date:
+          $ref: '#/components/schemas/Date'
+    SizeDTO:
+      type: object
+      properties:
+        size_id:
+          format: int64
+          type: integer
+        name:
+          type: string
+    UserDTO:
+      type: object
+      properties:
+        user_id:
+          format: int64
+          type: integer
+        username:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+    UserProfileDTO:
+      type: object
+      properties:
+        userprofile_id:
+          format: int64
+          type: integer
+        user_id:
+          format: int64
+          type: integer
+        first_name:
+          type: string
+        last_name:
+          type: string
+        gender:
+          type: string
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: bearer
+      bearerFormat: JWT
