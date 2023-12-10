@@ -85,11 +85,16 @@ public class UserRepository {
         return query.getResultList();
     }
 
-    boolean doesUsernameExist(String name){
+    public boolean doesUsernameExist(String name){
         TypedQuery<User> query = entityManager.createQuery(
                 "SELECT u FROM User u WHERE u.username = :name", User.class
         ).setParameter("name", name);
 
         return !query.getResultList().isEmpty();
+    }
+
+    public boolean doesUserExist(long id){
+        User user = entityManager.find(User.class, id);
+        return (user != null);
     }
 }
