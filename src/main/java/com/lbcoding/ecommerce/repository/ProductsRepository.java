@@ -129,6 +129,7 @@ public class ProductsRepository implements IProductRepository {
      * @param id Unique identifier of the product
      * @throws EntityNotFoundException when no product with give ID was found.
      */
+    @Transactional
     public void delete(long id){
         logger.info("Deleting product with ID: " + id);
         //findById(id).orElseThrow(() -> new EntityNotFoundException("Product not found with ID: " + id));
@@ -136,10 +137,11 @@ public class ProductsRepository implements IProductRepository {
 
         if(productToDelete.isPresent()){
             logger.info("Deleting corresponding images");
-            productToDelete.get().getImages().forEach(image -> entityManager.remove(image.getImage_id()));
+            productToDelete.get().getImages().forEach(image -> entityManager.remove(image));
             logger.info("Deleting corresponding inventories");
-            productToDelete.get().getInventories().forEach(inventory -> entityManager.remove(inventory.getInventory_id()));
+            productToDelete.get().getInventories().forEach(inventory -> entityManager.remove(inventory));
         }
+        entityManager.remove(productToDelete.get());
         logger.info("Product deleted successfully with ID: " + id);
     }
 

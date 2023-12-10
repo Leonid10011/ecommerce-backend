@@ -20,6 +20,12 @@ public class ProductController {
         return productsService.create(productsRequestDTO);
     }
 
+    @POST
+    @Path("/ratings")
+    public Response createRating(RatingDTO ratingDTO){
+        return ratingService.create(ratingDTO);
+    }
+
     @GET
     @Path("/{id}")
     public Response get(@PathParam("id") long id){
@@ -37,24 +43,28 @@ public class ProductController {
 
     @GET
     @Path("/getByName")
-    public Response getByName(@PathParam("name") String name){
+    public Response getByName(@QueryParam("name") String name){
         return productsService.getByName(name);
     }
 
-    @POST
-    @Path("/rating")
-    public Response createRating(RatingDTO ratingDTO){
-        return ratingService.create(ratingDTO);
-    }
-
     @GET
-    @Path("/rating/{id}")
+    @Path("/ratings/{id}")
     public Response getRatingValueForProduct(@PathParam("id") long id){
         return ratingService.getRatingValue(id);
     }
     @GET
-    @Path("/rating/getAll/{id}")
+    @Path("/ratings/product/{id}")
     public Response getRatingsForProduct(@PathParam("id") long id){
         return ratingService.getRatingsForProduct(id);
+    }
+    @GET
+    @Path("/ratings/user/{id}")
+    public Response getRatingsForUser(@PathParam("id") long id){
+        return ratingService.getRatingsForUser(id);
+    }
+    @DELETE
+    @Path("/{id}")
+    public Response deleteProduct(@PathParam("id") long id){
+        return productsService.delete(id);
     }
 }

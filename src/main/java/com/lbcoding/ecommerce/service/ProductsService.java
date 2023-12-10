@@ -10,6 +10,7 @@ import com.lbcoding.ecommerce.repository.*;
 import com.lbcoding.ecommerce.service.inerfaces.IProductService;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.persistence.NonUniqueResultException;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -73,12 +74,16 @@ public class ProductsService implements IProductService {
      */
     public Response getByName(String name) {
         logger.info("Received request to retrieve product by NAME: " + name);
-        Optional<Product> product = productsRepository.findByName(name);
-        if (product.isEmpty()) {
-            return Response.status(Response.Status.NOT_FOUND).entity("Product not found with NAME: " + name).build();
+        try {
+            Optional<Product> product = productsRepository.findByName(name);
+            if (product.isEmpty()) {
+                return Response.status(Response.Status.NOT_FOUND).entity("Product not found with NAME: " + name).build();
+            }
+            ProductsResponseDTO productsResponseDTO = entityToResponseDTO(product.get());
+            return Response.status(Response.Status.OK).entity(productsResponseDTO).build();
+        } catch( NonUniqueResultException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Duplicate Products with that name exist. Aborting retrieval...").build();
         }
-        ProductsResponseDTO productsResponseDTO = entityToResponseDTO(product.get());
-        return Response.status(Response.Status.OK).entity(productsResponseDTO).build();
     }
 
     /**
@@ -114,7 +119,7 @@ public class ProductsService implements IProductService {
      * @param id the ID of the product to delete
      * @return NoContent with status code 204
      */
-    private Response delete(long id){
+    public Response delete(long id){
         logger.info("Received request to delete product with ID: " + id);
         productsRepository.delete(id);
         logger.info("Successfully deleted product with ID: " + id);

@@ -13,8 +13,8 @@ public class CategoryController {
     CategoryService categoriesService;
 
     @GET
-    @Path("/{name}")
-    public Response getByName(@PathParam("name") String name){
+    @Path("/getByName")
+    public Response getByName(@QueryParam("name") String name){
         return categoriesService.findByName(name);
     }
 

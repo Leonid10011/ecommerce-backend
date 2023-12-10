@@ -4,6 +4,7 @@ import com.lbcoding.ecommerce.dto.UserDTO;
 import com.lbcoding.ecommerce.model.User;
 import com.lbcoding.ecommerce.repository.UserRepository;
 import com.lbcoding.ecommerce.service.validation.DTOValidator;
+import io.quarkus.elytron.security.common.BcryptUtil;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -36,7 +37,7 @@ public class UserService {
                 userDTO.getUser_id(),
                 userDTO.getUsername(),
                 userDTO.getEmail(),
-                userDTO.getPassword()
+                BcryptUtil.bcryptHash(userDTO.getPassword())
         );
     }
 
@@ -45,7 +46,6 @@ public class UserService {
                 user.getUser_id(),
                 user.getUsername(),
                 user.getEmail(),
-                1L,
                 user.getPassword()
         );
     }

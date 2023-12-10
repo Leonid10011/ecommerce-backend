@@ -39,7 +39,7 @@ public class UserRepository {
 
     /**
      * Find User by id
-     * @param id
+     * @param id the id of the user
      * @return User
      */
     @Transactional
@@ -51,7 +51,7 @@ public class UserRepository {
 
     /**
      * Create a new User
-     * @param user
+     * @param user Object containing username, email and password
      */
     @Transactional
     public void createUser(User user){
@@ -68,7 +68,7 @@ public class UserRepository {
 
     /**
      * Delete User by id
-     * @param id
+     * @param id id of the user to delete
      */
     @Transactional
     public void deleteUser(Long id){

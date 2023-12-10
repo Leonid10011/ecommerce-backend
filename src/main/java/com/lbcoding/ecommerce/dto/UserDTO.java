@@ -7,18 +7,16 @@ public class UserDTO {
     private long user_id;
     private String username;
     private String email;
-    private long role_id;
     private String password;
 
     public UserDTO(){
 
     }
 
-    public UserDTO(long user_id, String username, String email, Long roleId, String password) {
+    public UserDTO(long user_id, String username, String email, String password) {
         this.user_id = user_id;
         this.username = username;
         this.email = email;
-        this.role_id = roleId;
         this.password = password;
     }
 
@@ -44,14 +42,6 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public Long getRoleId() {
-        return role_id;
-    }
-
-    public void setRoleId(Long roleId) {
-        this.role_id = roleId;
     }
 
     public String getPassword() {

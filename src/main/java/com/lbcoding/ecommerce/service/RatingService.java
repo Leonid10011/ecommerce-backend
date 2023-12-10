@@ -75,6 +75,15 @@ public class RatingService {
         List<RatingDTO> resDTOs = ratings.stream().map(this::ratingEntityToDTO).toList();
         return Response.status(Response.Status.OK).entity(resDTOs).build();
     }
+
+    @Transactional
+    public Response getRatingsForUser(long user_id){
+        List<Rating> ratings = ratingRepository.getByUser(user_id);
+        // map to dto
+        List<RatingDTO> resDTOs = ratings.stream().map(this::ratingEntityToDTO).toList();
+        return Response.status(Response.Status.OK).entity(resDTOs).build();
+    }
+
     private Rating ratingDTOToEntity(RatingDTO ratingDTO){
         RatingId ratingId = new RatingId(ratingDTO.getProduct_id(), ratingDTO.getUser_id());
         return new Rating(
