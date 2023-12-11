@@ -99,7 +99,6 @@ public class InventoryService implements IInventoryService {
         logger.info("Successfully found inventories for product ID: " + product_id);
         return Response.status(Response.Status.OK).entity(inventoryDTOS).build();
     }
-
     /**
      * @param inventoryDTO 
      * @return

@@ -81,10 +81,7 @@ import com.lbcoding.ecommerce.model.Inventory;
 import com.lbcoding.ecommerce.model.Product;
 import com.lbcoding.ecommerce.repository.interfaces.IInventoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityExistsException;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import org.slf4j.Logger;
@@ -205,6 +202,42 @@ public class InventoryRepository implements IInventoryRepository {
             entityManager.persist(inventory);
         });
         logger.info("Successfully set inventory for product");
+    }
+
+    /**
+     * Reduces the quantity of the ordered product in the respective inventory. If more quantity is ordered than there exist, than set inventory quantity to 0.
+     * @param newQuantity the quantity to order
+     * @param inventory_id the id of the inventory where the product is stored
+     * @return the actual quantity that can be ordered. If not enough exist in inventory, returns the remaining amount.
+     */
+    @Transactional
+    public int reduceQuantity(int newQuantity, long inventory_id){
+        Inventory updatedInventory = entityManager.find(Inventory.class, inventory_id);
+        int old_quantity = updatedInventory.getQuantity();
+        int diff = old_quantity - newQuantity;
+        if(diff < 0) {
+            updatedInventory.setQuantity(0);
+            entityManager.merge(updatedInventory);
+            return Math.abs(diff);
+        }
+        updatedInventory.setQuantity(diff);
+        entityManager.merge(updatedInventory);
+        return newQuantity;
+    }
+
+    /**
+     * This should implement logic to find the nearest inventory for given product with size. For simplicity, we just get the first one from the list.
+     * @param product_id id of product
+     * @param size_id id of products size
+     * @return the found inventory
+     */
+    public Inventory findNearest(long product_id, long size_id){
+        List<Inventory> inventories = findByProductAndSize(product_id, size_id);
+        if(!inventories.isEmpty())
+            return inventories.get(0);
+        else {
+            throw new NotFoundException("Iventory not found for product ID: " + product_id + " size ID:" + size_id);
+        }
     }
 
     private boolean doesInventoryExist(Inventory inventory){
