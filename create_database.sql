@@ -88,6 +88,7 @@ CREATE TABLE `order` (
 CREATE TABLE `order_item` (
   `order_id` bigint,
   `product_id` bigint,
+  `size_name` varchar(255),
   `quantity` int,
   `subtotal` decimal,
   FOREIGN KEY (`order_id`) REFERENCES `order` (`order_id`),

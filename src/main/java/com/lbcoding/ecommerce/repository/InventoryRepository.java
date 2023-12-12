@@ -213,6 +213,9 @@ public class InventoryRepository implements IInventoryRepository {
     @Transactional
     public int reduceQuantity(int newQuantity, long inventory_id){
         Inventory updatedInventory = entityManager.find(Inventory.class, inventory_id);
+        if( updatedInventory == null){
+            throw new NotFoundException("Inventory not found with ID: " + inventory_id);
+        }
         int old_quantity = updatedInventory.getQuantity();
         int diff = old_quantity - newQuantity;
         if(diff < 0) {
@@ -224,12 +227,31 @@ public class InventoryRepository implements IInventoryRepository {
         entityManager.merge(updatedInventory);
         return newQuantity;
     }
+    /**
+     * Increases the quantity of the ordered product in the respective inventory.
+     * @param newQuantity the quantity to ordered product
+     * @param inventory_id the id of the inventory where the product is stored
+     * @return the updated quantity
+     */
+    @Transactional
+    public int increaseQuantity(int newQuantity, long inventory_id){
+        Inventory updatedInventory = entityManager.find(Inventory.class, inventory_id);
+        if( updatedInventory == null){
+            throw new NotFoundException("Inventory not found with ID: " + inventory_id);
+        }
+        int old_quantity = updatedInventory.getQuantity();
+        int sum = old_quantity + newQuantity;
+        updatedInventory.setQuantity(sum);
+        entityManager.merge(updatedInventory);
+        return newQuantity;
+    }
 
     /**
-     * This should implement logic to find the nearest inventory for given product with size. For simplicity, we just get the first one from the list.
+     * This should implement logic to find the nearest (geographical) inventory for given product with size. For simplicity, we just get the first one from the list.
      * @param product_id id of product
      * @param size_id id of products size
      * @return the found inventory
+     * @throws NotFoundException when inventory not found for given product and size ID
      */
     public Inventory findNearest(long product_id, long size_id){
         List<Inventory> inventories = findByProductAndSize(product_id, size_id);
