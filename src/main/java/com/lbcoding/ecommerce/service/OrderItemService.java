@@ -11,6 +11,7 @@ import com.lbcoding.ecommerce.repository.SizesRepository;
 import com.lbcoding.ecommerce.service.validation.DTOValidator;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import jakarta.transaction.Transactional;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -34,7 +35,9 @@ public class OrderItemService {
      * @param orderItemDTO the DTO
      * @return Response containing the possible quantity that can be ordered for this product.
      */
+    @Transactional
     public Response create(OrderItemDTO orderItemDTO){
+        logger.info("Received request to create order item");
         Optional<Size> size = sizesRepository.findByName(orderItemDTO.getSize_name());
         if (size.isEmpty()){
             logger.warn("Given Size not valid");
@@ -43,6 +46,9 @@ public class OrderItemService {
         long size_id = size.get().getSize_id();
         Inventory inventory = inventoryRepository.findNearest(orderItemDTO.getProduct_id(), size_id);
         int possible_quantity = inventoryRepository.reduceQuantity(orderItemDTO.getQuantity(), inventory.getInventory_id());
+
+        OrderItem orderItem = orderItemDTOToEntity(orderItemDTO);
+        orderItemRepository.create(orderItem);
 
         return Response.status(Response.Status.CREATED).entity(possible_quantity).build();
     }
@@ -56,6 +62,7 @@ public class OrderItemService {
      * @param orderItemDTO DTO containing the new data
      * @return quantity that can be ordered
      */
+    @Transactional
     public Response update(OrderItemDTO orderItemDTO){
         Set<String> errorMessage = DTOValidator.validateDTO(orderItemDTO);
         if(!errorMessage.isEmpty()){
@@ -89,16 +96,24 @@ public class OrderItemService {
         int old_quantity = orderItem.get().getQuantity();
         int new_quantity = orderItemDTO.getQuantity();
         int diff = Math.abs(old_quantity - new_quantity);
+
+        logger.info(old_quantity + " - old || new - " + new_quantity);
+
         int res;
-        if(old_quantity > new_quantity){
-            res = inventoryRepository.reduceQuantity(diff, inventory.getInventory_id());
-        } else if( new_quantity > old_quantity){
-            res = inventoryRepository.increaseQuantity(diff, inventory.getInventory_id());
+        // if new quantity is bigger than old, reduce inventory quantity
+        if(old_quantity < new_quantity){
+            // if reducing inventory quantity drops below 0,
+            res = inventoryRepository.reduceQuantity(diff, inventory.getInventory_id()) + old_quantity;
+        } else if( new_quantity < old_quantity){
+            inventoryRepository.increaseQuantity(diff, inventory.getInventory_id());
+            res = new_quantity;
         } else {
             res = new_quantity;
         }
         // 4. Finally, updated product
-        orderItemRepository.update(orderItem.get());
+        OrderItem newOrderItem = orderItemDTOToEntity(orderItemDTO);
+        newOrderItem.setQuantity(res);
+        orderItemRepository.update(newOrderItem);
         // 5. Return the quantity that can be ordered
         return Response.status(Response.Status.OK).entity(res).build();
     }

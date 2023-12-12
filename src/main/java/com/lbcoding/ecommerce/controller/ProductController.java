@@ -1,7 +1,9 @@
 package com.lbcoding.ecommerce.controller;
 
+import com.lbcoding.ecommerce.dto.OrderItemDTO;
 import com.lbcoding.ecommerce.dto.RatingDTO;
 import com.lbcoding.ecommerce.dto.request.ProductsRequestDTO;
+import com.lbcoding.ecommerce.service.OrderItemService;
 import com.lbcoding.ecommerce.service.ProductsService;
 import com.lbcoding.ecommerce.service.RatingService;
 import jakarta.inject.Inject;
@@ -14,6 +16,8 @@ public class ProductController {
     ProductsService productsService;
     @Inject
     RatingService ratingService;
+    @Inject
+    OrderItemService orderItemService;
     @POST
     @Path("/")
     public Response create(ProductsRequestDTO productsRequestDTO){
@@ -66,5 +70,16 @@ public class ProductController {
     @Path("/{id}")
     public Response deleteProduct(@PathParam("id") long id){
         return productsService.delete(id);
+    }
+
+    @POST
+    @Path("/orderItem")
+    public Response createOrderItem(OrderItemDTO orderItemDTO){
+        return orderItemService.create(orderItemDTO);
+    }
+    @PUT
+    @Path("/orderItem")
+    public Response updateOrderItem(OrderItemDTO orderItemDTO){
+        return orderItemService.update(orderItemDTO);
     }
 }

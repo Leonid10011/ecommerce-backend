@@ -43,7 +43,7 @@ public class OrderItemRepository {
         logger.info("Searching for orderItem by order ID: " + orderItemId.getOrder_id() + " and product ID: " + orderItemId.getProduct_id());
         OrderItem orderItem = entityManager.find(OrderItem.class, orderItemId);
         if(orderItem == null){
-            throw new NotFoundException("Order item with order ID: " + orderItemId.getOrder_id() + " and product ID: " + orderItemId.getProduct_id());
+            return Optional.empty();
         }
         return Optional.of(orderItem);
     }
@@ -80,8 +80,8 @@ public class OrderItemRepository {
     boolean doesOrderItemExist(OrderItem orderItem){
         TypedQuery<OrderItem> query = entityManager.createQuery(
                 "SELECT oi FROM OrderItem oi WHERE " +
-                        "oi.order_id = :orderId AND " +
-                        "oi.product_id = :productId", OrderItem.class
+                        "oi.orderItem_id.order_id = :orderId AND " +
+                        "oi.orderItem_id.product_id = :productId", OrderItem.class
         ).setParameter("orderId", orderItem.getOrderItem_id().getOrder_id())
                 .setParameter("productId", orderItem.getOrderItem_id().getProduct_id());
 

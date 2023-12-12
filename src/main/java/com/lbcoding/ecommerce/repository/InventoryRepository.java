@@ -218,11 +218,13 @@ public class InventoryRepository implements IInventoryRepository {
         }
         int old_quantity = updatedInventory.getQuantity();
         int diff = old_quantity - newQuantity;
+        // reducing the quantity drops below 0, we can only provide `old_quantity` amount
         if(diff < 0) {
             updatedInventory.setQuantity(0);
             entityManager.merge(updatedInventory);
-            return Math.abs(diff);
+            return Math.abs(old_quantity);
         }
+        // otherwise, reduce quantity by requested quantity
         updatedInventory.setQuantity(diff);
         entityManager.merge(updatedInventory);
         return newQuantity;
@@ -243,7 +245,7 @@ public class InventoryRepository implements IInventoryRepository {
         int sum = old_quantity + newQuantity;
         updatedInventory.setQuantity(sum);
         entityManager.merge(updatedInventory);
-        return newQuantity;
+        return updatedInventory.getQuantity();
     }
 
     /**
