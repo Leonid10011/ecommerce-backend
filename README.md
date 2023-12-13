@@ -2,6 +2,9 @@
 ## Currently working on
 Reworking backend such that it follows RESTFul specification. 
 
+## Frontend
+Frontend (old version) [here](#https://github.com/Leonid10011/ecommerce-frontend)
+
 ## Documentation
 You can find the **openapi** specification [here](https://github.com/Leonid10011/ecommerce-backend/blob/main/openapi)
 
