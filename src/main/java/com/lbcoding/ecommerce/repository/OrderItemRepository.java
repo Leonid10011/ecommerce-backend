@@ -55,7 +55,7 @@ public class OrderItemRepository {
     public List<OrderItem> findByOrder(long id){
         logger.info("Searching order items for order ID: " + id);
         TypedQuery<OrderItem> query = entityManager.createQuery(
-                "SELECT o FROM OrderItem o WHERE o.order_id =:id", OrderItem.class
+                "SELECT o FROM OrderItem o WHERE o.orderItem_id.order_id = :id", OrderItem.class
         ).setParameter("id", id);
 
         return query.getResultList();
@@ -73,6 +73,17 @@ public class OrderItemRepository {
     }
 
     /**
+     * Deletes orderItem by ID
+     * @param id id of the composite orderItem (orderId, productId)
+     */
+    @Transactional
+    public void delete(OrderItemId id){
+        logger.info("Deleting orderItem with ID: " + id);
+        Optional<OrderItem> orderItem = findById(id);
+        orderItem.ifPresent(entityManager::remove);
+        logger.info("Successfully removed orderItem with ID: " + id);
+    }
+    /**
      * Checks if order items exists in the database
      * @param orderItem the order item data to search
      * @return boolean
@@ -81,9 +92,11 @@ public class OrderItemRepository {
         TypedQuery<OrderItem> query = entityManager.createQuery(
                 "SELECT oi FROM OrderItem oi WHERE " +
                         "oi.orderItem_id.order_id = :orderId AND " +
-                        "oi.orderItem_id.product_id = :productId", OrderItem.class
+                        "oi.orderItem_id.product_id = :productId AND " +
+                        "oi.size_name = :size_name", OrderItem.class
         ).setParameter("orderId", orderItem.getOrderItem_id().getOrder_id())
-                .setParameter("productId", orderItem.getOrderItem_id().getProduct_id());
+                .setParameter("productId", orderItem.getOrderItem_id().getProduct_id())
+                .setParameter("size_name", orderItem.getSize_name());
 
         return !query.getResultList().isEmpty();
     }

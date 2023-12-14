@@ -17,6 +17,7 @@ import jakarta.ws.rs.core.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -52,7 +53,22 @@ public class OrderItemService {
 
         return Response.status(Response.Status.CREATED).entity(possible_quantity).build();
     }
+
     /**
+     * Attempts to find all orderItems by order ID
+     * @param orderId the ID of the order
+     * @return List of orderItems. Empty if none were found
+     */
+    public Response findByOrder(long orderId){
+        logger.info("Received request to find order items by orderId: " + orderId);
+        List<OrderItem> orderItemList = orderItemRepository.findByOrder(orderId);
+
+        List<OrderItemDTO> resDTO = orderItemList.stream().map(this::orderItemEntityToDTO).toList();
+
+        return Response.status(Response.Status.OK).entity(resDTO).build();
+     }
+    /**
+     *
      *  Update the quantity of an order item and also change the corresponding product inventories quantity by doing the following
      *  1. Get old orderItem from the database and retrieve its "old_quantity"
      *  2. Get the id of the size for the ordered Item in order to find the inventory in which to change quantity
@@ -61,6 +77,7 @@ public class OrderItemService {
      *  5. Return the quantity that can be ordered
      * @param orderItemDTO DTO containing the new data
      * @return quantity that can be ordered
+     * @NOTE Provide detailed explanation of functionality
      */
     @Transactional
     public Response update(OrderItemDTO orderItemDTO){
@@ -118,6 +135,19 @@ public class OrderItemService {
         return Response.status(Response.Status.OK).entity(res).build();
     }
 
+    /**
+     * Attempts to delete orderItem by Id, that is retrieved from an orderItem DTO
+     * @param orderId order id
+     * @param productId product id
+     * @return Success: noContent with status code 204
+     */
+    public Response delete(long orderId, long productId){
+        OrderItemId orderItemId = new OrderItemId(orderId, productId);
+        logger.info("Received request to remove orderItem with order ID: " + orderId + " product ID: " + productId);
+        orderItemRepository.delete(orderItemId);
+        return Response.noContent().build();
+    }
+
     OrderItem orderItemDTOToEntity(OrderItemDTO orderItemDTO){
         OrderItemId orderItemId = new OrderItemId(
                 orderItemDTO.getOrder_id(),
@@ -129,6 +159,16 @@ public class OrderItemService {
                 orderItemDTO.getSize_name(),
                 orderItemDTO.getQuantity(),
                 orderItemDTO.getSubtotal()
+        );
+    }
+
+    OrderItemDTO orderItemEntityToDTO(OrderItem orderItem){
+        return new OrderItemDTO(
+                orderItem.getOrderItem_id().getOrder_id(),
+                orderItem.getOrderItem_id().getProduct_id(),
+                orderItem.getSize_name(),
+                orderItem.getQuantity(),
+                orderItem.getSubtotal()
         );
     }
 }

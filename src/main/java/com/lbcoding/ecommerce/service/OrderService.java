@@ -31,13 +31,15 @@ public class OrderService {
     public Response create(OrderDTO orderDTO){
         Set<String> errorMessages = DTOValidator.validateDTO(orderDTO);
         if(!errorMessages.isEmpty()){
+            logger.warn("Validation Error");
             return Response.status(Response.Status.BAD_REQUEST).entity(errorMessages).build();
         }
         logger.info("Received request to create order for user ID: " + orderDTO.getUser_id());
         Order order = orderDTOToEntity(orderDTO);
         try {
             orderRepository.create(order);
-            return  Response.status(Response.Status.CREATED).entity(orderEntityToDTO(order)).build();
+            OrderDTO resDTO = orderEntityToDTO(order);
+            return  Response.status(Response.Status.CREATED).entity(resDTO).build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
         } catch ( NotFoundException e ){

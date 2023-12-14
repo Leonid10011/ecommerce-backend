@@ -82,4 +82,14 @@ public class ProductController {
     public Response updateOrderItem(OrderItemDTO orderItemDTO){
         return orderItemService.update(orderItemDTO);
     }
+    @GET
+    @Path("/orderItem/findByOrderId/{id}")
+    public Response findByOrder(@PathParam("id") long orderId){
+        return orderItemService.findByOrder(orderId);
+    }
+    @DELETE
+    @Path("/orderItem/{orderId}/{productId}")
+    public Response delete(@PathParam("orderId") long orderId, @PathParam("productId") long productId){
+        return orderItemService.delete(orderId, productId);
+    }
 }
