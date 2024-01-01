@@ -1,6 +1,6 @@
 # Backend for ecommerce project
-## Currently working on
-Reworking backend such that it follows RESTFul specification. 
+## Currently working on [PAUSE]
+- Finishing Online Java Course and Spring Boot Course, before proceeding with this porject.
 
 ## Frontend
 Frontend (old version) [here](https://github.com/Leonid10011/ecommerce-frontend)
